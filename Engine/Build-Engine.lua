@@ -9,7 +9,8 @@ project "Engine"
 
    includedirs
    {
-      "Source"
+      "Source",
+      "RBVendor/spdlogs/include"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
@@ -20,7 +21,7 @@ project "Engine"
 }
    filter "system:windows"
        systemversion "latest"
-       defines { }
+       defines {"RUBBER_BUILD" }
 
    filter "configurations:Debug"
        defines { "DEBUG" }
