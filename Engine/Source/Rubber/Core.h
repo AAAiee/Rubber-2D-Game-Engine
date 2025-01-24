@@ -5,7 +5,7 @@
 #include  <utility>
 
 
-// define macros that controls import and export 
+// define macros that controls the flow  
 #ifdef WINDOW_64_API
 	#ifdef RUBBER_BUILD
 		#define RB_API  __declspec(dllexport)
@@ -15,4 +15,7 @@
 #else
 #error Rubber now only supports Window x64
 #endif
+
+
+#define BIT(x) (1 << x)
 

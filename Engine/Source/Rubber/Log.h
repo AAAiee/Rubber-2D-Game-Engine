@@ -6,9 +6,9 @@
 namespace Rubber
 {
 	class RB_API Logger
+	// Wrapper for the SPDLOG
 	{
 	public:
-		
 	    Logger& operator =(const Logger&) = delete; 
 		Logger(const Logger&) = delete;
 		static void Init();
