@@ -1,4 +1,7 @@
 #include "Application.h"
+#include "Event/KeyEvent.h"
+#include "Rubber/Log.h"
+#include "Rubber/Core.h"
 
 namespace Rubber
 {

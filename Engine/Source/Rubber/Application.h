@@ -3,6 +3,9 @@
 
 namespace Rubber
 {
+	/* Application
+	*  this class controls the application 
+	*/
 	class RB_API Application
 	{
 	public:

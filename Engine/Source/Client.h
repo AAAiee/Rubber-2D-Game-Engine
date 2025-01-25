@@ -4,7 +4,8 @@
 // include the application base class
 #include "Rubber/Application.h"
 
+// include the logger
+#include "Rubber/Log.h"
 
 //include the EntryPoint!!
 #include "Rubber/EntryPoint.h"
-

@@ -5,8 +5,13 @@
 
 namespace Rubber
 {
+	/*
+	* The Logging System for the engine, it uses the spdlog library.
+	* The s_Corelogger points to the logger for the engine
+	* the s_ClientLogger points to the logger for the application.
+	* both are initialized in the Init() function.
+	*/
 	class RB_API Logger
-	// Wrapper for the SPDLOG
 	{
 	public:
 	    Logger& operator =(const Logger&) = delete; 
@@ -23,14 +28,14 @@ namespace Rubber
 	};
 }
 
-// Defines Log macros for the engine.
+// Define Log macros for the engine.
 #define RB_TRACE(...)              ::Rubber::Logger::GetCoreLogger()->trace(__VA_ARGS__);
 #define RB_INFO(...)		       ::Rubber::Logger::GetCoreLogger()->info(__VA_ARGS__);
 #define RB_WARN(...)               ::Rubber::Logger::GetCoreLogger()->warn(__VA_ARGS__);
 #define RB_ERROR(...)		       ::Rubber::Logger::GetCoreLogger()->error( __VA_ARGS__ );
 #define RB_CRITICAL(...)           ::Rubber::Logger::GetCoreLogger()->critical( __VA_ARGS__ );
 
-// Defines Log macros for the Application.
+// Define Log macros for the Application.
 #define TRACE(...)                 ::Rubber::Logger::GetClientLogger()->trace( __VA_ARGS__ );
 #define INFO(...)		           ::Rubber::Logger::GetClienTLogger()->info( __VA_ARGS__ );
 #define WARN(...)                  ::Rubber::Logger::GetClientLogger()->warn( __VA_ARGS__ );
