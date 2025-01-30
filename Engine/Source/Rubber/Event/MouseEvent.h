@@ -36,7 +36,7 @@ namespace Rubber
    * @brief Converts the event data to a string.
    * @return A string representation of the event.
    */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "Mouse moved to x: " << getX() << " y: " << getY();
@@ -82,7 +82,7 @@ namespace Rubber
    * @brief Converts the event data to a string.
    * @return A string representation of the event.
    */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "Mouse Scrolled with x: " << getXOffset() << " y: " << getYOffset();
@@ -143,7 +143,7 @@ namespace Rubber
    * @brief Converts the event data to a string.
    * @return A string representation of the event.
    */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "Mouse key (Pressed): " << getButton();
@@ -171,7 +171,7 @@ namespace Rubber
    * @brief Converts the event data to a string.
    * @return A string representation of the event.
    */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "Mouse key (Released): " << getButton();

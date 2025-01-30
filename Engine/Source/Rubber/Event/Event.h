@@ -1,5 +1,6 @@
 #pragma once
 #include <Rubber/Core.h>
+#include <sstream>
 #include <iostream>
 
 namespace Rubber {
@@ -71,7 +72,7 @@ namespace Rubber {
          * @brief Convert the event to a string representation
          * @return The string representation of the event
          */
-        virtual std::string ToString() const { return getTypeName(); }
+        virtual std::string toString() const { return getTypeName(); }
 
         /**
          * @brief Check if the event belongs to a specific category

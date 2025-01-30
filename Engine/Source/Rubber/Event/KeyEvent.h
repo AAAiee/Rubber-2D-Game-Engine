@@ -53,7 +53,7 @@ namespace Rubber
 	   * @brief Converts the key pressed event to a string representation.
 	   * @return A string representation of the key pressed event.
 	   */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "The current key being pressed is " << getKeyCode()
@@ -90,7 +90,7 @@ namespace Rubber
 	   * @brief Converts the key released event to a string representation.
 	   * @return A string representation of the key released event.
 	   */
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "The current key being released is " << getKeyCode();
