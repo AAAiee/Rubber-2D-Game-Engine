@@ -1,7 +1,5 @@
 #pragma once
 #include "Event.h"
-#include <sstream>
-#include "Rubber/Core.h"
 
 namespace Rubber
 {
