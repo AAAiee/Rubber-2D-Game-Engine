@@ -96,37 +96,37 @@ namespace Rubber
 	};
 
 	/**
-  * @class MouseEvent
+  * @class MouseButtonEvent
   * @brief Base class for mouse button events.
   */
-	class RB_API MouseEvent : public Event
+	class RB_API MouseButtonEvent : public Event
 	{
 	public:
-		EVENT_CATEGORY(toUnderType(EventCategory::MOUSE) | toUnderType(EventCategory::INPUT))
+		EVENT_CATEGORY(toUnderType(EventCategory::MOUSE_BUTTON) | toUnderType(EventCategory::INPUT))
 
 		/**
    * @brief Gets the mouse button associated with the event.
    * @return The mouse button.
    */
-		inline int getButton() const { return m_button; }
+		inline int getButton() const { return m_Button; }
 
 	protected:
 		/**
-   * @brief Constructor for MouseEvent.
+   * @brief Constructor for MouseButtonEvent.
    * @param button The mouse button.
    */
-		MouseEvent(int button)
-			:m_button(button) { }
+		MouseButtonEvent(int button)
+			:m_Button(button) { }
 
 	private:
-		int m_button;
+		int m_Button;
 	};
 
 	/**
   * @class MousePressedEvent
   * @brief Event class for mouse button press.
   */
-	class RB_API MousePressedEvent : public MouseEvent
+	class RB_API MousePressedEvent : public MouseButtonEvent
 	{
 	public:
 		/**
@@ -134,7 +134,7 @@ namespace Rubber
    * @param button The mouse button that was pressed.
    */
 		MousePressedEvent(int button)
-			:MouseEvent(button){}
+			:MouseButtonEvent(button){}
 		
 		EVENT_TYPE(EventType::MouseButtonPressed)
 	
@@ -154,7 +154,7 @@ namespace Rubber
   * @class MouseReleasedEvent
   * @brief Event class for mouse button release.
   */
-	class RB_API MouseReleasedEvent : public MouseEvent
+	class RB_API MouseReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		/**
@@ -162,7 +162,7 @@ namespace Rubber
    * @param button The mouse button that was released.
    */
 		MouseReleasedEvent(int button)
-			:MouseEvent(button){}
+			:MouseButtonEvent(button){}
 		
 		EVENT_TYPE(EventType::MouseButtonPressed)
 	

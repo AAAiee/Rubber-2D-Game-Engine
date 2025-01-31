@@ -17,3 +17,8 @@
 #include <map>
 #include <set>
 
+#ifdef WINDOW_64_API
+#include <Windows.h>
+#endif // #ifdef WINDOW_64_API
+
+

@@ -21,11 +21,11 @@ namespace Rubber {
     enum class EventCategory
     {
         None = 0,
-        INPUT       = BIT(0),        ///< Input event category
-        APPLICATION = BIT(1),        ///< Application event category
-        KEYBOARD    = BIT(2),        ///< Keyboard event category
-        MOUSE       = BIT(3),        ///< Mouse event category
-        WINDOW      = BIT(4)         ///< Window event category
+        INPUT         = BIT(0),        ///< Input event category
+        APPLICATION   = BIT(1),        ///< Application event category
+        KEYBOARD      = BIT(2),        ///< Keyboard event category
+        MOUSE         = BIT(3),        ///< Mouse event category
+		MOUSE_BUTTON  = BIT(4)         ///< Mouse button event category
     };
 
     /**
