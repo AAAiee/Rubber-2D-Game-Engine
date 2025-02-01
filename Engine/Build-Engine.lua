@@ -9,7 +9,14 @@ project "Engine"
    includedirs
    {
       "Source",
-      "RBVendor/spdlogs/include"
+      "RBVendor/spdlogs/include",
+      "%{IncludeDir.GLFW}"
+   }
+
+   links
+   {
+        "GLFW",
+        "opengl32.lib"
    }
 
    pchheader "pch.h"

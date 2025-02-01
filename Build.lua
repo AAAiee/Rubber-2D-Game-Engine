@@ -10,7 +10,11 @@ workspace "Rubber Engine"
       defines {"WINDOW_64_API"}
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
+IncludeDir = {}
+IncludeDir["GLFW"] = "Engine/RBVendor/glfw/include"
 
+group "GLFW"
+   include "Engine/RBVendor/glfw/premake5.lua"
 group "Engine"
 	include "Engine/Build-Engine.lua"
 group "App"
