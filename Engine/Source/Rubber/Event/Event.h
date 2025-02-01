@@ -38,8 +38,8 @@ namespace Rubber {
      * @brief Macro to define the event type for an event class
      * @param type The event type
      */
-#define EVENT_TYPE(type) static EventType s_getEventType() {return type;}\
-                         EventType getEventType() const override {return s_getEventType();}\
+#define EVENT_TYPE(type) static EventType s_GetEventType() {return type;}\
+                         EventType getEventType() const override {return s_GetEventType();}\
                          const char* getTypeName() const override {return #type;}
 
     /**
@@ -83,6 +83,35 @@ namespace Rubber {
         }
 
     private:
+		friend class EventDispatcher;
         bool m_isHandled = false;   ///< Flag indicating if the event is handled, used to stop event propagation
+    };
+
+
+	/**
+	 * @brief EventDispatcher class that dispatches events to event handlers
+	 */
+
+    class RB_API EventDispatcher
+    {
+    private:
+        template <typename T>
+        using EventFn = std::function<bool(T&)>;
+    public:
+        EventDispatcher(Event& event)
+            : m_Event(event) {
+        }
+
+        template <typename T>
+        bool dispatch(EventFn<T> func) {
+            if (m_Event.getEventType() == T::s_GetEventType()) {
+                m_Event.m_isHandled =  func(*static_cast<T*> (&m_Event));
+                return true;
+            }
+            return false;
+        }
+
+    private:
+        Event& m_Event;
     };
 }
