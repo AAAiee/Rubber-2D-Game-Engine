@@ -17,6 +17,17 @@
 #define BIT(x) (1 << x)
 
 
+// define assert macros, when !x, log and debugbreak
+#ifdef RB_ENABLE_ASSERT  
+   #define RB_ASSERT(x,...)  do{ if(!(x)) {ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)  
+   #define RB_CORE_ASSERT(x,...)  do{if (!(x)) {RB_ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)
+#else
+    #define RB_ASSERT(x,...)  
+    #define RB_CORE_ASSERT(x, ...)  
+#endif
+
+
+
 template <typename T>
 constexpr std::underlying_type_t<T> toUnderType(T enumarator)
 {

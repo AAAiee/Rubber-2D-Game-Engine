@@ -5,11 +5,14 @@ project "Engine"
    staticruntime "off"
 
    files { "Source/**.h", "Source/**.cpp" }
+   IncludeDir = {}
+   IncludeDir["GLFW"] = "RBVendor/glfw/include"
+   IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
 
    includedirs
    {
       "Source",
-      "RBVendor/spdlogs/include",
+      "%{IncludeDir.spdlogs}",
       "%{IncludeDir.GLFW}"
    }
 
@@ -33,7 +36,7 @@ project "Engine"
        defines {"RUBBER_BUILD" }
 
    filter "configurations:Debug"
-       defines { "DEBUG" }
+       defines { "DEBUG", "RB_ENABLE_ASSERT" }
        runtime "Debug"
        symbols "On"
 
