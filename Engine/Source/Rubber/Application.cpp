@@ -10,7 +10,7 @@ namespace Rubber
 {
 	Application::Application()
 	{
-
+		m_Window = Window::create();
 	}
 	Application::~Application()
 	{
@@ -18,16 +18,10 @@ namespace Rubber
 	}
 	void Application::run()
 	{
-		RB_TRACE("Welcome to the engine!");
-		AppTickEvent tick;
-		AppRenderEvent render;
-		WindowCloseEvent close;
-		WindowResizeEvent resize(1280, 720);
-		RB_TRACE(tick.toString());
-		RB_INFO(render.toString());
-		RB_CRITICAL(close.toString());
-		RB_ERROR(resize.toString());
-		while (true) {};
+		while (m_Runing)
+		{
+			m_Window->onUpdate();
+		}
 	}
 	
 }

@@ -27,10 +27,10 @@ namespace Rubber
 		virtual void shutDown();
 
 	private:
-		// make sure the same window is initialized only once
+		// make sure glfw is initialized only once
 		static bool s_GLFWInitialized;
 	    // our window object
-		GLFWwindow* window;
+		GLFWwindow* m_Window;
 		// group our data into a sturct
 		struct WindowInfo
 		{

@@ -16,11 +16,11 @@
 // define a macro that sets a bit to 1.e.g BIT(1) = 0000 0001
 #define BIT(x) (1 << x)
 
-// define assert macros, when !x, log and debugbreak
 
-#ifdef RB_ENABLE_ASSERT
-    #define RB_ASSERT(x,...)  do{ if(!x) {ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)
-    #define RB_CORE_ASSERT(x, ... )  do{if (!x) {RB_ERROR("Assertion Failed: {0}", __VA_AGRS__);__debugbreak();}} while (0)
+// define assert macros, when !x, log and debugbreak
+#ifdef RB_ENABLE_ASSERT  
+   #define RB_ASSERT(x,...)  do{ if(!(x)) {ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)  
+   #define RB_CORE_ASSERT(x,...)  do{if (!(x)) {RB_ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)
 #else
     #define RB_ASSERT(x,...)  
     #define RB_CORE_ASSERT(x, ...)  
