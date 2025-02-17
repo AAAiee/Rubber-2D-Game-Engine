@@ -1,7 +1,7 @@
 #pragma once
 #include <pch.h>
-#include <Rubber/Core.h>
-#include <Rubber/Event/Event.h>
+#include "Rubber/Core.h"
+#include "Rubber/Event/Event.h"
 namespace Rubber
 {
 
@@ -11,7 +11,7 @@ namespace Rubber
 		unsigned int width;
 		unsigned int height;
 
-		WindowProps(const std::string& title, unsigned int width, unsigned int height)
+		WindowProps(const std::string& title = "Rubber Engine", unsigned int width = 1280, unsigned int height = 720)
 			:title(title), width(width), height(height)
 		{
 
@@ -38,6 +38,6 @@ namespace Rubber
 
 
 		//create a window depends on the different platform
-		static Window* create(const WindowProps&  = WindowProps())
+		static Window* create(const WindowProps & = WindowProps());
 	};
 }

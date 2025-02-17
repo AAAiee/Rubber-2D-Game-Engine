@@ -5,11 +5,14 @@ project "Engine"
    staticruntime "off"
 
    files { "Source/**.h", "Source/**.cpp" }
+   IncludeDir = {}
+   IncludeDir["GLFW"] = "RBVendor/glfw/include"
+   IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
 
    includedirs
    {
       "Source",
-      "RBVendor/spdlogs/include",
+      "%{IncludeDir.spdlogs}",
       "%{IncludeDir.GLFW}"
    }
 
