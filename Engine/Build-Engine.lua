@@ -36,7 +36,7 @@ project "Engine"
        defines {"RUBBER_BUILD" }
 
    filter "configurations:Debug"
-       defines { "DEBUG" }
+       defines { "DEBUG", "RB_ENABLE_ASSERT" }
        runtime "Debug"
        symbols "On"
 
