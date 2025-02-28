@@ -4,44 +4,27 @@
 namespace Rubber
 {
 	/**
-  * @class MouseMoveEvent
-  * @brief Event class for mouse movement.
-  */
+	* @brief MouseMoveEvent class that represents the mouse move event
+	* fields : x The x position of the mouse
+	*          y The y position of the mouse
+	*/
 	class RB_API MouseMoveEvent : public Event
 	{
 	public:
-		/**
-   * @brief Constructor for MouseMoveEvent.
-   * @param x The x-coordinate of the mouse.
-   * @param y The y-coordinate of the mouse.
-   */
      MouseMoveEvent(float x, float y)
 			:m_MouseX(x), m_MouseY(y) {
 		}
 
-		/**
-   * @brief Gets the x-coordinate of the mouse.
-   * @return The x-coordinate.
-   */
 		inline float getX() const { return m_MouseX; }
 
-		/**
-   * @brief Gets the y-coordinate of the mouse.
-   * @return The y-coordinate.
-   */
 		inline float getY() const { return m_MouseY; }
 
-		/**
-   * @brief Converts the event data to a string.
-   * @return A string representation of the event.
-   */
 		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "Mouse moved to x: " << getX() << " y: " << getY();
 			return ss.str();
 		}
-
 		EVENT_CATEGORY(toUnderType(EventCategory::MOUSE) | toUnderType(EventCategory::INPUT))
 		EVENT_TYPE(EventType::MouseMoved)
 
@@ -50,37 +33,22 @@ namespace Rubber
 	};
 
 	/**
-  * @class MouseScrolledEvent
-  * @brief Event class for mouse scrolling.
-  */
+	* @brief MouseScrolledEvent class that represents the mouse scrolled event
+	* fields : xOffset The x offset of the mouse scroll
+	*		   yOffset The y offset of the mouse scroll
+	* 
+	**/
 	class RB_API MouseScrolledEvent : public Event
 	{
 	public:
-		/**
-   * @brief Constructor for MouseScrolledEvent.
-   * @param xOffset The horizontal scroll offset.
-   * @param yOffset The vertical scroll offset.
-   */
 		MouseScrolledEvent(float xOffset, float yOffset)
 			:m_xOffset(xOffset), m_yOffset(yOffset) {
 		}
 
-		/**
-   * @brief Gets the horizontal scroll offset.
-   * @return The horizontal scroll offset.
-   */
 		inline float getXOffset() const { return m_xOffset; }
 
-		/**
-   * @brief Gets the vertical scroll offset.
-   * @return The vertical scroll offset.
-   */
 		inline float getYOffset() const { return m_yOffset; }
 
-		/**
-   * @brief Converts the event data to a string.
-   * @return A string representation of the event.
-   */
 		std::string toString() const override
 		{
 			std::stringstream ss;
@@ -96,25 +64,17 @@ namespace Rubber
 	};
 
 	/**
-  * @class MouseButtonEvent
-  * @brief Base class for mouse button events.
-  */
+	* @brief MouseButtonEvent class that represents the mouse button event
+	* Base class for MousePressedEvent and MouseReleasedEvent
+	* fields : button The button of the mouse
+	**/
 	class RB_API MouseButtonEvent : public Event
 	{
 	public:
 		EVENT_CATEGORY(toUnderType(EventCategory::MOUSE_BUTTON) | toUnderType(EventCategory::INPUT))
-
-		/**
-   * @brief Gets the mouse button associated with the event.
-   * @return The mouse button.
-   */
 		inline int getButton() const { return m_Button; }
 
 	protected:
-		/**
-   * @brief Constructor for MouseButtonEvent.
-   * @param button The mouse button.
-   */
 		MouseButtonEvent(int button)
 			:m_Button(button) { }
 
@@ -123,25 +83,16 @@ namespace Rubber
 	};
 
 	/**
-  * @class MousePressedEvent
-  * @brief Event class for mouse button press.
-  */
+	* @brief MousePressedEvent class that represents the mouse pressed event 
+	**/
 	class RB_API MousePressedEvent : public MouseButtonEvent
 	{
 	public:
-		/**
-   * @brief Constructor for MousePressedEvent.
-   * @param button The mouse button that was pressed.
-   */
 		MousePressedEvent(int button)
 			:MouseButtonEvent(button){}
 		
 		EVENT_TYPE(EventType::MouseButtonPressed)
 	
-		/**
-   * @brief Converts the event data to a string.
-   * @return A string representation of the event.
-   */
 		std::string toString() const override
 		{
 			std::stringstream ss;
@@ -151,25 +102,16 @@ namespace Rubber
 	};
 
 	/**
-  * @class MouseReleasedEvent
-  * @brief Event class for mouse button release.
-  */
+	* @brief MouseReleasedEvent class that represents the mouse released event
+	**/
 	class RB_API MouseReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		/**
-   * @brief Constructor for MouseReleasedEvent.
-   * @param button The mouse button that was released.
-   */
 		MouseReleasedEvent(int button)
 			:MouseButtonEvent(button){}
 		
 		EVENT_TYPE(EventType::MouseButtonPressed)
 	
-		/**
-   * @brief Converts the event data to a string.
-   * @return A string representation of the event.
-   */
 		std::string toString() const override
 		{
 			std::stringstream ss;

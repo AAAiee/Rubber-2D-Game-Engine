@@ -14,7 +14,9 @@ namespace Rubber
 		virtual ~Application();
 		void run();
 	private:
+		// a pointer to the window object
 		std::unique_ptr<Window> m_Window;
+		// when the application is running
 		bool m_Runing = true;
 	};
 	

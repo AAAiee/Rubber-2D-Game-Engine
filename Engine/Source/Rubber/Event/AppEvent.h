@@ -3,6 +3,12 @@
 
 namespace Rubber
 {
+	/**
+	* @brief WindowResizeEvent class that represents the window resize event
+	* fields : width The width of the window
+	*		   height The height of the window
+	* 
+	**/
 	class RB_API WindowResizeEvent : public Event
 	{
 	public:
@@ -27,6 +33,10 @@ namespace Rubber
 	};
 
 
+	/**
+	* @brief WindowCloseEvent class that represents the window close event
+	* 
+	**/
 	class RB_API WindowCloseEvent : public Event
 	{ 
 	public:

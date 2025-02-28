@@ -5,9 +5,10 @@
 
 namespace Rubber {
 	// false by default, glfw not initialized yet
+	// only want to initialize glfw once
 	bool WindowsWindow::s_GLFWInitialized = false;
 
-	//provide a definition for Window create
+	//provide a definition for Window createWindow
 	std::unique_ptr<Window> Window::create(const WindowProps& props )
 	{
 		return std::make_unique<WindowsWindow>(props);

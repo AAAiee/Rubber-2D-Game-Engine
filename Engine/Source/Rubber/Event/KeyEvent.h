@@ -10,23 +10,12 @@ namespace Rubber
 	class RB_API KeyEvent : public Event
 	{
 	protected:
-	/**
-    * @brief Constructs a KeyEvent with the given keycode.
-    * @param Keycode The keycode of the key event.
-    */
 		KeyEvent(int keyCode)
 			: m_KeyCode(keyCode) { }
 
 	public:
-		/**
-		* @brief Gets the category flags for the key event.
-		*/
 		EVENT_CATEGORY(toUnderType(EventCategory::KEYBOARD) | toUnderType(EventCategory::INPUT))
 
-	   /**
-	   * @brief Gets the keycode of the key event.
-	   * @return The keycode of the key event.
-	   */
 		inline int getKeyCode() const { return m_KeyCode; }
 
 	private:
