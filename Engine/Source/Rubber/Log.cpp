@@ -1,5 +1,4 @@
 #include <pch.h>
-#include "Log.h"
 namespace Rubber
 {
 	void Rubber::Logger::Init()

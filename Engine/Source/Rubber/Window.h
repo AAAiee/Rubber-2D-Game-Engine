@@ -1,5 +1,4 @@
 #pragma once
-#include <pch.h>
 #include "Rubber/Core.h"
 #include "Rubber/Event/Event.h"
 namespace Rubber
@@ -23,7 +22,7 @@ namespace Rubber
 	//base class for all windows on different platforms
 	{
 	public:
-		// define function type for EventCallBack function
+		// define function pointer type for EventCallBack function
 		using EventCallBackFn = std::function<void(Event&)>;
 		//destructor
 		virtual ~Window() {};
