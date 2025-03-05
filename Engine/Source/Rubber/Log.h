@@ -17,8 +17,8 @@ namespace Rubber
 	    Logger& operator =(const Logger&) = delete; 
 		Logger(const Logger&) = delete;
 		static void Init();
-		static std::shared_ptr<spdlog::logger>&  GetCoreLogger();
-		static std::shared_ptr<spdlog::logger>& GetClientLogger();
+		static std::shared_ptr<spdlog::logger>  GetCoreLogger();
+		static std::shared_ptr<spdlog::logger> GetClientLogger();
 
 	private:
 		Logger() = default;

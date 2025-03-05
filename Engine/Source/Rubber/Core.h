@@ -1,5 +1,5 @@
+#include <pch.h>
 #pragma once
-#include  <pch.h>
 
 
 // define macros that controls the flow  
@@ -28,8 +28,12 @@
 
 
 
+#ifndef TO_UNDER_TYPE
+#define TO_UNDER_TYPE
+
 template <typename T>
-constexpr std::underlying_type_t<T> toUnderType(T enumarator)
+inline constexpr std::underlying_type_t<T> toUnderType(T enumarator)
 {
 	return static_cast<std::underlying_type_t<T>> (enumarator);
 }
+#endif

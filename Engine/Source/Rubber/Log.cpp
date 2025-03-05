@@ -1,5 +1,4 @@
 #include <pch.h>
-#include "Log.h"
 namespace Rubber
 {
 	void Rubber::Logger::Init()
@@ -11,13 +10,13 @@ namespace Rubber
 		Get().s_CoreLogger->set_level(spdlog::level::trace);
 	}
 
-	std::shared_ptr<spdlog::logger>& Logger::GetCoreLogger()
+	std::shared_ptr<spdlog::logger> Logger::GetCoreLogger()
 	{
 		return Get().s_CoreLogger;
 	
 	}
 
-	std::shared_ptr<spdlog::logger>& Logger::GetClientLogger()
+	std::shared_ptr<spdlog::logger> Logger::GetClientLogger()
 	{
 		return Get().s_ClientLogger;
 	}
