@@ -1,11 +1,8 @@
 #include <pch.h>
 #include "Application.h"
 #include "Event/KeyEvent.h"
-#include "Event/AppEvent.h"
 #include "Event/MouseEvent.h"
-#include "Rubber/Core.h"
 #include "Platform/Windowswindow.h"
-#include "GLFW/glfw3.h"
 
 // bind event callback  
 #define BIND_EVENT_FN(x)  std::bind(&Application::x, this, std::placeholders::_1)
@@ -29,8 +26,30 @@ namespace Rubber
 		// passed event happening to here
 		RB_INFO("{0}", e.toString());
 		// use a dispatcher to store the event and handle it 
-		EventDispatcher dispacher(e);
-		dispacher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+		
+		// reversely loop through the layerstack and handle event
+		// if a event is handled from the top layer, stop propagation
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->onEvent(e);
+			if (e.isHandled())
+			{
+				break;
+			}
+		}
+	}
+
+	void Application::pushLayer(Layer* layer)
+	{
+		m_LayerStack.pushLayer(layer);
+	}
+
+
+	void Application::pushOverlay(Layer* layer)
+	{
+		m_LayerStack.pushOverlay(layer);
 	}
 
 	void Application::run()
@@ -39,6 +58,12 @@ namespace Rubber
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+			// go through the layerstack
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->onUpdate();
+			}
+
 			m_Window->onUpdate();
 		}
 	}

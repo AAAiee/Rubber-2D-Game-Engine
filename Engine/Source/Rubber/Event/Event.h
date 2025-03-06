@@ -1,7 +1,15 @@
+#include <pch.h>
 #pragma once
-#include <Rubber/Core.h>
+#include "Rubber/Core.h"
 
 namespace Rubber {
+
+    template <typename T>
+    inline constexpr std::underlying_type_t<T> toUnderType(T enumarator)
+    {
+        return static_cast<std::underlying_type_t<T>> (enumarator);
+    }
+
     /**
      * @brief A EventType enum class that represents all kinds of events
 	 * each event type is a unique value that can be used to identify the type of the event
@@ -89,6 +97,11 @@ namespace Rubber {
         inline bool isInCategory(const EventCategory& category) const 
         {
             return (toUnderType(category) & getEventCategory());
+        }
+
+        inline bool isHandled() const 
+        {
+            return m_isHandled;
         }
 
     private:

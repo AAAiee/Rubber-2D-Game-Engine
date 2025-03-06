@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Rubber/Core.h>
 #include <Rubber/Event/Event.h>
 
@@ -21,9 +20,9 @@ namespace Rubber
 			return m_DebugName;
 		}
 
-    private:
+	private:
 
 		std::string m_DebugName;
 	};
-		
+
 }

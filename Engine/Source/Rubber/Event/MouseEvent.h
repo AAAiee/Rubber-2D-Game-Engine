@@ -1,6 +1,5 @@
 #pragma once
-
-class Event;
+#include "Rubber/Event/Event.h"
 namespace Rubber
 {
 	/**

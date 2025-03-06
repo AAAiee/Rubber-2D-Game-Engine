@@ -1,4 +1,3 @@
-#include <pch.h>
 #pragma once
 
 
@@ -28,12 +27,3 @@
 
 
 
-#ifndef TO_UNDER_TYPE
-#define TO_UNDER_TYPE
-
-template <typename T>
-inline constexpr std::underlying_type_t<T> toUnderType(T enumarator)
-{
-	return static_cast<std::underlying_type_t<T>> (enumarator);
-}
-#endif

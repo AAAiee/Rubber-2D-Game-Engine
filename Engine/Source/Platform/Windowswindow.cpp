@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WindowsWindow.h"
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include "Rubber/Event/AppEvent.h"
 #include "Rubber/Event/KeyEvent.h"
 #include "Rubber/Event/MouseEvent.h"

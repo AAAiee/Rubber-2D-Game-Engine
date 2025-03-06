@@ -4,6 +4,7 @@
 // include the application base class
 #include "Rubber/Application.h"
 
+#include "Rubber/Layer.h"
 // include the logger
 #include "Rubber/Log.h"
 
