@@ -1,8 +1,15 @@
 #include <pch.h>
 #include "Application.h"
+
+#include "Rubber/Layer.h"
+
+#include "Rubber/Event/AppEvent.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
+
 #include "Platform/Windowswindow.h"
+
+#include <glad/glad.h>
 
 // bind event callback  
 #define BIND_EVENT_FN(x)  std::bind(&Application::x, this, std::placeholders::_1)
@@ -14,6 +21,7 @@ namespace Rubber
 		// create a window when an application instance is created
 		m_Window = Window::create();
 		m_Window->setEventCallBack(BIND_EVENT_FN(onEvent));
+
 	}
 	Application::~Application()
 	{
@@ -41,12 +49,14 @@ namespace Rubber
 		}
 	}
 
+	//delegate the task to m_LayerStack
 	void Application::pushLayer(Layer* layer)
 	{
 		m_LayerStack.pushLayer(layer);
 	}
 
 
+	// delegate the task to m_LayerStack
 	void Application::pushOverlay(Layer* layer)
 	{
 		m_LayerStack.pushOverlay(layer);
@@ -58,12 +68,13 @@ namespace Rubber
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
-			// go through the layerstack
+			//update all layers;
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->onUpdate();
 			}
 
+			// update the window
 			m_Window->onUpdate();
 		}
 	}

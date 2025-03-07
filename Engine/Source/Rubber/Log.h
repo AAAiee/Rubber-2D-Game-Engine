@@ -36,8 +36,8 @@ namespace Rubber
 #define RB_CRITICAL(...)           ::Rubber::Logger::GetCoreLogger()->critical( __VA_ARGS__ );
 
 // Define Log macros for the Application.
-#define TRACE(...)                 ::Rubber::Logger::GetClientLogger()->trace( __VA_ARGS__ );
-#define INFO(...)		           ::Rubber::Logger::GetClienTLogger()->info( __VA_ARGS__ );
-#define WARN(...)                  ::Rubber::Logger::GetClientLogger()->warn( __VA_ARGS__ );
-#define ERROR(...)		           ::Rubber::Logger::GetClientLogger()->error( __VA_ARGS__ );
-#define CRITICAL(...)              ::Rubber::Logger::GetClientLogger()->critical( __VA_ARGS__);
+#define APP_TRACE(...)                 ::Rubber::Logger::GetClientLogger()->trace( __VA_ARGS__ );
+#define APP_INFO(...)		           ::Rubber::Logger::GetClientLogger()->info( __VA_ARGS__ );
+#define APP_WARN(...)                  ::Rubber::Logger::GetClientLogger()->warn( __VA_ARGS__ );
+#define APP_ERROR(...)		           ::Rubber::Logger::GetClientLogger()->error( __VA_ARGS__ );
+#define APP_CRITICAL(...)              ::Rubber::Logger::GetClientLogger()->critical( __VA_ARGS__);

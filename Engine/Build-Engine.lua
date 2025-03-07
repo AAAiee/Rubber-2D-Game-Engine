@@ -7,18 +7,21 @@ project "Engine"
    files { "Source/**.h", "Source/**.cpp" }
    IncludeDir = {}
    IncludeDir["GLFW"] = "RBVendor/glfw/include"
+   IncludeDir["Glad"] = "RBVendor/glad/include"
    IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
 
    includedirs
    {
       "Source",
       "%{IncludeDir.spdlogs}",
-      "%{IncludeDir.GLFW}"
+      "%{IncludeDir.GLFW}",
+      "%{IncludeDir.Glad}"
    }
 
    links
    {
         "GLFW",
+        "Glad",
         "opengl32.lib"
    }
 
@@ -33,7 +36,7 @@ project "Engine"
 }
    filter "system:windows"
        systemversion "latest"
-       defines {"RUBBER_BUILD" }
+       defines {"RUBBER_BUILD", "GLFW_INCLUDE_NONE" }
 
    filter "configurations:Debug"
        defines { "DEBUG", "RB_ENABLE_ASSERT" }

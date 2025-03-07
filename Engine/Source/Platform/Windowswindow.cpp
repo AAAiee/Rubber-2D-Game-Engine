@@ -1,9 +1,12 @@
 #include "pch.h"
+#include <glad/glad.h>
+
 #include "WindowsWindow.h"
-#include <GLFW/glfw3.h>
+
 #include "Rubber/Event/AppEvent.h"
 #include "Rubber/Event/KeyEvent.h"
 #include "Rubber/Event/MouseEvent.h"
+
 
 namespace Rubber {
 	// false by default, glfw not initialized yet
@@ -83,6 +86,11 @@ namespace Rubber {
 		m_Window = glfwCreateWindow(m_Data.width, m_Data.height, m_Data.title.c_str(), nullptr, nullptr);
 		// set the context to the current window
 		glfwMakeContextCurrent(m_Window);
+
+		// load glad 
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		RB_CORE_ASSERT(status, "Fail to initialize Glad!");
+
 		// set the user pointer to the data, so later we can access windows info and EventCallBack
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		// set vsync to true on default

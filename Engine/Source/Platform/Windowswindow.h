@@ -1,6 +1,7 @@
 #pragma once
 #include "Rubber/Window.h"
-#include <GlFW/glfw3.h>
+
+#include <GLFW/glfw3.h>
 namespace Rubber
 {
 	class WindowsWindow :public Window

@@ -1,4 +1,3 @@
-#include <pch.h>
 #pragma once
 #ifdef WINDOW_64_API
 namespace Rubber

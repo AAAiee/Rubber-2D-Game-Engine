@@ -1,11 +1,13 @@
 #pragma once
 #include <Rubber/Core.h>
-#include "Rubber/Window.h"
-#include "Rubber/Event/AppEvent.h"
+#include <memory>
 #include "Rubber/LayerStack.h"
 
 namespace Rubber
 {
+	class Window;
+	class Event;
+	class WindowCloseEvent;
 	/* Application
 	*  this class controls the application 
 	*/

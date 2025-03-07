@@ -1,9 +1,10 @@
 #pragma once
 #include <Rubber/Core.h>
-#include <Rubber/Event/Event.h>
+#include <string>
 
 namespace Rubber
 {
+	class Event;
 	class RB_API Layer
 	{
 	public:
@@ -21,7 +22,7 @@ namespace Rubber
 		}
 
 	private:
-
+		// name for debug purpose
 		std::string m_DebugName;
 	};
 

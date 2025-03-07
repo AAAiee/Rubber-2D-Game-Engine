@@ -1,5 +1,6 @@
 #include <pch.h>
 #include "LayerStack.h"
+#include "Rubber/Layer.h"
 
 Rubber::LayerStack::LayerStack()
 	:m_LayerInsertIndex(0)
@@ -42,4 +43,13 @@ void Rubber::LayerStack::popOverlay(Layer* overlay)
 	{
 		m_Layers.erase(it);
 	}
+}
+
+// implement begin and end iterator to support traversing the layers
+std::vector<Rubber::Layer*>::iterator Rubber::LayerStack::begin() {
+	return m_Layers.begin();
+}
+
+std::vector<Rubber::Layer*>::iterator Rubber::LayerStack::end() {
+	return m_Layers.end();
 }

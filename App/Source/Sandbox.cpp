@@ -10,12 +10,12 @@ public:
 
 	void onUpdate() override
 	{
-		RB_INFO("ExampleLayer::Update");
+		APP_INFO("ExampleLayer::Update");
 	}
 
 	void onEvent(Rubber::Event& event) override
 	{
-		RB_TRACE("{0}", event.toString());
+	    APP_TRACE("layer: {0}", event.toString());
 	}
 
 };

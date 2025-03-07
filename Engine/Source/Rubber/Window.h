@@ -1,8 +1,8 @@
 #pragma once
 #include "Rubber/Core.h"
-#include "Rubber/Event/Event.h"
 namespace Rubber
 {
+	class Event;
 
 	struct WindowProps
 	// a sturct to organize window properties, with default value being set
