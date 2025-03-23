@@ -4,3 +4,6 @@
 [submodule "Engine/RBVendor/glfw"]
 	path = Engine/RBVendor/glfw
 	url = https://github.com/AAAiee/glfw_modified.git
+[submodule "Engine/RBVendor/imGui"]
+	path = Engine/RBVendor/imGui
+	url = https://github.com/AAAiee/imgui.git

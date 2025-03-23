@@ -16,8 +16,14 @@
 
 namespace Rubber
 {
+	Application* Application::s_Instance = nullptr;
+
+
 	Application::Application()
 	{
+		RB_CORE_ASSERT(!s_Instance, "Applicaiton instance has already been constructed");
+		s_Instance = this;
+
 		// create a window when an application instance is created
 		m_Window = Window::create();
 		m_Window->setEventCallBack(BIND_EVENT_FN(onEvent));
@@ -27,6 +33,16 @@ namespace Rubber
 	{
 
 	}
+
+	Application& Application::getInstance() {
+		return  *s_Instance;
+	}
+
+	Window& Application::getWindow()
+	{
+		return *m_Window;
+	}
+
 
 	void Application::onEvent(Event& e)
 	{
@@ -53,6 +69,7 @@ namespace Rubber
 	void Application::pushLayer(Layer* layer)
 	{
 		m_LayerStack.pushLayer(layer);
+		layer->onAttach();
 	}
 
 
@@ -60,6 +77,7 @@ namespace Rubber
 	void Application::pushOverlay(Layer* layer)
 	{
 		m_LayerStack.pushOverlay(layer);
+		layer->onAttach();
 	}
 
 	void Application::run()

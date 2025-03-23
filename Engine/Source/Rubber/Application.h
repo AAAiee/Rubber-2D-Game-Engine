@@ -21,6 +21,10 @@ namespace Rubber
 		void onEvent(Event& event);
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
+
+        static Application& getInstance();
+
+		Window& getWindow();
 	private:
 		// a pointer to the window object
 		std::unique_ptr<Window> m_Window;
@@ -28,6 +32,7 @@ namespace Rubber
 		bool m_Runing = true;
 		bool onWindowClose(WindowCloseEvent& event);
 		LayerStack m_LayerStack;
+		static Application* s_Instance;
 	};
 	
 }

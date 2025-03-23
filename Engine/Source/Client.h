@@ -8,6 +8,8 @@
 // include the logger
 #include "Rubber/Log.h"
 
+#include "Rubber/imGui/ImGuiLayer.h"
+
 //include the EntryPoint!!
 #include "Rubber/EntryPoint.h"
 

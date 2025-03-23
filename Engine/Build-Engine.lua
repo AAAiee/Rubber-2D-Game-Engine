@@ -9,19 +9,22 @@ project "Engine"
    IncludeDir["GLFW"] = "RBVendor/glfw/include"
    IncludeDir["Glad"] = "RBVendor/glad/include"
    IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
+   IncludeDir["imGui"] = "RBVendor/imGui"
 
    includedirs
    {
       "Source",
       "%{IncludeDir.spdlogs}",
       "%{IncludeDir.GLFW}",
-      "%{IncludeDir.Glad}"
+      "%{IncludeDir.Glad}",
+      "%{IncludeDir.imGui}"
    }
 
    links
    {
         "GLFW",
         "Glad",
+        "imGui",
         "opengl32.lib"
    }
 
