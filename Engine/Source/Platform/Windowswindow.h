@@ -15,6 +15,9 @@ namespace Rubber
 		void onUpdate() override;
 		inline unsigned int getWidth() const override { return m_Data.width; }
 		inline unsigned int getHeight() const override { return m_Data.height; }
+		inline GLFWwindow* getWindow() const {
+			return m_Window;
+		}
 		
 		// Window Attributes
 		inline void setEventCallBack (const EventCallBackFn& callback) override {

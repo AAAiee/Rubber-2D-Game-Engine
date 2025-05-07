@@ -1,4 +1,5 @@
 #include <pch.h>
+#include "Rubber/Core.h"
 #include "Application.h"
 
 #include "Rubber/Layer.h"
@@ -12,12 +13,9 @@
 #include <glad/glad.h>
 
 // bind event callback  
-#define BIND_EVENT_FN(x)  std::bind(&Application::x, this, std::placeholders::_1)
-
 namespace Rubber
 {
 	Application* Application::s_Instance = nullptr;
-
 
 	Application::Application()
 	{
@@ -26,8 +24,13 @@ namespace Rubber
 
 		// create a window when an application instance is created
 		m_Window = Window::create();
-		m_Window->setEventCallBack(BIND_EVENT_FN(onEvent));
-
+		
+		// Event callback function, when a window event happens, the eventcallbackfn automatically
+		// passed event happening to here
+		m_Window->setEventCallBack(
+			[this](Event& e) {
+				this->onEvent(e);
+			});
 	}
 	Application::~Application()
 	{
@@ -38,7 +41,7 @@ namespace Rubber
 		return  *s_Instance;
 	}
 
-	Window& Application::getWindow()
+	Window& Application::getWindow() const
 	{
 		return *m_Window;
 	}
@@ -51,7 +54,7 @@ namespace Rubber
 		RB_INFO("{0}", e.toString());
 		// use a dispatcher to store the event and handle it 
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return this->onWindowClose(e);});
 		
 		// reversely loop through the layerstack and handle event
 		// if a event is handled from the top layer, stop propagation
@@ -84,6 +87,7 @@ namespace Rubber
 	{
 		while (m_Runing)
 		{
+			m_Window->onUpdate();
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			//update all layers;
@@ -92,8 +96,6 @@ namespace Rubber
 				layer->onUpdate();
 			}
 
-			// update the window
-			m_Window->onUpdate();
 		}
 	}
 

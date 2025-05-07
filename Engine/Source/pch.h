@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+* Precompiled Header file that includes common header files used in 
+* development.
+*/
+
 // C++ Standard Library
 #include <iostream>
 #include <memory>
@@ -17,6 +22,7 @@
 #include <map>
 #include <set>
 
+// Windows
 #ifdef WINDOW_64_API
 #include <Windows.h>
 #endif // #ifdef WINDOW_64_API

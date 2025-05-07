@@ -45,7 +45,7 @@ void Rubber::LayerStack::popOverlay(Layer* overlay)
 	}
 }
 
-// implement begin and end iterator to support traversing the layers
+// implement begin and end iterator to support enforced loop reference 
 std::vector<Rubber::Layer*>::iterator Rubber::LayerStack::begin() {
 	return m_Layers.begin();
 }

@@ -2,6 +2,7 @@
 
 
 // define macros that controls the flow  
+// of the program
 #ifdef WINDOW_64_API
 	#ifdef RUBBER_BUILD
 		#define RB_API  __declspec(dllexport)
@@ -26,4 +27,11 @@
 #endif
 
 
+//// define a macro that binds a function to the class instance
+//#define RB_BIND_FUNC(fn)  std::bind(&fn, this, std::placeholders::_1)
 
+
+
+
+
+	

@@ -24,7 +24,7 @@ namespace Rubber
 
         static Application& getInstance();
 
-		Window& getWindow();
+		Window& getWindow() const;
 	private:
 		// a pointer to the window object
 		std::unique_ptr<Window> m_Window;
