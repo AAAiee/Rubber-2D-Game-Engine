@@ -22,11 +22,11 @@ namespace Rubber
 		RB_CORE_ASSERT(!s_Instance, "Applicaiton instance has already been constructed");
 		s_Instance = this;
 
-		// create a window when an application instance is created
+		// Create a window when an application instance is created
 		m_Window = Window::create();
 		
-		// Event callback function, when a window event happens, the eventcallbackfn automatically
-		// passed event happening to here
+		// When a window event happens, the eventcallbackfn automatically
+		// passed event happening to onEvent
 		m_Window->setEventCallBack(
 			[this](Event& e) {
 				this->onEvent(e);
@@ -49,9 +49,8 @@ namespace Rubber
 
 	void Application::onEvent(Event& e)
 	{
-		// when a window event happens, the eventcallbackfn automatically 
-		// passed event happening to here
 		RB_INFO("{0}", e.toString());
+
 		// use a dispatcher to store the event and handle it 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return this->onWindowClose(e);});
@@ -68,7 +67,7 @@ namespace Rubber
 		}
 	}
 
-	//delegate the task to m_LayerStack
+	//delegate the task to m_LayerStack, also immediately attach the layer
 	void Application::pushLayer(Layer* layer)
 	{
 		m_LayerStack.pushLayer(layer);
@@ -76,7 +75,7 @@ namespace Rubber
 	}
 
 
-	// delegate the task to m_LayerStack
+	// delegate the task to m_LayerStack, also immediately attach the layer
 	void Application::pushOverlay(Layer* layer)
 	{
 		m_LayerStack.pushOverlay(layer);
@@ -95,7 +94,6 @@ namespace Rubber
 			{
 				layer->onUpdate();
 			}
-
 		}
 	}
 

@@ -52,17 +52,21 @@ void Rubber::ImGuiLayer::onUpdate()
 	// start a new ImGui frame
 	ImGuiIO& io = ImGui::GetIO();
 
+	// get the current time and set the delta time
 	float time = (float)glfwGetTime();
 	io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
 	m_Time = time;
 
+	// begin a new ImGui frame
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
 
+	// show the ImGui demo window
 	static bool showDemo = true;
 	ImGui::ShowDemoWindow(&showDemo); 
 
+	// show the ImGui about window
 	ImGui::Render(); 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

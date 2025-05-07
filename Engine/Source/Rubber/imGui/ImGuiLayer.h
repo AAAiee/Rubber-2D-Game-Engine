@@ -11,7 +11,7 @@ namespace Rubber
 {
 	/**
 	* Dear ImGui Layer, currently implementation 
-	* depends on glfw and opengl.
+	* depends on GLfW and OpenGL.
 	*/
 	class RB_API ImGuiLayer :public Layer
 	{

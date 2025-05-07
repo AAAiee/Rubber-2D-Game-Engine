@@ -24,6 +24,7 @@ namespace Rubber
 	public:
 		// define function pointer type for EventCallBack function
 		using EventCallBackFn = std::function<void(Event&)>;
+
 		//destructor
 		virtual ~Window() {};
 

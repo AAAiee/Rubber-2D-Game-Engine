@@ -11,7 +11,6 @@ namespace Rubber
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer();
 
-
 		virtual void onAttach() {};
 		virtual void onDetach() {};
 		virtual void onUpdate() {};

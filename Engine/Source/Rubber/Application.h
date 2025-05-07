@@ -24,15 +24,23 @@ namespace Rubber
 
         static Application& getInstance();
 
+		// get the window object
 		Window& getWindow() const;
 	private:
 		// a pointer to the window object
 		std::unique_ptr<Window> m_Window;
 		// Application's running status
 		bool m_Runing = true;
-		bool onWindowClose(WindowCloseEvent& event);
+
+		// a layerStack to manage all the layers
 		LayerStack m_LayerStack;
+
+		// a static instance of the application
 		static Application* s_Instance;
+	
+	private:
+		// handling event delegate
+		bool onWindowClose(WindowCloseEvent& event);
 	};
 	
 }
