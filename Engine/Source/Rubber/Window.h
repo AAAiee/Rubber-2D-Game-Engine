@@ -33,6 +33,7 @@ namespace Rubber
 		//Window propeties
 		virtual unsigned int getWidth() const = 0;
 		virtual unsigned int getHeight() const = 0;
+		virtual void* getNativeWindow() const = 0;
 
 		//Window Attributes 
 		virtual void setEventCallBack(const EventCallBackFn& callback) = 0;

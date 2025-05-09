@@ -8,23 +8,18 @@
 
 #include "Rubber/Application.h"
 #include "Rubber/Window.h"
-#include "Platform/Windowswindow.h"
+#include "Platform/Windows/Windowswindow.h"
 
 
 Rubber::ImGuiLayer::ImGuiLayer()
+	:m_Time(0.0f)
 {
-	// get the window pointer from the application
-    auto win = dynamic_cast<WindowsWindow*>(&Application::getInstance().getWindow());
-	// check if the window can be casted to WindowsWindow, if not 
-	// throw an assertion error
-	RB_ASSERT(win, "Application window is not a WindowsWindow");
 
-	// get the window pointer from the WindowsWindow
-	m_glfwWindow = win->getWindow();
 }
 
 Rubber::ImGuiLayer::~ImGuiLayer()
 {
+	onDetach();
 }
 
 void Rubber::ImGuiLayer::onAttach()
@@ -39,12 +34,14 @@ void Rubber::ImGuiLayer::onAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	// Init the ImGui GLFW and OpenGL3 bindings
-	ImGui_ImplGlfw_InitForOpenGL(m_glfwWindow, true);
+	ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow()), true);
 	ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void Rubber::ImGuiLayer::onDetach()
-{
+void Rubber::ImGuiLayer::onDetach(){
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void Rubber::ImGuiLayer::onUpdate()

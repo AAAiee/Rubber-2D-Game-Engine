@@ -16,16 +16,19 @@ namespace Rubber
 	public:
 		Application();
 		virtual ~Application();
+
 		void run();
-		// Called when windows event callback are triggered
 		void onEvent(Event& event);
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
 
-        static Application& getInstance();
-
 		// get the window object
-		Window& getWindow() const;
+		static Window& getWindow();
+	private:
+		Window& getWindowImpl() {
+			return *m_Window;
+		}
+
 	private:
 		// a pointer to the window object
 		std::unique_ptr<Window> m_Window;

@@ -43,6 +43,7 @@ namespace Rubber {
 		glfwSwapBuffers(m_Window);
 	}
 
+
 	// set the vsync
 	void Rubber::WindowsWindow::setVsync(bool enabled)
 	{
@@ -186,7 +187,6 @@ namespace Rubber {
 			});
 	}
 
-				
 
 	void Rubber::WindowsWindow::shutDown()
 	{

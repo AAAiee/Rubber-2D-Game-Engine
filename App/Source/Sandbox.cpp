@@ -15,7 +15,7 @@ public:
 
 	void onEvent(Rubber::Event& event) override
 	{
-	    APP_TRACE("layer: {0}", event.toString());
+	    APP_TRACE("app layer: {0}", event.toString());
 	}
 
 };

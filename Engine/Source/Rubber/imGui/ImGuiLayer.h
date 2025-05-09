@@ -41,8 +41,6 @@ namespace Rubber
 	private:
 		float m_Time = 0;
 
-		// glfw window where imgui will be rendered on. 
-		GLFWwindow* m_glfwWindow = nullptr;
 	};
 }
 

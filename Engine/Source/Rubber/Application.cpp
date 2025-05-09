@@ -1,5 +1,4 @@
 #include <pch.h>
-#include "Rubber/Core.h"
 #include "Application.h"
 
 #include "Rubber/Layer.h"
@@ -8,9 +7,10 @@
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
 
-#include "Platform/Windowswindow.h"
+#include "Platform/Windows/Windowswindow.h"
 
 #include <glad/glad.h>
+#include "Rubber/Input/Input.h"
 
 // bind event callback  
 namespace Rubber
@@ -37,13 +37,9 @@ namespace Rubber
 
 	}
 
-	Application& Application::getInstance() {
-		return  *s_Instance;
-	}
-
-	Window& Application::getWindow() const
+	Window& Application::getWindow()
 	{
-		return *m_Window;
+		return s_Instance->getWindowImpl();
 	}
 
 
@@ -86,7 +82,6 @@ namespace Rubber
 	{
 		while (m_Runing)
 		{
-			m_Window->onUpdate();
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			//update all layers;
@@ -94,6 +89,12 @@ namespace Rubber
 			{
 				layer->onUpdate();
 			}
+
+			// simple example to show input now working.
+			auto [x, y ] = Input::getMousePosition();
+			RB_INFO("Mouse Position: {0} {1}", x, y);
+			
+			m_Window->onUpdate();
 		}
 	}
 
