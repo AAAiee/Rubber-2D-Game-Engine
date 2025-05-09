@@ -17,3 +17,9 @@
 
 // include the event system
 #include "Rubber/Event/Event.h"
+
+// include the Input System and KeyCode
+#include "Rubber/Input/Input.h"
+#include "Rubber/Input/KeyCodes.h"
+#include "Rubber/Input/MouseCodes.h"
+

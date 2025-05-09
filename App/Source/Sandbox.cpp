@@ -1,4 +1,5 @@
 #include<Client.h>
+#include "glm/glm.hpp"
 
 class ExampleLayer : public Rubber::Layer
 {
@@ -10,12 +11,16 @@ public:
 
 	void onUpdate() override
 	{
-		APP_INFO("ExampleLayer::Update");
+
 	}
 
 	void onEvent(Rubber::Event& event) override
 	{
-	    APP_TRACE("app layer: {0}", event.toString());
+		if (event.getEventType() == Rubber::EventType::KeyboardPressed)
+		{
+			Rubber::KeyPressedEvent& e = (Rubber::KeyPressedEvent&)event;
+			RB_INFO("pressing tab key? :{0} ", e.getKeyCode() == RB_KEY_TAB);
+		}
 	}
 
 };

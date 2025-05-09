@@ -10,6 +10,7 @@ project "Engine"
    IncludeDir["Glad"] = "RBVendor/glad/include"
    IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
    IncludeDir["imGui"] = "RBVendor/imGui"
+   IncludeDir["glm"] = "RBVendor/glm"
 
    includedirs
    {
@@ -17,7 +18,8 @@ project "Engine"
       "%{IncludeDir.spdlogs}",
       "%{IncludeDir.GLFW}",
       "%{IncludeDir.Glad}",
-      "%{IncludeDir.imGui}"
+      "%{IncludeDir.imGui}",
+      "%{IncludeDir.glm}"
    }
 
    links

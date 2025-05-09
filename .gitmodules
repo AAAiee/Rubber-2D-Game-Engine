@@ -7,3 +7,6 @@
 [submodule "Engine/RBVendor/imGui"]
 	path = Engine/RBVendor/imGui
 	url = https://github.com/AAAiee/imgui.git
+[submodule "Engine/RBVendor/glm"]
+	path = Engine/RBVendor/glm
+	url = https://github.com/g-truc/glm.git
