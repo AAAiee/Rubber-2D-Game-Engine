@@ -10,13 +10,13 @@ namespace Rubber {
    bool WindowInput::isKeyPressedImpl(int keyCode){
 	   auto win =static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
 	   bool state = glfwGetKey(win, keyCode);
-	   return state;
+	   return state == GLFW_PRESS;
    }  
 
    bool WindowInput::isMouseButtonPressedImpl(int button) {
 	   auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
-	   bool state = glfwGetKey(win, button);
-	   return state;
+	   bool state = glfwGetMouseButton(win, button);
+	   return state == GLFW_PRESS;
    }  
 
    std::pair<float, float> WindowInput::getMousePositionImpl(){  

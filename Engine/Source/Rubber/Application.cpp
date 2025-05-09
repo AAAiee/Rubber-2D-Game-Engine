@@ -92,8 +92,12 @@ namespace Rubber
 
 			// simple example to show input now working.
 			auto [x, y ] = Input::getMousePosition();
-			RB_INFO("Mouse Position: {0} {1}", x, y);
-			
+			RB_WARN("Mouse Position: {0} {1}", x, y);
+			auto pressed = Input::isKeyPressed(GLFW_KEY_W);
+			auto mousePressed = Input::isMouseButtonPressed(2);
+			RB_WARN("Mouse Position: {0} {1}", x, y);
+			RB_WARN("Key O is pressed? : {0}", pressed);
+			RB_WARN("Mouse Button 1 is pressed? : {0}", mousePressed);
 			m_Window->onUpdate();
 		}
 	}
