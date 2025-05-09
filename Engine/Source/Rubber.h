@@ -1,19 +1,19 @@
 #pragma once
 // this is for client-use only
 // include the application base class
-#include "Rubber/Application.h"
+#include "Rubber/Core/Application.h"
 
 // include the Layer System
-#include "Rubber/Layer.h"
+#include "Rubber/Layer/Layer.h"
 
 // include the logger
-#include "Rubber/Log.h"
+#include "Rubber/Log/Log.h"
 
 // include the ImGui Layer 
 #include "Rubber/imGui/ImGuiLayer.h"
 
 //include the Entry Point
-#include "Rubber/EntryPoint.h"
+#include "Rubber/Core/EntryPoint.h"
 
 // include the event system
 #include "Rubber/Event/Event.h"

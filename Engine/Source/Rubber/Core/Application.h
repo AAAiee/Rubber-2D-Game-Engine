@@ -1,7 +1,7 @@
 #pragma once
-#include <Rubber/Core.h>
+#include <Rubber/Core/Core.h>
 #include <memory>
-#include "Rubber/LayerStack.h"
+#include "Rubber/Layer/LayerStack.h"
 
 namespace Rubber
 {

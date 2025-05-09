@@ -1,5 +1,5 @@
 #pragma once
-#include <Rubber/Core.h>
+#include <Rubber/Core/Core.h>
 #include <string>
 
 namespace Rubber

@@ -6,8 +6,8 @@
 #include "Platform/OpenGL/imgui_impl_opengl3.h"
 #include "Platform/OpenGL/imgui_impl_glfw.h"
 
-#include "Rubber/Application.h"
-#include "Rubber/Window.h"
+#include "Rubber/Core/Application.h"
+#include "Rubber/Window/Window.h"
 #include "Platform/Windows/Windowswindow.h"
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Rubber/Window.h"
+#include "Rubber/Window/Window.h"
 
 #include <GLFW/glfw3.h>
 namespace Rubber

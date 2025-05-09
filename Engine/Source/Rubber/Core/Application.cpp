@@ -1,11 +1,11 @@
 #include <pch.h>
-#include "Application.h"
+#include "Rubber/Core/Application.h"
 
-#include "Rubber/Layer.h"
+#include "Rubber/Layer/Layer.h"
 
 #include "Rubber/Event/AppEvent.h"
-#include "Event/KeyEvent.h"
-#include "Event/MouseEvent.h"
+#include "Rubber/Event/KeyEvent.h"
+#include "Rubber/Event/MouseEvent.h"
 
 #include "Platform/Windows/Windowswindow.h"
 

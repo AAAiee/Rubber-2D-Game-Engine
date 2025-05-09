@@ -1,8 +1,8 @@
 #include "pch.h"  
 #include "WindowInput.h"  
 #include <GLFW/glfw3.h>
-#include "Rubber/Application.h"
-#include "Rubber/Window.h"
+#include "Rubber/Core/Application.h"
+#include "Rubber/Window/Window.h"
 
 namespace Rubber {  
    Input* Input::s_Instance = new WindowInput();
