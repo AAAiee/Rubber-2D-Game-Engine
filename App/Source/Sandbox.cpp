@@ -1,5 +1,6 @@
 #include<Rubber.h>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+#include <imgui.h>
 
 class ExampleLayer : public Rubber::Layer
 {
@@ -12,6 +13,13 @@ public:
 	void onUpdate() override
 	{
 
+	}
+
+	void onImGuiRender() override
+	{
+		ImGui::Begin("Example Layer");
+		ImGui::Text("Hello from ExampleLayer");
+		ImGui::End();
 	}
 
 	void onEvent(Rubber::Event& event) override
@@ -34,7 +42,6 @@ public:
 	Sandbox()
 	{
 		pushLayer(new ExampleLayer());
-		pushOverlay(new Rubber::ImGuiLayer());
 	}
 	~Sandbox()
 	{

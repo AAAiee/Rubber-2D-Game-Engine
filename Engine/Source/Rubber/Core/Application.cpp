@@ -20,17 +20,20 @@ namespace Rubber
 	Application::Application()
 	{
 		RB_CORE_ASSERT(!s_Instance, "Applicaiton instance has already been constructed");
-		s_Instance = this;
+		this->s_Instance = this;
 
 		// Create a window when an application instance is created
-		m_Window = Window::create();
+		this ->m_Window = Window::create();
 		
 		// When a window event happens, the eventcallbackfn automatically
 		// passed event happening to onEvent
-		m_Window->setEventCallBack(
+	    this->m_Window->setEventCallBack(
 			[this](Event& e) {
 				this->onEvent(e);
 			});
+
+		this->m_ImGuiLayer = new ImGuiLayer();
+		pushOverlay(m_ImGuiLayer);
 	}
 	Application::~Application()
 	{
@@ -89,6 +92,13 @@ namespace Rubber
 			{
 				layer->onUpdate();
 			}
+
+			m_ImGuiLayer->begin();
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->onImGuiRender();
+			}
+			m_ImGuiLayer->end();
 
 			m_Window->onUpdate();
 		}

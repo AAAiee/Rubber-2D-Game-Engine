@@ -24,22 +24,21 @@ namespace Rubber
 		* initialize the ImGui context and set up the style,
 		* also enable mouse and keyboard navigation
 		*/
-		void onAttach() override;
+		virtual void onAttach() final override;
 
 		/**
 		* @brief detach the layer from the application.
 		* 
 		*/ 
-		void onDetach() override;
+		virtual void onDetach() final override;
 
-		/**
-		* @brief update the layer,rendering ImGui on screen.
-		*/
-		void onUpdate() override;
+		virtual void  onImGuiRender() final override;
+		void begin();
+		void end();
 
 
 	private:
-		float m_Time = 0;
+		float m_Time = 0.0f;
 
 	};
 }

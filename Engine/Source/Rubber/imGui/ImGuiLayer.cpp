@@ -3,8 +3,8 @@
 #include "imgui.h"
 
 #include <GLFW/glfw3.h>
-#include "Platform/OpenGL/imgui_impl_opengl3.h"
-#include "Platform/OpenGL/imgui_impl_glfw.h"
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 #include "Rubber/Core/Application.h"
 #include "Rubber/Window/Window.h"
@@ -19,23 +19,39 @@ Rubber::ImGuiLayer::ImGuiLayer()
 
 Rubber::ImGuiLayer::~ImGuiLayer()
 {
-	onDetach();
 }
 
 void Rubber::ImGuiLayer::onAttach()
 {
-	// create a new ImGui context
-	ImGui::CreateContext();
-	// set the ImGui style
-	ImGui::StyleColorsDark();
-	ImGuiIO& io = ImGui::GetIO();
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+    //io.ConfigViewportsNoAutoMerge = true;
+    //io.ConfigViewportsNoTaskBarIcon = true;
 
-	// enable keyboard nav
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
 
-	// Init the ImGui GLFW and OpenGL3 bindings
-	ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow()), true);
-	ImGui_ImplOpenGL3_Init("#version 410");
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+    
+    auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+	RB_ASSERT(win, "Window is not created");
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(win, true);
+    ImGui_ImplOpenGL3_Init("#version 410");
 }
 
 void Rubber::ImGuiLayer::onDetach(){
@@ -44,28 +60,42 @@ void Rubber::ImGuiLayer::onDetach(){
     ImGui::DestroyContext();
 }
 
-void Rubber::ImGuiLayer::onUpdate()
-{
-	// start a new ImGui frame
-	ImGuiIO& io = ImGui::GetIO();
 
-	// get the current time and set the delta time
-	float time = (float)glfwGetTime();
-	io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
-	m_Time = time;
-
-	// begin a new ImGui frame
-	ImGui_ImplGlfw_NewFrame();
+void Rubber::ImGuiLayer::begin() {
 	ImGui_ImplOpenGL3_NewFrame();
-	ImGui::NewFrame();
-
-	// show the ImGui demo window
-	static bool showDemo = true;
-	ImGui::ShowDemoWindow(&showDemo); 
-
-	// show the ImGui about window
-	ImGui::Render(); 
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();  
 }
+
+
+void Rubber::ImGuiLayer::end() {
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2((float)Application::getWindow().getWidth(), (float)Application::getWindow().getHeight());
+    auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+    //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+}
+
+
+
+void Rubber::ImGuiLayer::onImGuiRender() {
+    static bool show = true;
+	ImGui::ShowDemoWindow(&show); // show the demo window
+}
+
 
 

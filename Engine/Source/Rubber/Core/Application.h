@@ -2,6 +2,7 @@
 #include <Rubber/Core/Core.h>
 #include <memory>
 #include "Rubber/Layer/LayerStack.h"
+#include "Rubber/imGui/ImGuiLayer.h"
 
 namespace Rubber
 {
@@ -34,12 +35,11 @@ namespace Rubber
 		std::unique_ptr<Window> m_Window;
 		// Application's running status
 		bool m_Runing = true;
-
 		// a layerStack to manage all the layers
 		LayerStack m_LayerStack;
-
 		// a static instance of the application
 		static Application* s_Instance;
+		ImGuiLayer* m_ImGuiLayer;
 	
 	private:
 		// handling event delegate

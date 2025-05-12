@@ -13,7 +13,8 @@ project "App"
 	  -- Include Core
 	  "../Engine/Source",
       "../Engine/RBVendor/spdlogs/include",
-      "../Engine/RBVendor/glm"
+      "../Engine/RBVendor/glm",
+      "../Engine/RBVendor/imGui"
 
    }
 
