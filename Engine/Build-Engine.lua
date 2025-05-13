@@ -1,8 +1,8 @@
 project "Engine"
-   kind "SharedLib"
+   kind "StaticLib"
    language "C++"
-   cppdialect "C++20"
-   staticruntime "off"
+   cppdialect "C++17"
+   staticruntime "on"
 
    files { "Source/**.h", "Source/**.cpp" }
    IncludeDir = {}
@@ -36,12 +36,11 @@ project "Engine"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
  
-   postbuildcommands {
-     "{COPYFILE} %{cfg.buildtarget.relpath} ../Binaries/" .. OutputDir .. "/App/%{cfg.buildtarget.name}"
-}
+   defines {"_CRT_SECURE_NO_WARNINGS","RUBBER_BUILD", "GLFW_INCLUDE_NONE"}
+
    filter "system:windows"
        systemversion "latest"
-       defines {"RUBBER_BUILD", "GLFW_INCLUDE_NONE" }
+       defines { }
 
    filter "configurations:Debug"
        defines { "DEBUG", "RB_ENABLE_ASSERT" }

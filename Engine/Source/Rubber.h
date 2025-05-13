@@ -12,9 +12,6 @@
 // include the ImGui Layer 
 #include "Rubber/imGui/ImGuiLayer.h"
 
-//include the Entry Point
-#include "Rubber/Core/EntryPoint.h"
-
 // include the event system
 #include "Rubber/Event/Event.h"
 
@@ -23,3 +20,5 @@
 #include "Rubber/Input/KeyCodes.h"
 #include "Rubber/Input/MouseCodes.h"
 
+//include the Entry Point
+#include "Rubber/Core/EntryPoint.h"

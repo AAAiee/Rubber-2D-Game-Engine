@@ -6,6 +6,8 @@
 #include "Rubber/Event/AppEvent.h"
 #include "Rubber/Event/KeyEvent.h"
 #include "Rubber/Event/MouseEvent.h"
+#include "Rubber/Renderer/GraphicsContext.h"
+#include "Platform/OpenGL/GLContext.h"
 
 
 namespace Rubber {
@@ -40,7 +42,7 @@ namespace Rubber {
 	void Rubber::WindowsWindow::onUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		this->m_ContextManager->swapBuffer();
 	}
 
 
@@ -83,14 +85,13 @@ namespace Rubber {
 			// set glfw initialized to true
 			s_GLFWInitialized = true;
 		}
-		// create window
-		m_Window = glfwCreateWindow(m_Data.width, m_Data.height, m_Data.title.c_str(), nullptr, nullptr);
-		// set the context to the current window
-		glfwMakeContextCurrent(m_Window);
 
-		// load glad 
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		RB_CORE_ASSERT(status, "Fail to initialize Glad!");
+		// create window
+		this->m_Window = glfwCreateWindow(m_Data.width, m_Data.height, m_Data.title.c_str(), nullptr, nullptr);
+
+		// set the context to the current window
+		this->m_ContextManager = new GLContext(m_Window);
+		this->m_ContextManager->init();
 
 		// set the user pointer to the data, so later we can access windows info and EventCallBack
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -192,5 +193,6 @@ namespace Rubber {
 	{
 		// shut down the window only, keep glfw active for other usages
 		glfwDestroyWindow(m_Window);
+		delete m_ContextManager;
 	}
 }

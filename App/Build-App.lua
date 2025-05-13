@@ -1,8 +1,8 @@
 project "App"
    kind "ConsoleApp"
    language "C++"
-   cppdialect "C++20"
-   staticruntime "off"
+   cppdialect "C++17"
+   staticruntime "on"
 
    files { "Source/**.h", "Source/**.cpp" }
 
@@ -33,16 +33,16 @@ project "App"
    filter "configurations:Debug"
        defines { "DEBUG" }
        runtime "Debug"
-       symbols "On"
+       symbols "on"
 
    filter "configurations:Release"
        defines { "RELEASE" }
        runtime "Release"
-       optimize "On"
-       symbols "On"
+       optimize "on"
+       symbols "on"
 
    filter "configurations:Dist"
        defines { "DIST" }
        runtime "Release"
-       optimize "On"
-       symbols "Off"
+       optimize "speed"
+       symbols "off"

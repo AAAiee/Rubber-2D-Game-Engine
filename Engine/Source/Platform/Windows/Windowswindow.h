@@ -3,7 +3,8 @@
 
 #include <GLFW/glfw3.h>
 namespace Rubber
-{
+{   
+	class GraphicsContext;
 	class WindowsWindow :public Window
 	{
 	public:
@@ -42,6 +43,8 @@ namespace Rubber
 			EventCallBackFn eventCallBack;
 		};
 		WindowInfo m_Data;
+
+		GraphicsContext* m_ContextManager;
 	};
 }
 

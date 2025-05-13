@@ -73,7 +73,6 @@ void Rubber::ImGuiLayer::end() {
     io.DisplaySize = ImVec2((float)Application::getWindow().getWidth(), (float)Application::getWindow().getHeight());
     auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
 
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
