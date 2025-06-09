@@ -7,9 +7,9 @@ namespace Rubber {
 	* @breif Input class can be used to track the status 
 	* of key or mouse button. it is meant to be a singleton
 	* its s_Instance is created in the WindowInput class for Windows
-	* implmentation. The specific implementation is platform dependent,
+	* implementation. The specific implementation is platform dependent,
 	* which is why it has protected virtual functions that can adopt
-	* different implmentation.
+	* different implementation.
 	*/ 
 	class RB_API Input
 	{
@@ -26,9 +26,14 @@ namespace Rubber {
 		static inline float getMouseX(int button) {
 			return s_Instance->getMouseXImpl();
 		}
-
 		static inline float getMouseY(int button) {
 			return s_Instance->getMouseYImpl();
+		}
+		static inline void disableCursor() {
+			s_Instance->disableCursorImpl();
+		}
+		static inline void enableCurosr(){
+			s_Instance->enableCursorImpl();
 		}
 
 	protected:
@@ -37,8 +42,10 @@ namespace Rubber {
 		virtual std::pair<float, float> getMousePositionImpl() = 0;
 		virtual float getMouseXImpl() = 0;
 		virtual float getMouseYImpl() = 0;
+		virtual void disableCursorImpl() = 0;
+		virtual void enableCursorImpl() = 0;
 
 	private:
-		static  Input* s_Instance ;
+		static Input* s_Instance ;
 	};
 }

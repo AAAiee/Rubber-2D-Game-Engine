@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Rubber/Core/Core.h"
 
 Rubber::GLContext::GLContext(GLFWwindow* windowHandler)
 	:m_windowHandler(windowHandler)

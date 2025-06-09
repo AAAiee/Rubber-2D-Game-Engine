@@ -25,4 +25,17 @@ namespace Rubber {
 	   glfwGetCursorPos(win, &xPos, &yPos);
 	   return { (float)xPos, (float)yPos };
    }
+
+   void WindowInput::disableCursorImpl()
+   {
+	   auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+	   glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+   }
+
+   void WindowInput::enableCursorImpl()
+   {
+	   auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+	   glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+   }
+
 }

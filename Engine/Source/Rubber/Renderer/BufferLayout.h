@@ -1,0 +1,81 @@
+#pragma once
+#include <string>
+#include <vector>
+
+namespace Rubber {
+
+	// Types available in shaders defined in a abstract way
+	enum class ShaderType : unsigned char {
+		None = 0,
+		Float, Float2, Float3, Float4, Mat2, Mat3, Mat4, Int, Int2, Int3, Int4,
+		Uint, Uint2, Uint3, Uint4
+	};
+
+	// helper functions  
+	uint32_t getShaderTypeSize(ShaderType type);
+
+	struct BufferElement {
+		std::string   name;
+		uint32_t      size;
+		uint32_t	  offset;
+		ShaderType    type;
+		bool		  normalized;
+
+		BufferElement()
+			:name(""), size(0), offset(0), type(ShaderType::None), normalized(false)
+		{
+
+		}
+		// offset can only be initialized once we see the whole layout
+		BufferElement(ShaderType type, const std::string name, bool normalized=false)
+			:name(name), type(type), normalized(normalized), offset(0)
+		{
+			this->size = getShaderTypeSize(type);
+		}
+
+		uint32_t getComponentCount() const;
+		BufferElement(const BufferElement& other) = default;
+		BufferElement& operator= (const BufferElement& other) = default;
+		~BufferElement() = default;
+	};
+
+	class BufferLayout {
+	public:
+		inline const std::vector<BufferElement>& getElementBuffer() const {
+			return this->m_ElementBuffer;
+		}
+
+		BufferLayout() = default;
+		BufferLayout(const std::initializer_list<BufferElement>& layout);
+		~BufferLayout() = default;
+		BufferLayout(const BufferLayout& other) = default;
+		BufferLayout& operator= (const BufferLayout& other) = default;
+
+
+		inline uint32_t getStride() const {
+			return this->m_Stride;
+		}
+		
+		std::vector<BufferElement>::iterator begin(){
+			return this->m_ElementBuffer.begin();
+		}
+		std::vector<BufferElement>::iterator end() {
+			return this->m_ElementBuffer.end();
+		}
+		std::vector<BufferElement>::const_iterator begin() const {
+			return this-> m_ElementBuffer.cbegin();
+		}
+		std::vector<BufferElement>::const_iterator end() const {
+			return this->m_ElementBuffer.cend();
+		}
+	private:
+		std::vector<BufferElement> m_ElementBuffer;
+		uint32_t m_Stride = 0;
+	};
+
+
+
+
+}
+
+

@@ -6,8 +6,8 @@ struct GLFWwindow;
 namespace Rubber {
 	/**
 	* @brief WindowInput class is a subclass of Input class.
-	* It provides specific implmentation for the input system.
-	* Windows window implmentation now dependent on GLFW.
+	* It provides specific implementation for the input system.
+	* Windows window implementation now dependent on GLFW.
 	*/
 	class RB_API WindowInput :public Input
 	{
@@ -17,6 +17,8 @@ namespace Rubber {
 		virtual std::pair<float, float> getMousePositionImpl() final override;
 		virtual float getMouseXImpl()  final override { return getMousePositionImpl().first; }
 		virtual float getMouseYImpl()  final override { return getMousePositionImpl().second; }
+		virtual void disableCursorImpl() final override;
+		virtual void enableCursorImpl() final override;
 	};
 }
 

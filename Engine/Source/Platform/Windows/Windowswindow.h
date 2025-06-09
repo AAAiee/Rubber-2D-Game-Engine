@@ -29,17 +29,17 @@ namespace Rubber
 		virtual void shutDown();
 
 	private:
-		// make sure glfw is initialized only once
+		// make sure Glfw is initialized only once
 		static bool s_GLFWInitialized;
 	    // our window object
 		GLFWwindow* m_Window;
-		// group our data into a sturct
+		// group our data into a struct
 		struct WindowInfo
 		{
 			std::string title;
-			unsigned int width;
-			unsigned int height;
-			bool Vsync;
+			unsigned int width = 1280;
+			unsigned int height = 720;
+			bool Vsync = false;
 			EventCallBackFn eventCallBack;
 		};
 		WindowInfo m_Data;

@@ -21,11 +21,19 @@
 #include <array>
 #include <map>
 #include <set>
+#include <numeric>
+#include <fstream>
+#include <stdint.h>
+#include <cstdint>
+#include <filesystem>
 
 // Windows
 #ifdef WINDOW_64_API
 #include <Windows.h>
+#pragma comment(lib, "winmm.lib")
 #endif // #ifdef WINDOW_64_API
 
 
 #include "Rubber/Log/Log.h"
+#include "Rubber/Core/Primitives.h"
+#include "Rubber/Core/Assert.h"

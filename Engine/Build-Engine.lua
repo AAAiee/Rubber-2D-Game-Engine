@@ -1,15 +1,16 @@
 project "Engine"
    kind "StaticLib"
    language "C++"
-   cppdialect "C++17"
+   cppdialect "C++20"
    staticruntime "on"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp", "RBVendor/stb_image/stb_image.h" , "RBVendor/stb_image/stb_image.cpp"}
    IncludeDir = {}
    IncludeDir["GLFW"] = "RBVendor/glfw/include"
    IncludeDir["Glad"] = "RBVendor/glad/include"
    IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
    IncludeDir["imGui"] = "RBVendor/imGui"
+   IncludeDir["stb_image"] = "RBVendor/stb_image"
    IncludeDir["glm"] = "RBVendor/glm"
 
    includedirs
@@ -19,7 +20,8 @@ project "Engine"
       "%{IncludeDir.GLFW}",
       "%{IncludeDir.Glad}",
       "%{IncludeDir.imGui}",
-      "%{IncludeDir.glm}"
+      "%{IncludeDir.glm}",
+      "%{IncludeDir.stb_image}"
    }
 
    links

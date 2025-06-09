@@ -4,6 +4,13 @@
 
 namespace Rubber {
 
+    //TODO:CURRENTLY this is implmeneted with a immediately handled event system,
+    //To make a queue buffer in the future
+    // TODO: currently hard codede the  Event Type for each type: considering using
+    // hashed string 
+    // TODO:: considering using the variant class to handle event argument
+    // TODO:: add event handler? event mananger, eventually event system incorporate ECS
+
     template <typename T>
     inline constexpr std::underlying_type_t<T> toUnderType(T enumarator)
     {

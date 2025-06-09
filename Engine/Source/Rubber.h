@@ -14,11 +14,32 @@
 
 // include the event system
 #include "Rubber/Event/Event.h"
+#include "Rubber/Event/AppEvent.h"
 
 // include the Input System and KeyCode
 #include "Rubber/Input/Input.h"
 #include "Rubber/Input/KeyCodes.h"
 #include "Rubber/Input/MouseCodes.h"
 
-//include the Entry Point
-#include "Rubber/Core/EntryPoint.h"
+
+//include renderer
+#include "Rubber/Renderer/Renderer.h"
+#include "Rubber/Renderer/Renderer2D.h"
+#include "Rubber/Renderer/BufferLayout.h"
+#include "Rubber/Renderer/Buffers.h"
+#include "Rubber/Renderer/RendererCommand.h"
+#include "Rubber/Renderer/Shaders.h"
+#include "Rubber/Renderer/VertexArray.h"
+#include "Rubber/Renderer/CameraController.h"
+#include "Rubber/Renderer/Texture.h"
+
+// ECS
+#include "Rubber/ECS/Entity/EntityManager.h"
+#include "Rubber/ECS/Components/Tranform.h"
+
+//testing purpose
+#include "Rubber/ECS/Components/testComponent.h"
+#include "Rubber/ECS/Components/Instance.h"
+
+
+

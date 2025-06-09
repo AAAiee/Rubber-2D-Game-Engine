@@ -41,6 +41,6 @@ namespace Rubber
 		virtual bool isVsync() const = 0;
 
 		//create a window depends on the different platform
-		static std::unique_ptr<Window> create(const WindowProps & = WindowProps());
+		static Scope<Window> create(const WindowProps & = WindowProps());
 	};
 }

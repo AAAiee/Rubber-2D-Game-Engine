@@ -21,9 +21,9 @@ namespace Rubber {
 	}
 
 	//provide a definition for Window createWindow
-	std::unique_ptr<Window> Window::create(const WindowProps& props )
+	Scope<Window> Window::create(const WindowProps& props )
 	{
-		return std::make_unique<WindowsWindow>(props);
+		return makeScope<WindowsWindow>(props);
 	}
 
 	//constructor delegate initialization to init
@@ -141,7 +141,7 @@ namespace Rubber {
 				}
 			});
 		
-		// set keyboard key callback: pressed, relased, repeat for press
+		// set keyboard key callback: pressed, released, repeat for press
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mode)
 			{
 				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));

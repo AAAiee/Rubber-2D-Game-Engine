@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <string>
+#include <functional>
 
 // define macros that controls the flow  
 // of the program
@@ -20,21 +23,29 @@
 // define a macro that sets a bit to 1.e.g BIT(1) = 0000 0001
 #define BIT(x) (1 << x)
 
+// ref and scope system, currently only use std::shared_ptr for ref and unique_ptr for scoped
+// but we can extend it to anything else
 
-// define assert macros, when !x, log and debugbreak
-#ifdef RB_ENABLE_ASSERT  
-   #define RB_ASSERT(x,...)  do{if(!(x)) {APP_ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)  
-   #define RB_CORE_ASSERT(x,...)  do{if (!(x)) {RB_ERROR("Assertion Failed: {0}", __VA_ARGS__);__debugbreak();}} while (0)
-#else
-    #define RB_ASSERT(x,...)  
-    #define RB_CORE_ASSERT(x, ...)  
-#endif
+template<typename T>
+using Ref = std::shared_ptr<T>;
 
-
-//// define a macro that binds a function to the class instance
-//#define RB_BIND_FUNC(fn)  std::bind(&fn, this, std::placeholders::_1)
+template<typename T>
+using Scope = std::unique_ptr<T>;
 
 
+template<typename T, typename... Args>
+constexpr Ref<T> makeRef(Args&&... args)
+{
+	// If one day you swap in a custom memory pool,
+	// you only touch this line.
+	return std::make_shared<T>(std::forward<Args>(args)...);
+}
+
+template<typename T, typename... Args>
+constexpr Scope<T> makeScope(Args&&... args)
+{
+	return std::make_unique<T>(std::forward<Args>(args)...);
+}
 
 
 

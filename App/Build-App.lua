@@ -1,7 +1,7 @@
 project "App"
    kind "ConsoleApp"
    language "C++"
-   cppdialect "C++17"
+   cppdialect "C++20"
    staticruntime "on"
 
    files { "Source/**.h", "Source/**.cpp" }
@@ -46,3 +46,5 @@ project "App"
        runtime "Release"
        optimize "speed"
        symbols "off"
+
+
