@@ -80,15 +80,15 @@ namespace Rubber::ID{
 		};
 	}
 
-#define DEFINE_TYPED_ID(name)                                  \
-	struct name: ID::Internal::IdBase {                        \
-			constexpr explicit name(ID::IdType id)             \
+#define DEFINE_TYPED_ID(name)                                                \
+	struct name: ID::Internal::IdBase {                                      \
+			constexpr explicit name(ID::IdType id)                           \
 			: ID::Internal::IdBase(id) {}                                    \
 			constexpr name() : ID::Internal::IdBase(0){}                     \
 	};
 
 #else
-#define DEFINE_TYPED_ID(name)  using name = Id::IdType
+#define DEFINE_TYPED_ID(name)  using name = ID::IdType
 
 #endif
 

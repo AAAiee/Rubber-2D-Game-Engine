@@ -23,7 +23,6 @@
 #include <set>
 #include <numeric>
 #include <fstream>
-#include <stdint.h>
 #include <cstdint>
 #include <filesystem>
 
@@ -35,5 +34,7 @@
 
 
 #include "Rubber/Log/Log.h"
+#include "Rubber/Debug/Profiler.h"
 #include "Rubber/Core/Primitives.h"
 #include "Rubber/Core/Assert.h"
+#include "Rubber/Utility/Utility.h"

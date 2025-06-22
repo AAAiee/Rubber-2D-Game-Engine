@@ -10,10 +10,12 @@ namespace Rubber {
 	*/
 	class GLVertexBuffer : public VertexBuffer {
 	public:
-		GLVertexBuffer(float* vertices, size_t size);
+		GLVertexBuffer(float* vertices, uint32_t size);
+		GLVertexBuffer(uint32_t size);
 		virtual void bind() const final override;
 		virtual void unbind() const final override;
 		virtual void setLayout(const BufferLayout& layout) final override;
+		virtual void uploadVertexData(const void* const data, uint32_t size) final override;
 		virtual inline const BufferLayout& getLayout() const final override;
 		~GLVertexBuffer();
 
@@ -26,9 +28,11 @@ namespace Rubber {
 
 	class GLIndexBuffer : public IndexBuffer {
 	public:
-		GLIndexBuffer(uint32_t* indices, size_t size);
+		GLIndexBuffer(uint32_t* indices, uint32_t size);
+		GLIndexBuffer(uint32_t size);
 		virtual void bind() const final override;
 		virtual void unbind() const final override;
+		virtual void uploadIndexData(const uint32_t* const data, uint32_t size) final override;
 		virtual inline uint32_t getCount() const final override { return this->m_Count;};
 		~GLIndexBuffer();
 

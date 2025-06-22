@@ -15,8 +15,8 @@ namespace Rubber {
 
 	private:
 		// update when a entity is dead
-		Utility::deque<ID::IdType>  m_FreeIndices;
+		Deque<ID::IdType>  m_FreeIndices;
 		// keep track of our index and generation  for a specific entity slot
-		Utility::vector<ID::GenerationType> m_Generations;
+		Vector<ID::GenerationType> m_Generations;
 	};
 }

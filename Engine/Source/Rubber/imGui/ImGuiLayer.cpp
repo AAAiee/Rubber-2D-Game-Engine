@@ -9,6 +9,7 @@
 #include "Rubber/Core/Application.h"
 #include "Rubber/Window/Window.h"
 #include "Platform/Windows/Windowswindow.h"
+#include "Rubber/Event/EventManager.h"
 
 
 Rubber::ImGuiLayer::ImGuiLayer()
@@ -21,8 +22,9 @@ Rubber::ImGuiLayer::~ImGuiLayer()
 {
 }
 
-void Rubber::ImGuiLayer::onAttach()
+void Rubber::ImGuiLayer::onAttach(Ref<EventManager> em)
 {
+    RB_PROFILE_FUNC();
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -38,7 +40,7 @@ void Rubber::ImGuiLayer::onAttach()
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    // When view ports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
@@ -49,12 +51,12 @@ void Rubber::ImGuiLayer::onAttach()
     auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
 	RB_ASSERT(win, "Window is not created");
 
-    // Setup Platform/Renderer backends
+    // Setup Platform/Renderer back ends
     ImGui_ImplGlfw_InitForOpenGL(win, true);
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void Rubber::ImGuiLayer::onDetach(){
+void Rubber::ImGuiLayer::onDetach(Ref<EventManager> em) {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -92,8 +94,6 @@ void Rubber::ImGuiLayer::end() {
 
 
 void Rubber::ImGuiLayer::onImGuiRender() {
-    static bool show = true;
-	ImGui::ShowDemoWindow(&show); // show the demo window
 }
 
 

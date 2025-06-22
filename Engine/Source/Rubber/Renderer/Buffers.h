@@ -18,8 +18,10 @@ namespace Rubber {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 		virtual void setLayout(const BufferLayout& layout) = 0;
+		virtual void uploadVertexData(const void* const data, uint32_t size) = 0;
 		virtual const BufferLayout& getLayout() const = 0;
-		static Scope<VertexBuffer> create(float* vertices, size_t size);
+		static Scope<VertexBuffer> create(float* vertices, uint32_t size);
+		static Scope<VertexBuffer> create(uint32_t size);
 	};
 
 
@@ -29,7 +31,9 @@ namespace Rubber {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 		virtual uint32_t getCount() const = 0;
-		static Scope<IndexBuffer> create(uint32_t* indices, size_t size);
+		virtual void uploadIndexData(const uint32_t* const data, uint32_t size) = 0;
+		static Scope<IndexBuffer> create(uint32_t* indices, uint32_t size);
+		static Scope<IndexBuffer> create(uint32_t size);
 	};
 
 }

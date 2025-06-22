@@ -15,6 +15,7 @@
 // include the event system
 #include "Rubber/Event/Event.h"
 #include "Rubber/Event/AppEvent.h"
+#include "Rubber/Event/EventManager.h"
 
 // include the Input System and KeyCode
 #include "Rubber/Input/Input.h"
@@ -33,12 +34,15 @@
 #include "Rubber/Renderer/CameraController.h"
 #include "Rubber/Renderer/Texture.h"
 
+// profile
+#include "Rubber/Debug/Profiler.h"
+#include "Rubber/Timer/Timer.h"
+
 // ECS
 #include "Rubber/ECS/Entity/EntityManager.h"
 #include "Rubber/ECS/Components/Tranform.h"
 
 //testing purpose
-#include "Rubber/ECS/Components/testComponent.h"
 #include "Rubber/ECS/Components/Instance.h"
 
 

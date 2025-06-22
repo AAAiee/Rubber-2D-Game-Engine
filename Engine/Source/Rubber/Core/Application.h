@@ -1,13 +1,5 @@
 #pragma once
-#include <Rubber/Core/Core.h>
-#include <memory>
 #include "Rubber/Layer/LayerStack.h"
-#include "Rubber/imGui/ImGuiLayer.h"
-#include "Rubber/Renderer/Buffers.h"
-#include "Rubber/Renderer/Shaders.h"
-#include "Rubber/Renderer/VertexArray.h"
-#include "Rubber/Renderer/Camera.h"
-#include "Rubber/Timer/Timer.h"
 
 namespace Rubber
 {
@@ -15,49 +7,60 @@ namespace Rubber
 	class Event;
 	class WindowCloseEvent;
 	class WindowResizeEvent;
+	class Timer;
+	class EventManager;
+	class Camera;
+	class ImGuiLayer;
 	/* Application
 	*  this class controls the application 
 	*/
-	class RB_API Application
+	class  Application
 	{
 	public:
 		Application();
 		virtual ~Application();
 
 		void run();
-		void onEvent(Event& event);
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
 
 		// get the window object
 		static Window& getWindow();
+
+		//get the eventManager
+		static Ref<EventManager>& getEventManager() {
+			return s_Instance->m_Em;
+		};
+
+		static Scope<Timer>& getTimer(){
+			return s_Instance->m_Timer;
+		}
+
 	private:
 		Window& getWindowImpl() {
 			return *m_Window;
 		}
 
-	private:
-		// a pointer to the window object
-		Scope<Window> m_Window;
-		// Application's running status
-		bool m_Runing = true;
+		void attachAll();
 
+	private:
+		Scope<Window> m_Window;
+		bool m_Runing = true;
 		//when minimized, stop layer update, (but keep ImGui update)
 		bool m_IsWindowMinimized = false;
-		
-		// a layerStack to manage all the layers
 		LayerStack m_LayerStack;
 		// a static instance of the application
 		static Application* s_Instance;
 		ImGuiLayer* m_ImGuiLayer;
-
-		Timer m_Timer;
+		Ref<EventManager> m_Em;
+		Scope<Timer> m_Timer;
+		bool m_FirstRun = true;
 
 	
 	private:
 		// handling event delegate
-		bool onWindowClose(WindowCloseEvent& e);
-		bool onWindowResize(WindowResizeEvent& e);
+		bool onWindowClose(const WindowCloseEvent& e);
+		bool onWindowResize(const WindowResizeEvent& e);
 	};
 	
 }

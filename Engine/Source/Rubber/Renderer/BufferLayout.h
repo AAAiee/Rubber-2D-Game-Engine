@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
+#include "Rubber/Utility/Utility.h"
 
 namespace Rubber {
 
@@ -41,7 +41,7 @@ namespace Rubber {
 
 	class BufferLayout {
 	public:
-		inline const std::vector<BufferElement>& getElementBuffer() const {
+		inline const Vector<BufferElement>& getElementBuffer() const {
 			return this->m_ElementBuffer;
 		}
 
@@ -55,21 +55,20 @@ namespace Rubber {
 		inline uint32_t getStride() const {
 			return this->m_Stride;
 		}
-		
-		std::vector<BufferElement>::iterator begin(){
+		Vector<BufferElement>::iterator begin(){
 			return this->m_ElementBuffer.begin();
 		}
-		std::vector<BufferElement>::iterator end() {
+		Vector<BufferElement>::iterator end() {
 			return this->m_ElementBuffer.end();
 		}
-		std::vector<BufferElement>::const_iterator begin() const {
+		Vector<BufferElement>::const_iterator begin() const {
 			return this-> m_ElementBuffer.cbegin();
 		}
-		std::vector<BufferElement>::const_iterator end() const {
+		Vector<BufferElement>::const_iterator end() const {
 			return this->m_ElementBuffer.cend();
 		}
 	private:
-		std::vector<BufferElement> m_ElementBuffer;
+		Vector<BufferElement> m_ElementBuffer;
 		uint32_t m_Stride = 0;
 	};
 

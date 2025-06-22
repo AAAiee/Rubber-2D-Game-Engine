@@ -1,5 +1,5 @@
 #include "Rubber/Renderer/VertexArray.h"
-#include <vector>
+#include "Rubber/Utility/Utility.h"
 
 namespace Rubber {
 	class GLVertexArray : public VertexArray{
@@ -13,12 +13,12 @@ namespace Rubber {
 		virtual void addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) final override ;
 		virtual void setIndexBuffer(const Ref<IndexBuffer>& indexBuffer) final override;
 
-		virtual std::vector<Ref<VertexBuffer>>& getVertexBuffers() final override ;
+		virtual Vector<Ref<VertexBuffer>>& getVertexBuffers() final override ;
 		virtual Ref<IndexBuffer>& getIndexBuffer() final override ;
 
 	private:
 		uint32_t m_RendererID;
-		std::vector<Ref<VertexBuffer>> m_VertexBuffers;
+		Vector<Ref<VertexBuffer>> m_VertexBuffers;
 		Ref<IndexBuffer> m_IndexBuffer;
 	};
 }

@@ -5,17 +5,17 @@
 namespace Rubber
 {
 	class Event;
+	class EventManager;
 	class RB_API Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer();
 
-		virtual void onAttach() {};
-		virtual void onDetach() {};
+		virtual void onAttach(Ref<EventManager> em = nullptr)  = 0;
+		virtual void onDetach(Ref<EventManager> em = nullptr)  = 0;
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() {};
-		virtual void onEvent(Event& event) {};
 
 		inline const std::string& getName() const {
 			return m_DebugName;

@@ -13,6 +13,7 @@ namespace Rubber
 	* Dear ImGui Layer, currently implementation 
 	* depends on GLfW and OpenGL.
 	*/
+	class EventManager;
 	class RB_API ImGuiLayer :public Layer
 	{
 	public:
@@ -24,13 +25,13 @@ namespace Rubber
 		* initialize the ImGui context and set up the style,
 		* also enable mouse and keyboard navigation
 		*/
-		virtual void onAttach() final override;
+		virtual void onAttach(Ref<EventManager> em) final override;
 
 		/**
 		* @brief detach the layer from the application.
 		* 
 		*/ 
-		virtual void onDetach() final override;
+		virtual void onDetach(Ref<EventManager> em) final override;
 
 		virtual void  onImGuiRender() final override;
 		void begin();

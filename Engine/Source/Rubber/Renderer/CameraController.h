@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "Rubber/Event/EventManager.h"
 #include "Rubber/Renderer/Camera.h"
 
 namespace Rubber {
@@ -10,12 +11,12 @@ namespace Rubber {
 	class CameraController {
 
 	public:
-		CameraController(float fovy, float aspectRatio, float zNear, float zFar);
+		CameraController(float fovy, float aspectRatio, float zNear, float zFar, Ref<EventManager>& em);
+		~CameraController();
 
 		inline const Camera& getCamera() const { return this->m_Camera; }
 		inline void setPosition(const glm::vec3& pos) { this->m_Position = pos;}
 		
-
 		glm::vec3 getFrontDirection () const;
 		glm::vec3 getUpDirection() const;
 		glm::vec3 getRightDirection() const;
@@ -25,12 +26,11 @@ namespace Rubber {
 		}
 		
 		void onUpdate();
-		void onEvent(Event& e);
 		
 	private:
 		void updateViewMatrix();
-		bool onMouseScrolled(MouseScrolledEvent& e);
-		bool onWindowResize(WindowResizeEvent& e);
+		bool onMouseScrolled(const MouseScrolledEvent& e);
+		bool onWindowResize(const WindowResizeEvent& e);
 
 	private:
 		glm::vec3 m_Position;
@@ -61,6 +61,7 @@ namespace Rubber {
 
 		// cursor enabled?
 		bool m_IsCursorDisabled = false ;
+		Ref<EventManager> m_Em;
 	};
 
 }

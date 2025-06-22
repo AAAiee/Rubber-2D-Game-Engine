@@ -16,11 +16,11 @@ namespace  Rubber {
 		};
 
 	public:
-		void init();
+		virtual void init() = 0;
 		virtual void setViewPort(int width, int height) = 0;
 		virtual void clearColor(const glm::vec4& color) = 0;
 		virtual void clear() = 0; 
-		virtual void drawIndexed(const Ref<VertexArray>& vertexArray) = 0; 
+		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count =0) = 0; 
 		static inline RendererAPI::API getAPI() {
 			return s_API;
 		};

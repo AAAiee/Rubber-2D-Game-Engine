@@ -11,5 +11,7 @@ Binaries/
 *.ini
 Makefile
 
+*.json
+
 # Exclude
 !Vendor/Binaries

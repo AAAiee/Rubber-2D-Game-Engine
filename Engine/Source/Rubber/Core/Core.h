@@ -26,26 +26,7 @@
 // ref and scope system, currently only use std::shared_ptr for ref and unique_ptr for scoped
 // but we can extend it to anything else
 
-template<typename T>
-using Ref = std::shared_ptr<T>;
 
-template<typename T>
-using Scope = std::unique_ptr<T>;
-
-
-template<typename T, typename... Args>
-constexpr Ref<T> makeRef(Args&&... args)
-{
-	// If one day you swap in a custom memory pool,
-	// you only touch this line.
-	return std::make_shared<T>(std::forward<Args>(args)...);
-}
-
-template<typename T, typename... Args>
-constexpr Scope<T> makeScope(Args&&... args)
-{
-	return std::make_unique<T>(std::forward<Args>(args)...);
-}
 
 
 

@@ -4,9 +4,9 @@
 
 namespace Rubber {
 
-    //TODO:CURRENTLY this is implmeneted with a immediately handled event system,
+    //TODO:CURRENTLY this is implemented with a immediately handled event system,
     //To make a queue buffer in the future
-    // TODO: currently hard codede the  Event Type for each type: considering using
+    // TODO: currently hard coded the  Event Type for each type: considering using
     // hashed string 
     // TODO:: considering using the variant class to handle event argument
     // TODO:: add event handler? event mananger, eventually event system incorporate ECS
@@ -22,7 +22,7 @@ namespace Rubber {
 	 * each event type is a unique value that can be used to identify the type of the event
 	 * using enum class instead of enum to avoid polluting the global namespace
      */
-    enum class EventType:unsigned char  
+    enum class EventType :unsigned char  
     {
         None = 0,
         MouseScrolled, MouseButtonPressed, MouseButtonReleased,MouseMoved,
@@ -112,50 +112,10 @@ namespace Rubber {
         }
 
     private:
-		// make EventDispatcher a friend class so that it can access the m_isHandled flag to stop event propagattion 
-		friend class EventDispatcher;
         bool m_isHandled = false;  
     };
 
 
-	/**
-	 * @brief EventDispatcher class that dispatches events to event handlers
-	 */
-
-    class RB_API EventDispatcher
-    {
-    private:
-		// Event Handler type that takes a reference to the event and returns a boolean value
-        template <typename T>
-        using EventFn = std::function<bool(T&)>;
-
-    public:
-		// Constructor that takes a reference to the event
-        EventDispatcher(Event& event)
-            : m_Event(event) {
-        }
-
-		/**
-		 * @brief Dispatch the event to the given function
-		 * @tparam T The type of the event
-		 * @param func The function to dispatch the event to
-		 * @return True if the event was handled, false otherwise
-		 */
-        template <typename T>
-        bool dispatch(EventFn<T> func) {
-            // if the given func is a function that handle the current event type
-			// dispatch the event to the function 
-            if (m_Event.getEventType() == T::s_GetEventType()) {
-                m_Event.m_isHandled =  func(*static_cast<T*> (&m_Event));
-                return true;
-            }
-            return false;
-        }
-
-    private:
-        Event& m_Event;
-    };
-    
 
 	inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{

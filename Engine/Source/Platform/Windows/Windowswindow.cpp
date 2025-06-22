@@ -11,8 +11,8 @@
 
 
 namespace Rubber {
-	// false by default, glfw not initialized yet
-	// only want to initialize glfw once
+	// false by default, GLFW not initialized yet
+	// only want to initialize GLFW once
 	bool WindowsWindow::s_GLFWInitialized = false;
 
 	static void glfwErrorCallBack(int error, const char* description)
@@ -41,6 +41,8 @@ namespace Rubber {
 	// update include polling events and swap buffers
 	void Rubber::WindowsWindow::onUpdate()
 	{
+		RB_PROFILE_FUNC();
+
 		glfwPollEvents();
 		this->m_ContextManager->swapBuffer();
 	}
@@ -49,6 +51,8 @@ namespace Rubber {
 	// set the vsync
 	void Rubber::WindowsWindow::setVsync(bool enabled)
 	{
+		RB_PROFILE_FUNC();
+
 		if (enabled)
 			// Swap interval is the number of screen updates to wait from the time glfwSwapBuffers was called before 
 			// swapping the buffers and returning.
@@ -68,6 +72,8 @@ namespace Rubber {
 	// Init all fields, initializing glfw, creating window, setting user pointer
 	void Rubber::WindowsWindow::init(const WindowProps& props)
 	{
+		RB_PROFILE_FUNC();
+
 		// initialize info fields 
 		m_Data.title = props.title;
 		m_Data.height = props.height;
@@ -100,92 +106,95 @@ namespace Rubber {
 
 		RB_INFO("Window Created!: {0} ({1} {2})", m_Data.title, m_Data.width, m_Data.height);
 
-		// set window resize callback
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
-				data.height = height;
-				data.width = width;
+		{//window event publish
+			RB_PROFILE_SCOPE("WindowEventPublish");
+			// set window resize callback
+			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+				{
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					data.height = height;
+					data.width = width;
 
-				WindowResizeEvent event(width, height);
-				data.eventCallBack(event);
-			});
+					WindowResizeEvent event(width, height);
+					data.em.value()->enqueue(event);
+				});
 
-		// set window close callback
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
-				WindowCloseEvent event;
-				// passing the event to onEvent function in application and let it 
-				// handle it
-				data.eventCallBack(event);
-			});
-		// set mouse button callback: pressed, released
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mode)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
-				switch (action)
+			// set window close callback
+			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 				{
-				case GLFW_PRESS:
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					WindowCloseEvent event;
+					// passing the event to onEvent function in application and let it 
+					// handle it
+					data.em.value()->enqueue(event);
+				});
+			// set mouse button callback: pressed, released
+			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mode)
 				{
-					MousePressedEvent event(button);
-					data.eventCallBack(event);
-					break;
-				}
-				case GLFW_RELEASE:
-				{
-					MouseReleasedEvent event(button);
-					data.eventCallBack(event);
-					break;
-				}
-				}
-			});
-		
-		// set keyboard key callback: pressed, released, repeat for press
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mode)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					switch (action)
+					{
+					case GLFW_PRESS:
+					{
+						MousePressedEvent event(button);
+						data.em.value()->enqueue(event);
+						break;
+					}
+					case GLFW_RELEASE:
+					{
+						MouseReleasedEvent event(button);
+						data.em.value()->enqueue(event);
+						break;
+					}
+					}
+				});
 
-				switch (action)
+			// set keyboard key callback: pressed, released, repeat for press
+			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mode)
 				{
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+
+					switch (action)
+					{
 					case GLFW_PRESS:
 					{
 						KeyPressedEvent event(key, 0);
-						data.eventCallBack(event);
+						data.em.value()->enqueue(event);
 						break;
 					}
 
 					case GLFW_RELEASE:
 					{
 						KeyReleasedEvent event(key);
-						data.eventCallBack(event);
+						data.em.value()->enqueue(event);
 						break;
 					}
 
 					case GLFW_REPEAT:
 					{
 						KeyPressedEvent event(key, 1);
-						data.eventCallBack(event);
+						data.em.value()->enqueue(event);
 						break;
 					}
-				}
-		    });
-		
-		// set callback for scroll event
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double x_offset, double y_offset)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
-				MouseScrolledEvent event((float)x_offset, (float)y_offset);
-				data.eventCallBack(event);
-			});
-		
-		//set mouse move callback
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-			{
-				WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
-				MouseMoveEvent event((float)xPos, (float)yPos);
-				data.eventCallBack(event);
-			});
+					}
+				});
+
+			// set callback for scroll event
+			glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double x_offset, double y_offset)
+				{
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					MouseScrolledEvent event((float)x_offset, (float)y_offset);
+					data.em.value()->enqueue(event);
+				});
+
+			//set mouse move callback
+			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+				{
+					WindowInfo& data = *(WindowInfo*)(glfwGetWindowUserPointer(window));
+					MouseMoveEvent event((float)xPos, (float)yPos);
+					data.em.value()->enqueue(event);
+				});
+		}//window event publish
 	}
 
 

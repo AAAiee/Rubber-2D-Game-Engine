@@ -8,10 +8,12 @@
 #include <cassert>
 
 
+// add concept to limit the type?
 namespace Rubber {
 
 	namespace {
 
+		//TODO:: MAKE A RANDOM ENGINE IN UTILTIY AND REPLACE THIS CODE WITH IT 
 		std::random_device rd;
 		std::mt19937 randomEngine{ rd() };
 		std::uniform_int_distribution<uint32_t>  dist{ 0, Rubber::ID::inValidIndex - 1 };
@@ -47,7 +49,6 @@ namespace Rubber {
 		using Types = typename SCHEMA::Types;     // tuple <T1,T2,…>
 		using ColPtrs = PtrTuple_t <Types>;        // tuple <T1*,T2*,…>
 		using ColIndex = typename SCHEMA::Order;
-
 		// define the AOS structure
 		struct Block {
 			// n: current active instances 
@@ -137,11 +138,10 @@ namespace Rubber {
 			this->m_Data.n++;
 		}
 
-		size_t count () const{
+		size_t count() const{
 			return  m_Data.n;
 
 		}
-
 
 		template<ColIndex C>
 		using ColType = std::tuple_element_t<static_cast<std::size_t>(C), Types>;
@@ -175,7 +175,7 @@ namespace Rubber {
 	private:
 		Block       m_Data{};
 		std::size_t m_MaxAlign{ 1 };
-		Utility::vector<uint32_t> m_Map{};
+		Utility::Vector<uint32_t> m_Map{};
 
 		// ── grow / allocate ───────────────────────────────────────────────────
 		void grow(std::size_t newCap)
@@ -267,7 +267,5 @@ namespace Rubber {
 			((std::get<Is>(m_Data.col)[dst] =
 				std::get<Is>(data)), ...);
 		}
-
-
 	};
 }

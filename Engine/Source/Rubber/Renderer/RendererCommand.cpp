@@ -30,9 +30,9 @@ namespace Rubber {
 		s_RendererAPI->clear();
 	}
 
-	void RendererCommand::drawIndexed(const Ref<VertexArray>& vertexArray)
+	void RendererCommand::drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count)
 	{
-		s_RendererAPI->drawIndexed(vertexArray);
+		s_RendererAPI->drawIndexed(vertexArray, count);
 	}
 
 

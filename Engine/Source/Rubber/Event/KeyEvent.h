@@ -5,7 +5,7 @@ namespace Rubber
 {
 	/**
 	* @brief A KeyEvent class that represents all kinds of key events.
-	* Key Pressed Event and Key Released Event both have the same keycode attribute.
+	* Key Pressed Event and Key Released Event both have the same key code attribute.
 	*/
 	class RB_API KeyEvent : public Event
 	{
@@ -19,7 +19,7 @@ namespace Rubber
 		inline int getKeyCode() const { return m_KeyCode; }
 
 	private:
-		int m_KeyCode; ///< The keycode of the key event.
+		int m_KeyCode; ///< The key code of the key event.
 	};
 
 	/**
@@ -29,8 +29,8 @@ namespace Rubber
 	{
 	public:
 	   /**
-	   * @brief Constructs a KeyPressedEvent with the given keycode and repeat count.
-	   * @param keyCode The keycode of the key pressed event.
+	   * @brief Constructs a KeyPressedEvent with the given key code and repeat count.
+	   * @param keyCode The key code of the key pressed event.
 	   * @param repeatCount The repeat count of the key pressed event.
 	   */
 		KeyPressedEvent(int keyCode, int repeatCount)

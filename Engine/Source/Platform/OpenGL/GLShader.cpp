@@ -8,6 +8,8 @@ namespace Rubber {
 
 	// helper function to covert a type name to a given glEnum represents the type of the shader
 	static GLint ShaderTypeStrToEnum(std::string_view typeName){
+		RB_PROFILE_FUNC();
+
 		if (typeName == "vertex"){
 			return GL_VERTEX_SHADER;
 		}else if (typeName == "fragment" || typeName == "pixel"){
@@ -20,6 +22,8 @@ namespace Rubber {
 
 	GLShader::GLShader(std::string_view name, std::string_view vertexSrc, std::string_view fragmentSrc) :m_Name(name)
 	{
+		RB_PROFILE_FUNC();
+
 		//<ShaderType, ShaderSrcStr>
 		std::unordered_map<GLint, std::string> shaderSrcMap;
 		shaderSrcMap[GL_VERTEX_SHADER] = vertexSrc;
@@ -29,6 +33,8 @@ namespace Rubber {
 
 	GLShader::GLShader(std::string_view filepath)
 	{
+		RB_PROFILE_FUNC();
+
 		// extract the file's name
 		std::filesystem::path path(filepath);
 		m_Name = path.stem().string();
@@ -58,45 +64,68 @@ namespace Rubber {
 	}
 
 
-	void GLShader::setInt(std::string_view name, int value)
+	void GLShader::setInt(std::string_view name,const int value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<int>(name, value);
 	}
 
-	void GLShader::setFloat(std::string_view name, float value)
+	void GLShader::setIntArray(std::string_view name, int* const values, uint32_t count)
 	{
+		RB_PROFILE_FUNC();
+
+		setUniformnv<int*>(name, values, count);
+	}
+
+	void GLShader::setFloat(std::string_view name, const float value)
+	{
+		RB_PROFILE_FUNC();
+
 		setUniform<float>(name, value);
 	}
 
 	void GLShader::setFloat2(std::string_view name, const glm::vec2& value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<glm::vec2>(name, value);
 	}
 
 	void GLShader::setFloat3(std::string_view name, const glm::vec3& value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<glm::vec3>(name, value);
 
 	}
 
 	void GLShader::setFloat4(std::string_view name, const glm::vec4& value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<glm::vec4>(name, value);
 
 	}
 
 	void GLShader::setMat3(std::string_view name, const glm::mat3& value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<glm::mat3>(name, value);
 	}
 
 	void GLShader::setMat4(std::string_view name, const glm::mat4& value)
 	{
+		RB_PROFILE_FUNC();
+
 		setUniform<glm::mat4>(name, value);
 	}
 
 	GLint GLShader::getUniformLocation(std::string_view name) const
 	{
+		RB_PROFILE_FUNC();
+
 		auto it = m_UniformCache.find(name);
 		if (it != m_UniformCache.end())
 			return it->second;
@@ -110,6 +139,8 @@ namespace Rubber {
 	// read in the whole shader file as a single string
 	std::string GLShader::readShaderFile(std::string_view filepath)
 	{
+		RB_PROFILE_FUNC();
+
 		std::string result;
 		std::ifstream in(filepath.data(), std::ios::in | std::ios::binary);
 		if (in) {
@@ -127,6 +158,8 @@ namespace Rubber {
 
 	std::unordered_map<GLint, std::string> GLShader::preProcess(std::string_view fileContent)
 	{
+		RB_PROFILE_FUNC();
+
 		//<ShaderType, ShaderSrcStr>
 		std::unordered_map<GLint, std::string> shaderSrcMap;
 
@@ -163,8 +196,10 @@ namespace Rubber {
 
 	void GLShader::compile(const std::unordered_map<GLint, std::string>& shaderSrcMap)
 	{
+		RB_PROFILE_FUNC();
+
 		// container that record every created shader
-		std::vector<GLint> compiledShaders;
+		Vector<GLint> compiledShaders;
 
 		compiledShaders.reserve(shaderSrcMap.size());
 		for (auto& [shaderType, shaderSrc] : shaderSrcMap) {
@@ -183,7 +218,7 @@ namespace Rubber {
 				int maxLength = 0;
 				glGetShaderiv(curShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-				std::vector<char> infoLog(maxLength);
+				Vector<char> infoLog(maxLength);
 				glGetShaderInfoLog(curShader, maxLength, &maxLength, infoLog.data());
 
 				//clean up previous compiled shader if current shader fails to compile
@@ -210,7 +245,7 @@ namespace Rubber {
 		if (!isLinked) {
 			int maxLength = 0;
 			glGetProgramiv(this->m_ShaderID, GL_INFO_LOG_LENGTH, &maxLength);
-			std::vector<char> infoLog(maxLength);
+			Vector<char> infoLog(maxLength);
 			glGetProgramInfoLog(this->m_ShaderID, maxLength, &maxLength, infoLog.data());
 			RB_CORE_ASSERT(false, infoLog.data());
 

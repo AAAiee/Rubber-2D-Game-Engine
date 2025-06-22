@@ -23,6 +23,10 @@ public:
 		return this->m_Height;  
 	};   
 
+	virtual bool operator==(const Texture& texture) override{
+		return this->m_RendererID == dynamic_cast<const GLTexture2D&>(texture).m_RendererID;
+	}
+
 
 private:  
 	uint32_t  m_RendererID;  

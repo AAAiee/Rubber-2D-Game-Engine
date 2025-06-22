@@ -1,5 +1,4 @@
-//include the Entry Point  
-#include "Rubber.h"  
+#include "Rubber.h"
 #include "Rubber/Core/EntryPoint.h"  
 #include "exampleLayer.h"
 
@@ -17,37 +16,35 @@ public:
    {  
 
 
-
    }  
 
-   void onImGuiRender() override  
-   {  
 
-   }  
+   void onAttach(Ref<Rubber::EventManager> em){
 
-   void onEvent(Rubber::Event& event) override  
-   {  
 
-   }  
-   
+   }
 
-private:
-    Rubber::EntityManager em;
-	Rubber::testComponent comp;
 
-  
+   void onDetach(Ref<Rubber::EventManager> em){
+
+
+   }
+
 };  
 
-class test : public Rubber::Application{  
-public:  
-   test(){  
-       pushLayer(new testEcs());
-       pushLayer(new ExampleLayer());
-   }  
 
-   ~test() {};  
 
-};  
+class test : public Rubber::Application {
+public:
+	test() {
+		pushLayer(new testEcs());
+		pushLayer(new ExampleLayer());
+
+	}
+	~test() {};
+
+};
+
 
 Rubber::Application* Rubber::CreateApp()  
 {  

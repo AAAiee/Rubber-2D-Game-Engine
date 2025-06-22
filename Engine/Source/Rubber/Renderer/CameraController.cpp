@@ -9,12 +9,26 @@
 #include "imgui.h"
 
 
-
 namespace Rubber{
-	CameraController::CameraController(float fovy, float aspectRatio, float zNear, float zFar)
-		:m_Position(), m_Zoom(fovy), m_AspectRatio(aspectRatio), m_ZNear(zNear), m_ZFar(zFar), m_Camera(this->m_Zoom, this->m_AspectRatio, this->m_ZNear, this->m_ZFar)
+	CameraController::CameraController(float fovy, float aspectRatio, float zNear, float zFar, Ref<EventManager>& em)
+		: m_Position(), m_Zoom(fovy), m_AspectRatio(aspectRatio), m_ZNear(zNear), m_ZFar(zFar), m_Camera(this->m_Zoom, this->m_AspectRatio, this->m_ZNear, this->m_ZFar), m_Em(em)
 	{
 		m_Orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
+		// subscribe event
+		em->subscribe<MouseScrolledEvent>("Camera MouseScroll", [this](const MouseScrolledEvent& e)->bool {
+			return onMouseScrolled(e);
+			});
+
+		em->subscribe<WindowResizeEvent>("Camera WindowResize",[this](const WindowResizeEvent& e)-> bool {
+			return onWindowResize(e);
+			});
+	}
+
+	CameraController::~CameraController()
+	{
+		m_Em->unsubscribe<MouseScrolledEvent>("Camera MouseScroll");
+		m_Em->unsubscribe<WindowResizeEvent>("Camera WindowResize");
 	}
 
 	glm::vec3 CameraController::getFrontDirection() const
@@ -52,7 +66,7 @@ namespace Rubber{
 		if (m_IsCursorDisabled){
 
 			Input::disableCursor();
-			float deltaTime = 1.0f / 120.0f;
+			float deltaTime = 1.0f / 240.f;
 			float transSpeed = this->m_TranslationSpeed * deltaTime;
 			float rotationSpeed = 360.0f * deltaTime;
 
@@ -96,18 +110,6 @@ namespace Rubber{
 		updateViewMatrix();
 	}
 
-	void CameraController::onEvent(Event& e)
-	{
-		EventDispatcher dispacher(e);
-		dispacher.dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& e)->bool {
-			return onMouseScrolled(e);
-			});
-
-		dispacher.dispatch <WindowResizeEvent>([this](WindowResizeEvent& e)-> bool {
-			return onWindowResize(e);
-			});
-	}
-	
 
 
 	void CameraController::updateViewMatrix()
@@ -118,7 +120,7 @@ namespace Rubber{
 		this->m_Camera.setViewMatrix(viewMatrix);
 	}
 
-	bool CameraController::onMouseScrolled(MouseScrolledEvent& e)
+	bool CameraController::onMouseScrolled(const MouseScrolledEvent& e)
 	{
 		float yOffset = e.getYOffset();
 		m_Zoom -= yOffset;
@@ -128,7 +130,7 @@ namespace Rubber{
 		return false;
 	}
 
-	bool CameraController::onWindowResize(WindowResizeEvent& e)
+	bool CameraController::onWindowResize(const WindowResizeEvent& e)
 	{
 		int newWidth, newHeight;
 		newWidth = e.getWidth(), newHeight = e.getHeight();

@@ -1,5 +1,7 @@
 #pragma once
 #include "Rubber/Window/Window.h"
+#include "Rubber/Event/EventManager.h"
+#include <optional>
 
 #include <GLFW/glfw3.h>
 namespace Rubber
@@ -18,18 +20,18 @@ namespace Rubber
 		
 		
 		// Window Attributes
-		inline void setEventCallBack (const EventCallBackFn& callback) override {
-			m_Data.eventCallBack = callback;
+		inline void setEventManager(Ref<EventManager>& em) override {
+			m_Data.em = em;
 		}
 		void setVsync(bool enabled) override;
 		bool isVsync() const override;
 	private:
 		// initialization && ShutDown
-		virtual void init(const WindowProps& props);
+		virtual void init(const WindowProps& props) ;
 		virtual void shutDown();
 
 	private:
-		// make sure Glfw is initialized only once
+		// make sure GLFW is initialized only once
 		static bool s_GLFWInitialized;
 	    // our window object
 		GLFWwindow* m_Window;
@@ -40,7 +42,7 @@ namespace Rubber
 			unsigned int width = 1280;
 			unsigned int height = 720;
 			bool Vsync = false;
-			EventCallBackFn eventCallBack;
+			std::optional<Ref<EventManager>> em = std::nullopt;
 		};
 		WindowInfo m_Data;
 

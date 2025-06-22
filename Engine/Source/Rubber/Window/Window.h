@@ -1,5 +1,7 @@
 #pragma once
 #include "Rubber/Core/Core.h"
+#include "Rubber/Event/EventManager.h"
+
 namespace Rubber
 {
 	class Event;
@@ -22,21 +24,18 @@ namespace Rubber
 	//base class for all windows on different platforms
 	{
 	public:
-		// define function pointer type for EventCallBack function
-		using EventCallBackFn = std::function<void(Event&)>;
-
 		//destructor
 		virtual ~Window() {};
 
 		virtual void onUpdate() = 0;
 
-		//Window propeties
+		//Window properties
 		virtual unsigned int getWidth() const = 0;
 		virtual unsigned int getHeight() const = 0;
 		virtual void* getNativeWindow() const = 0;
 
 		//Window Attributes 
-		virtual void setEventCallBack(const EventCallBackFn& callback) = 0;
+		virtual void setEventManager(Ref<EventManager>& em) = 0;
 		virtual void setVsync(bool enabled) = 0;
 		virtual bool isVsync() const = 0;
 

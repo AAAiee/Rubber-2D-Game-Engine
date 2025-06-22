@@ -28,8 +28,9 @@ namespace Rubber {
 		// Uniform-setting API: pure virtual overloads for each supported type
 	    // -------------------------------------------------------------------
 
-		virtual void setInt(std::string_view name, int value) = 0;
-		virtual void setFloat(std::string_view name, float value) = 0;
+		virtual void setInt(std::string_view name, const int value) = 0;
+		virtual void setIntArray(std::string_view name, int* const values, uint32_t count) = 0;
+		virtual void setFloat(std::string_view name, const float value) = 0;
 		virtual void setFloat2(std::string_view name, const glm::vec2& value) = 0;
 		virtual void setFloat3(std::string_view name, const glm::vec3& value) = 0;
 		virtual void setFloat4(std::string_view name, const glm::vec4& value) = 0;

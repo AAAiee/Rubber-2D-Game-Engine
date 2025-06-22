@@ -21,6 +21,7 @@ namespace Rubber{
 		virtual void setData(void* data, uint32_t size) = 0;
 		static Ref<Texture2D> create(const std::string& texturePath);
 		static Ref<Texture2D> create(uint16_t width, uint16_t heigh);
+		virtual bool operator==(const Texture& texture)  = 0;
 	};
 
 

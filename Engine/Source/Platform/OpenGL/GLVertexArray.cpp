@@ -32,26 +32,35 @@ namespace Rubber {
     GLVertexArray::GLVertexArray()
         : m_IndexBuffer(nullptr), m_VertexBuffers()
     {
+		RB_PROFILE_FUNC();
+
         glCreateVertexArrays(1, &m_RendererID);
     }
 
     GLVertexArray::~GLVertexArray()
     {
+		RB_PROFILE_FUNC();
+
         glDeleteVertexArrays(1, &m_RendererID);
     }
 
     void Rubber::GLVertexArray::bind() const
     {
+		RB_PROFILE_FUNC();
+
         glBindVertexArray(this->m_RendererID);
     }
 
     void Rubber::GLVertexArray::unbind() const
     {
+		RB_PROFILE_FUNC();
+
         glBindVertexArray(0);
     }
 
     void Rubber::GLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {	
+		RB_PROFILE_FUNC();
 
         RB_CORE_ASSERT(vertexBuffer->getLayout().getElementBuffer().size(),
             "Layout is not set yet, make sure you set layout before add it to the vertex array");
@@ -78,19 +87,25 @@ namespace Rubber {
 
     void GLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
     {
+		RB_PROFILE_FUNC();
+
         glBindVertexArray(m_RendererID);
         indexBuffer->bind();
         this->m_IndexBuffer = indexBuffer;
     }
 
-    std::vector<Ref<VertexBuffer>>& Rubber::GLVertexArray::getVertexBuffers()
+    Vector<Ref<VertexBuffer>>& Rubber::GLVertexArray::getVertexBuffers()
     {
+		RB_PROFILE_FUNC();
+
         RB_CORE_ASSERT(this->m_VertexBuffers.size(), "Nothing is in VertexBuffer, make sure add before you get it");
         return this->m_VertexBuffers;
     }
 
     Ref<IndexBuffer>& Rubber::GLVertexArray::getIndexBuffer()
     {
+		RB_PROFILE_FUNC();
+
         RB_CORE_ASSERT(m_IndexBuffer->getCount(), "index buffer is not set yet, make sure you add it before get it");
         return m_IndexBuffer;
     }

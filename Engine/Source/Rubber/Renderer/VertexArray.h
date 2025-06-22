@@ -15,7 +15,7 @@ namespace Rubber {
 		virtual void addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) = 0;
 		virtual void setIndexBuffer(const Ref<IndexBuffer>& indexBuffer) = 0;
 
-		virtual std::vector<Ref<VertexBuffer>>& getVertexBuffers() = 0;
+		virtual Vector<Ref<VertexBuffer>>& getVertexBuffers() = 0;
 		virtual Ref<IndexBuffer>& getIndexBuffer() = 0;
 		static Ref<VertexArray> create();
 	};

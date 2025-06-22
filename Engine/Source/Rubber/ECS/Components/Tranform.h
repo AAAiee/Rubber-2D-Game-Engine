@@ -47,7 +47,7 @@ namespace Rubber::Component{
 
 		instanceData m_Data;
 
-		Utility::vector<uint32_t> m_Map;
+		Vector<uint32_t> m_Map;
 	};
 
 }

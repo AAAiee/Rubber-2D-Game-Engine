@@ -14,6 +14,8 @@ Rubber::GLContext::GLContext(GLFWwindow* windowHandler)
 
 void Rubber::GLContext::init()
 {		
+	RB_PROFILE_FUNC();
+
 	// set the context to the current window
 	glfwMakeContextCurrent(this->m_windowHandler);
 
@@ -24,5 +26,7 @@ void Rubber::GLContext::init()
 
 void Rubber::GLContext::swapBuffer()
 {
+	RB_PROFILE_FUNC();
+
 	glfwSwapBuffers(this->m_windowHandler);
 }

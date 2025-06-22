@@ -5,7 +5,6 @@ Rubber::Entity Rubber::EntityManager::EntityManager::createEntity()
 {
 	EntityID  newEntityID;
 	//case 1:: when freed at least 1024 entities, reuse entity slot
-	std::cout << " current deleted elements: " << (this->m_FreeIndices.size()) << "\n";
 	if (this->m_FreeIndices.size() > ID::minDeletedElements) {
 		newEntityID = EntityID{ m_FreeIndices.front() };
 		//double check to make sure the index is free now , do we really need this?

@@ -1,10 +1,9 @@
 #pragma once
-#include "Rubber/Core/Core.h"
-#include <vector>
+#include "Rubber/Utility/Utility.h"
 
 namespace Rubber {
 	class Layer;
-	class RB_API LayerStack
+	class  LayerStack
 		// a wrapper class for vector, which is the
 		// container for our Layers 
 		// all layers will be destroyed when program ends
@@ -30,14 +29,14 @@ namespace Rubber {
 		void popOverlay(Layer* layer);
 
 		// implement begin and end iterator to support traversing the layers
-		std::vector<Layer*>::iterator begin();
+		Vector<Layer*>::iterator begin();
 
-		std::vector<Layer*>::iterator end();
+		Vector<Layer*>::iterator end();
 
 	private:
 
 		// a contiguous container to store our layers
-		std::vector<Layer*> m_Layers;
+		Vector<Layer*> m_Layers;
 
 		// using vector because we want to
 		// insert layer in the middle, 

@@ -11,7 +11,7 @@ namespace Rubber {
 		static void setViewPort(int width, int height);
 		static void clearColor(const glm::vec4& color);
 		static void clear();
-		static void drawIndexed(const Ref<VertexArray>& vertexArray);
+		static void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count=0);
 	private:
 		static RendererAPI* s_RendererAPI;
 	};
