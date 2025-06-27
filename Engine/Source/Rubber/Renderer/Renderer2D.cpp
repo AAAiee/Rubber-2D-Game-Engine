@@ -144,29 +144,9 @@ namespace Rubber {
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, const float tillingFactor, const glm::vec4& tintColor)
 	{
 		RB_PROFILE_FUNC();
-		//scale->translation
 
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW){
-			flush();
-		}
-		
-		const float texIndex = 0.0f; // in this function we only draw color, no texture(white texture by default)
- 
-		glm::mat4 tsMatrix = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(scale.x, scale.y, 1.0f)), position);
-
-		for (int i = 0; i < 4; i++){
-			data.m_VerticesInsertPosPtr->m_Position = tsMatrix * data.UNIT_QUAD_POS[i];
-			data.m_VerticesInsertPosPtr->m_Color = color;
-			data.m_VerticesInsertPosPtr->m_TexCoord = data.UNIT_QUAD_TEX_COORD[i];
-			data.m_VerticesInsertPosPtr->m_TexIndex = {texIndex};
-			data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFactor; 
-			data.m_VerticesInsertPosPtr->m_TintFacor = tintColor; 
-			data.m_VerticesInsertPosPtr++;
-		}
-		data.m_ValidIndexCount += 6;
-#if ENABLE_RENDERER_STATS 
-	s_Stats.m_QuadNumber++;
-#endif
+		glm::mat4 tsMatrix = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale.x, scale.y, 1.0f });
+		drawColorQuad(tsMatrix, color, tillingFactor, tintColor);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
@@ -177,12 +157,14 @@ namespace Rubber {
 			flush();
 		}
 	
-		glm::mat4 tsMatrix = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(scale.x, scale.y, 1.0f)), position);
-		drawTextureQuadHelper(tsMatrix, texture, tillingFactor, tintColor);
+		glm::mat4 tsMatrix = glm::translate(glm::mat4(1), position)   
+			* glm::scale(glm::mat4(1), { scale.x, scale.y, 1 });
+
+		drawTextureQuad(tsMatrix, texture, tillingFactor, tintColor);
 	}
 	
 
-    void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float angles, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+    void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
     {  
        RB_PROFILE_FUNC();  
 
@@ -190,13 +172,28 @@ namespace Rubber {
 		   flush();
 	   }
 
-	   glm::mat4 tsMatrix = glm::translate(
+	   glm::mat4 tsMatrix = glm::scale(
 		   glm::rotate(
-			   glm::scale(glm::mat4(1.0f), glm::vec3(scale.x, scale.y, 1.0f)),
-			   glm::radians(angles), glm::vec3(0.0f, 0.0f, 1.0f)) ,position);
+			   glm::translate(glm::mat4(1.0f), position),
+			   radians, glm::vec3(0, 0, 1)),
+		   glm::vec3(scale.x, scale.y, 1.0f));
 
-	   drawTextureQuadHelper(tsMatrix, texture, tillingFactor, tintColor);
+
+	   drawTextureQuad(tsMatrix, texture, tillingFactor, tintColor);
     }
+
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const glm::vec4& color, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	{
+		RB_PROFILE_FUNC();
+
+		glm::mat4 tsMatrix = glm::scale(                                  
+				glm::rotate(                             
+					glm::translate(glm::mat4(1.0f), position),  
+					radians, glm::vec3(0, 0, 1)),
+				glm::vec3(scale.x, scale.y, 1.0f));
+
+		drawColorQuad(tsMatrix, color, TillingFactor,tintColor);
+	}
 
 	void Renderer2D::endScene()
 	{
@@ -222,7 +219,7 @@ namespace Rubber {
 	}
 
 
-	void Renderer2D::drawTextureQuadHelper(const glm::mat4& transformation, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
 	{
 		RB_PROFILE_FUNC();
 		//scale->translation
@@ -262,6 +259,32 @@ namespace Rubber {
 		s_Stats.m_QuadNumber++;
 #endif 
 	}
+
+
+	void Renderer2D::drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, const float tillingFacor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	{
+		RB_PROFILE_FUNC();
+		//scale->translation
+		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+			flush();
+		}
+		const float texIndex = 0.0f; // in this function we only draw color, no texture (white texture by default)
+		for (int i = 0; i < 4; i++) {
+			data.m_VerticesInsertPosPtr->m_Position = transformation * data.UNIT_QUAD_POS[i];
+			data.m_VerticesInsertPosPtr->m_Color = color;
+			data.m_VerticesInsertPosPtr->m_TexCoord = data.UNIT_QUAD_TEX_COORD[i];
+			data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
+			data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFacor;
+			data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
+			data.m_VerticesInsertPosPtr++;
+		}
+		data.m_ValidIndexCount += 6;
+#if ENABLE_RENDERER_STATS 
+		s_Stats.m_QuadNumber++;
+#endif
+	}
+
+
 
 
 #if ENABLE_RENDERER_STATS

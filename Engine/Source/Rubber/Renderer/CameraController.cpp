@@ -10,6 +10,7 @@
 
 
 namespace Rubber{
+
 	CameraController::CameraController(float fovy, float aspectRatio, float zNear, float zFar, Ref<EventManager>& em)
 		: m_Position(), m_Zoom(fovy), m_AspectRatio(aspectRatio), m_ZNear(zNear), m_ZFar(zFar), m_Camera(this->m_Zoom, this->m_AspectRatio, this->m_ZNear, this->m_ZFar), m_Em(em)
 	{
@@ -125,7 +126,7 @@ namespace Rubber{
 		float yOffset = e.getYOffset();
 		m_Zoom -= yOffset;
 		m_Zoom = std::clamp(m_Zoom, 1.0f, 60.0f);
-		this->m_Camera.setPerspectiveProjectionMatrix(
+		this->m_Camera.setProjection(
 			glm::perspective(glm::radians(this->m_Zoom), this->m_AspectRatio, this->m_ZNear, this->m_ZFar));
 		return false;
 	}
@@ -142,7 +143,7 @@ namespace Rubber{
 			this->m_AspectRatio = 1.0f;
 		}
 
-		this->m_Camera.setPerspectiveProjectionMatrix(
+		this->m_Camera.setProjection(
 			glm::perspective(glm::radians(this->m_Zoom), this->m_AspectRatio, this->m_ZNear, this->m_ZFar));
 
 		return false;

@@ -27,6 +27,10 @@
 #include "Rubber/Event/EventManager.h"
 
 
+#include "Rubber/Utility/Utility.h"
+
+
+
 // bind event callback  
 namespace Rubber
 {
@@ -44,7 +48,6 @@ namespace Rubber
 			RB_PROFILE_SCOPE("WindowCreate");
 			this->m_Window = Window::create();
 		}
-
 		this->m_Em = makeRef<EventManager>();
 		this->m_Window->setEventManager(m_Em);
 
@@ -53,11 +56,13 @@ namespace Rubber
 		pushOverlay(m_ImGuiLayer);
 	
 		{
-			RB_PROFILE_SCOPE("Renderer Init");
+			RB_PROFILE_SCOPE("Renderer Init + Random Engine Init");
 			Renderer::init();
+			RandomEngine::init();
 		}
+
 		this->m_Window->setVsync(false);
-		this->m_Timer = makeScope<Timer>(240);
+		this->m_Timer = makeScope<Timer>(60);
 
 		//event subscription
 		{
@@ -76,6 +81,7 @@ namespace Rubber
 
 	Application::~Application()
 	{
+		//TODO:: shut down all subsystems
 
 	}
 
@@ -127,12 +133,12 @@ namespace Rubber
 
 				if (!this->m_IsWindowMinimized) {
 					//update all layers;
-					while (lag >= 1 / 240.0) {
+					while (lag >= 1 / 120.0) {
 						for (Layer* layer : m_LayerStack)
 						{
 							layer->onUpdate();
 						}
-						lag -= (1.0 / 240.0);
+						lag -= (1.0 / 120.0);
 					}
 				}
 			}// logic update + rendering

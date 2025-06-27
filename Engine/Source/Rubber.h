@@ -22,6 +22,7 @@
 #include "Rubber/Input/KeyCodes.h"
 #include "Rubber/Input/MouseCodes.h"
 
+#include "Rubber/Window/Window.h"
 
 //include renderer
 #include "Rubber/Renderer/Renderer.h"
@@ -33,6 +34,7 @@
 #include "Rubber/Renderer/VertexArray.h"
 #include "Rubber/Renderer/CameraController.h"
 #include "Rubber/Renderer/Texture.h"
+#include "Rubber/Renderer/OrthoCameraController.h"
 
 // profile
 #include "Rubber/Debug/Profiler.h"
@@ -40,10 +42,10 @@
 
 // ECS
 #include "Rubber/ECS/Entity/EntityManager.h"
-#include "Rubber/ECS/Components/Tranform.h"
+#include "Rubber/ECS/Components/ComponentTemplate.h"
+#include "Rubber/ECS/Registry/Registry.h"
 
-//testing purpose
-#include "Rubber/ECS/Components/Instance.h"
-
+//Utilities
+#include "Rubber/Utility/Utility.h"
 
 

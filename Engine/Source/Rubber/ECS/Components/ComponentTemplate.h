@@ -1,34 +1,23 @@
-﻿#include "Rubber/ECS/EcsCommonHeaders.h"
-#include <tuple>
-#include <type_traits>
-#include <algorithm>
-#include <new>
-#include <random>
-#include <cstring>
-#include <cassert>
-
+﻿#pragma once
+#include "Rubber/ECS/EcsCommonHeaders.h"
+#include "Rubber/Utility/Utility.h"
 
 // add concept to limit the type?
 namespace Rubber {
 
 	namespace {
 
-		//TODO:: MAKE A RANDOM ENGINE IN UTILTIY AND REPLACE THIS CODE WITH IT 
-		std::random_device rd;
-		std::mt19937 randomEngine{ rd() };
-		std::uniform_int_distribution<uint32_t>  dist{ 0, Rubber::ID::inValidIndex - 1 };
-
 		inline constexpr uint8_t RESCALE_FACTOR = static_cast<uint8_t>(2);
-	}
 
-	namespace {
 		// takes in a schema and output a tuple with corresponding pointer types
-		template<class Tup> struct PtrTuple;
-		template<class... Ts> struct PtrTuple<std::tuple<Ts...>>
+		template<class TupleOfTypes> struct TupleOfTypePtrs;
+
+		template<class... Ts> struct TupleOfTypePtrs<std::tuple<Ts...>>
 		{
 			using type = std::tuple<Ts*...>;
 		};
-		template<class Tup> using PtrTuple_t = typename PtrTuple<Tup>::type;
+
+		template<class TupleOfTypes> using TupleOfTypePtrs_t = typename TupleOfTypePtrs<TupleOfTypes>::type;
  
 		// find the aligned offset for each component, for example, a data structure with
 		// alignment of 4 will start at an offset that is a multiple of 4
@@ -43,12 +32,12 @@ namespace Rubber {
 	// the base class for all components, in charge of basic functionalities such as
 	// allocate AOS to store component's data, garbage collector, general lookup.., all 
 	// other component should be generated from this class template. for now only works for POD types!
-	template<class SCHEMA>
-	class ComponentManager
+	template<typename... ColTypes>
+	class ComponentBase
 	{
-		using Types = typename SCHEMA::Types;     // tuple <T1,T2,…>
-		using ColPtrs = PtrTuple_t <Types>;        // tuple <T1*,T2*,…>
-		using ColIndex = typename SCHEMA::Order;
+		using TupleColTypes = std::tuple<ColTypes...>;
+		using ColPtrs = TupleOfTypePtrs_t <TupleColTypes>;        // tuple <T1*,T2*,…>
+
 		// define the AOS structure
 		struct Block {
 			// n: current active instances 
@@ -67,10 +56,10 @@ namespace Rubber {
 
 	public:
 		// constructor that default has a capacity for 16 instances
-		ComponentManager() { grow(16); }
+		ComponentBase() { grow(16); }
 
 		// destructor that free up the AOS
-		~ComponentManager() { ::operator delete(m_Data.buf, std::align_val_t(m_MaxAlign)); }
+		~ComponentBase() { ::operator delete(m_Data.buf, std::align_val_t(m_MaxAlign)); }
 
 		// general look up method that returns an instance(an wrapper for an index)
 		// this is to help the client who wants access to the same component without repeated
@@ -86,10 +75,9 @@ namespace Rubber {
 		// garbage Collector
 		void garbageCollector(const Rubber::EntityManager& em)
 		{
-			int32_t aliveInRow = 0;
-			uint32_t n;
-			while ((n = m_Data.n) > 0 && aliveInRow < 4) {
-				uint32_t randomIndex = dist(randomEngine) % n;
+			uint32_t aliveInRow = 0;
+			while ( m_Data.n > 0 && aliveInRow < 4ui32) {
+				uint32_t randomIndex = (uint32_t)(RandomEngine::Float() * (float)m_Data.n);
 				if (em.is_alive(this->m_Data.ent[randomIndex].id)) {
 					aliveInRow++;
 					continue;
@@ -120,7 +108,10 @@ namespace Rubber {
 			--this->m_Data.n;
 		}
 
-		void addComponent(Types data, Entity owner) {
+		template <typename... Args>
+		void addComponent(Entity owner, Args&&... values) {
+			RB_STATIC_ASSERT(sizeof...(Args) == sizeof...(ColTypes), "Entity lacks this specific component!");
+
 			if (this->m_Data.n >= this->m_Data.cap) {
 				size_t resizeTo =  this->m_Data.cap * RESCALE_FACTOR;
 				grow(resizeTo);
@@ -130,62 +121,57 @@ namespace Rubber {
 
 			this->m_Map[ID::indexOf(owner.id)] = static_cast <uint32_t> (insertPos);
 
-			// add data over;
+			// add data to the right place;
 			this->m_Data.ent[insertPos] = owner;
 
 			// now suppose every data passed in is correct
-			insertElement(std::make_index_sequence<std::tuple_size_v<Types>> {}, data, insertPos);
+			insertElement(std::index_sequence_for<ColTypes...> {}, insertPos, std::forward<Args>(values)...) ;
 			this->m_Data.n++;
 		}
 
 		size_t count() const{
 			return  m_Data.n;
-
 		}
 
-		template<ColIndex C>
-		using ColType = std::tuple_element_t<static_cast<std::size_t>(C), Types>;
 
-
-		template<ColIndex C>
-	    ColType<C>& get(Entity entity)  {
+		template<typename TargetType>
+		TargetType& get(Entity entity){
 			auto instance = lookup(entity);
 			RB_CORE_ASSERT(instance.index != ID::invalidId, "entity has no such component");
-			return get<C>(instance);
+			return  get<TargetType>(instance);
 		}
 
-		template<ColIndex C>
-		 ColType<C>& get(Component::Instance instance)  {
-			return  std::get<static_cast<std::size_t>(C)>(m_Data.col)[instance.index];
+		template<typename TargetType>
+		TargetType& get(Component::Instance instance){
+			return  std::get<TUpleIndexLookUp_v<TargetType, TupleColTypes>>(m_Data.col)[instance.index];
 		}
 
-		template<ColIndex C>
-		void set(Entity entity, const ColType<C>& data) {
+		template< typename TargetType>
+		void set(Entity entity, const TargetType& data) {
 			auto instance = lookup(entity);
 			RB_CORE_ASSERT(instance.index != ID::invalidId, "entity has no such component");
-			set<C>(instance,data);
+			set<TargetType>(instance,data);
 		}
 
-		template<ColIndex C>
-		void set(Component::Instance instance, const ColType<C>& data) {
-			 std::get<static_cast<std::size_t>(C)>(m_Data.col)[instance.index] = data;
-		}
-
+		template <typename TargetType>
+		void set(Component::Instance instance, const TargetType& data){
+			TargetType& curVal = get<TargetType>(instance);
+			curVal = data;
+		} 
 
 	private:
 		Block       m_Data{};
 		std::size_t m_MaxAlign{ 1 };
-		Utility::Vector<uint32_t> m_Map{};
+		Vector<uint32_t> m_Map;
 
 		// ── grow / allocate ───────────────────────────────────────────────────
 		void grow(std::size_t newCap)
 		{
-			assert(newCap > m_Data.n);
+			RB_CORE_ASSERT(newCap > m_Data.n, "new Capacity should be able to store all current existed data!");
 
 			// 1) maximum alignment (include Entity)
-			Types d{}; // dummy where we use to extract the alignment of each type
+			TupleColTypes d{}; // dummy where we use to extract the alignment of each type
 			m_MaxAlign = std::apply([&](auto... x) {
-
 				return std::max({ std::size_t(alignof(Entity)),
 								  std::size_t(alignof(std::decay_t<decltype(x)>))... });
 				},d);
@@ -259,13 +245,10 @@ namespace Rubber {
 			((std::get<Is>(cols)[dst] = std::get<Is>(cols)[src]), ...);
 		}
 
-		template<std::size_t... Is>
-		void insertElement(std::index_sequence<Is...>,
-			const Types& data,
-			std::size_t dst)
+		template<std::size_t... Is, typename... Args>
+		void insertElement(std::index_sequence<Is...>, std::size_t dst, Args&&... data)
 		{
-			((std::get<Is>(m_Data.col)[dst] =
-				std::get<Is>(data)), ...);
+			((std::get<Is>(m_Data.col)[dst] = std::forward<Args>(data)), ...);
 		}
 	};
 }

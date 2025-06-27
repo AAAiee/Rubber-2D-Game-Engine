@@ -6,13 +6,15 @@ namespace Rubber{
 
 	class Camera {
 	public:
+		Camera() = default;
 		Camera(float fovY, float apsectRatio, float zNear, float zFar);
+		Camera(const glm::mat4& projection); // currently for orthogonal camera initialization 
 
-		void setPerspectiveProjectionMatrix(const glm::mat4& projectionMatrix) {
+		inline void setProjection(const glm::mat4& projectionMatrix) {
 			this->m_ProjectionMatrix = projectionMatrix;
 		};
 		
-		void setViewMatrix(const glm::mat4& viewMatrix) {
+		inline void setViewMatrix(const glm::mat4& viewMatrix) {
 			this->m_ViewMatrix = viewMatrix;
 		}
 
@@ -24,10 +26,8 @@ namespace Rubber{
 			return this->m_ProjectionMatrix * this->m_ViewMatrix;
 		}
 
-
 	private:
-		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewMatrix;
-
+		glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
+		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 	};
 }

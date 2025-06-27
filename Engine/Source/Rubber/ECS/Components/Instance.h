@@ -13,6 +13,6 @@ namespace Rubber::Component {
     }
 
     // Fix for E2486 and C4244 errors: Ensure the type is explicitly defined as uint8_t and avoid any ambiguity.
-    inline constexpr uint8_t RESCALE_FACTOR = static_cast<uint8_t>(2);
+    inline constexpr uint8_t RESCALE_FACTOR = 2ui8;
 
 }

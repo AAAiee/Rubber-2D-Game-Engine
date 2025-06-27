@@ -9,7 +9,6 @@ namespace Rubber {
 	class MouseScrolledEvent;
 	class WindowResizeEvent;
 	class CameraController {
-
 	public:
 		CameraController(float fovy, float aspectRatio, float zNear, float zFar, Ref<EventManager>& em);
 		~CameraController();
@@ -62,6 +61,7 @@ namespace Rubber {
 		// cursor enabled?
 		bool m_IsCursorDisabled = false ;
 		Ref<EventManager> m_Em;
+
 	};
 
 }

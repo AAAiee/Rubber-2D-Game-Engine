@@ -16,10 +16,20 @@ namespace Rubber{
 
 		static void beginScene(const Camera& camera);
 
+		// standard
 		static void drawQuad(const glm::vec3& posiiton, const glm::vec2& size, const glm::vec4& color, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void drawQuad(const glm::vec3& posiiton, const glm::vec2& size, Ref<Texture2D>& tetxure, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+		// rotated
 		static void drawRotatedQuad(const glm::vec3& posiiton, const glm::vec2& size, const float radians, Ref<Texture2D>& tetxure, 
 			const float TillingFactor =1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawRotatedQuad(const glm::vec3& posiiton, const glm::vec2& size, const float radians, const glm::vec4& color,
+			const float TillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+		//ts matrix overload
+		static void drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+		static void drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		static void endScene();
 
@@ -33,7 +43,6 @@ namespace Rubber{
 #endif
 
 	private:
-		static void drawTextureQuadHelper(const glm::mat4& transformation,Ref<Texture2D>& texture, const float tillingFacor=1.f, const glm::vec4& tintColor =  glm::vec4(1.0f));  
 		static void flush(); 
 
 	private:
