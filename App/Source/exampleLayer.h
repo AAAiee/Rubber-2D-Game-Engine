@@ -10,14 +10,16 @@ public:
 
 	}
 
-	void onAttach(Ref<Rubber::EventManager> em) {
+	void onAttach(const Ref<Rubber::EventManager>& em) {
 		m_ParticleSystem = makeRef<ParticleSystem>(1024);
 		m_Camera = makeScope<Rubber::OrthoCameraController>(16.0f / 9.0f, em, true);
 		m_Camera->setPosition({ 0.0f, 0.0f, 0.0f });
+		m_Camera->subscribeAllEvent();
 
 		m_Chessboard = Rubber::Texture2D::create("Asset/texture/chessboard.png");
 		m_SpriteSheet = Rubber::Texture2D::create("Asset/texture/tilemap_packed.png");
 		m_Axe = Rubber::SubTexture2D::create(m_SpriteSheet, { 7, 0 }, { 16, 16 }, { 1,1 }); 
+
 
 
 		// Particle System init here
@@ -30,7 +32,7 @@ public:
 		m_Particle.m_Position = { 0.0f, 0.0f };
 	}
 
-	void onDetach(Ref<Rubber::EventManager> em){
+	void onDetach(){
 
 	}
 

@@ -3,7 +3,6 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "Rubber/Core/EntryPoint.h"  
-#include "EcsDevTest.h"
 #include "exampleLayer.h"
 
 
@@ -13,8 +12,6 @@ public:
 	Sanbox2D()
 	   : Application("Sandbox2D")
 	{
-		
-		pushLayer(new ECSTestLayer());
 		pushLayer(new ExampleLayer());
 
 	}

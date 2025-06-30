@@ -42,10 +42,6 @@
 #include "Rubber/Debug/Profiler.h"
 #include "Rubber/Timer/Timer.h"
 
-// ECS
-#include "Rubber/ECS/Entity/EntityManager.h"
-#include "Rubber/ECS/Components/ComponentTemplate.h"
-#include "Rubber/ECS/Registry/Registry.h"
 
 //Utilities
 #include "Rubber/Utility/Utility.h"
