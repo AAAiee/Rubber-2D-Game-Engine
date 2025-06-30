@@ -12,8 +12,8 @@ namespace Rubber
 		Layer(const std::string& name = "Layer");
 		virtual ~Layer();
 
-		virtual void onAttach(Ref<EventManager> em = nullptr)  = 0;
-		virtual void onDetach(Ref<EventManager> em = nullptr)  = 0;
+		virtual void onAttach(const Ref<EventManager>& em = {}) = 0;
+		virtual void onDetach()  = 0;
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() {};
 

@@ -21,13 +21,27 @@ namespace Rubber {
 	public:
 		using EventHandler = typename std::function<bool(const T& event)>;
 
-		static void subscribe(std::string_view name, EventHandler&& handler){
+		static void subscribe(std::string_view name, EventHandler&& handler) {
 			RB_PROFILE_FUNC();
 			auto& callBacks = getCallBacks();
 			auto& indexMap = getIndexMap();
 
 			uint64_t hashVal = std::hash<std::string_view>{}(name);
-			RB_CORE_ASSERT(indexMap.find(hashVal) == indexMap.end(), "The hanlder with this name is already registered!");
+
+			bool isExisted = indexMap.find(hashVal) != indexMap.end();
+			//RB_CORE_ASSERT(!isExisted || !callBacks[indexMap[hashVal]].m_IsAlive, "The hanlder with this name is already registered with a Alive handler!");
+
+			bool isAliveFlag;
+			if(isExisted && (isAliveFlag = callBacks[indexMap[hashVal]].m_IsAlive)){
+				RB_INFO("Already registered! and do nothing");
+				return;
+			}
+
+			if (isExisted && isAliveFlag == false) {
+				RB_INFO("Already Registered but turn it to be true")
+				callBacks[indexMap[hashVal]].m_IsAlive = true;
+				return;
+			}
 
 			std::size_t index = callBacks.size(); 
 			callBacks.emplace_back(std::move(handler),std::string(name), hashVal);
@@ -73,6 +87,11 @@ namespace Rubber {
 		static void processAllHandlers(const T& e){
 			RB_PROFILE_FUNC();
 			for(auto& it : getCallBacks()){
+				if(!it.m_IsAlive){
+					RB_INFO("current processing handler: but it is not alive {}", it.m_Name);
+					continue;
+				}
+
 				RB_INFO("current processing handler: {}", it.m_Name);
 				if (it.m_Handler(e))
 					break;

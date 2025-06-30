@@ -7,6 +7,8 @@
 namespace Rubber{
 	class Camera;
 	class Texture2D;
+	class SubTexture2D;
+
 	class Renderer2D{
 		
 	public:
@@ -16,18 +18,25 @@ namespace Rubber{
 
 		static void beginScene(const Camera& camera);
 
-		// standard
-		static void drawQuad(const glm::vec3& posiiton, const glm::vec2& size, const glm::vec4& color, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void drawQuad(const glm::vec3& posiiton, const glm::vec2& size, Ref<Texture2D>& tetxure, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		// Direct Input, Texture
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<Texture2D>& texture, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
-		// rotated
-		static void drawRotatedQuad(const glm::vec3& posiiton, const glm::vec2& size, const float radians, Ref<Texture2D>& tetxure, 
+		//Direct Input, SubTexture, non-Rotated quad
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<SubTexture2D>& subTexture, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+		// Direct Input, Rotated, texture
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, 
 			const float TillingFactor =1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void drawRotatedQuad(const glm::vec3& posiiton, const glm::vec2& size, const float radians, const glm::vec4& color,
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const glm::vec4& color,
 			const float TillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
-		//ts matrix overload
-		static void drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		// Direct Input, Rotated, SubTexture Overload
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<SubTexture2D>& subTexture,
+			const float TillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+		//Matrix Overload
+		static void drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const glm::vec2* texCoord=nullptr, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		static void drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 

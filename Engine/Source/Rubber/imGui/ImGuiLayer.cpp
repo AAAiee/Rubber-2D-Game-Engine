@@ -22,7 +22,7 @@ Rubber::ImGuiLayer::~ImGuiLayer()
 {
 }
 
-void Rubber::ImGuiLayer::onAttach(Ref<EventManager> em)
+void Rubber::ImGuiLayer::onAttach(const Ref<EventManager>& em)
 {
     RB_PROFILE_FUNC();
     // Setup Dear ImGui context
@@ -56,7 +56,7 @@ void Rubber::ImGuiLayer::onAttach(Ref<EventManager> em)
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void Rubber::ImGuiLayer::onDetach(Ref<EventManager> em) {
+void Rubber::ImGuiLayer::onDetach() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

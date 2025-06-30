@@ -1,4 +1,4 @@
-#include <Rubber.h>
+#pragma once
 
 const float FIXED_TIME_STAMP = 1.0f / 120.0f;
 

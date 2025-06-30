@@ -8,6 +8,8 @@
 #include "Rubber/Renderer/Camera.h"
 #include "Rubber/Renderer/RendererCommand.h"
 
+#include "Rubber/Renderer/Subtexture2D.h"
+
 namespace Rubber {
 
 	struct Vertex{
@@ -120,7 +122,6 @@ namespace Rubber {
 		}
 		data.m_ShaderLib->getShader("CommonShader")->setIntArray("u_Textures", samplers, data.MAX_TEXTURE_SLOTS);
 
-		//initialize 
 		data.m_ValidTextureCount++;
 		data.m_VerticesInsertPosPtr = data.m_Vertices;
 
@@ -145,6 +146,10 @@ namespace Rubber {
 	{
 		RB_PROFILE_FUNC();
 
+		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+			flush();
+		}
+
 		glm::mat4 tsMatrix = glm::scale(glm::translate(glm::mat4(1.0f), position), { scale.x, scale.y, 1.0f });
 		drawColorQuad(tsMatrix, color, tillingFactor, tintColor);
 	}
@@ -159,12 +164,25 @@ namespace Rubber {
 	
 		glm::mat4 tsMatrix = glm::translate(glm::mat4(1), position)   
 			* glm::scale(glm::mat4(1), { scale.x, scale.y, 1 });
-
-		drawTextureQuad(tsMatrix, texture, tillingFactor, tintColor);
+		drawTextureQuad(tsMatrix, texture, RendererData::UNIT_QUAD_TEX_COORD,tillingFactor, tintColor);
 	}
 	
 
-    void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<SubTexture2D>& subTexture, const float tillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	{
+		RB_PROFILE_FUNC();
+
+		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+			flush();
+		}
+		glm::mat4 tsMatrix = glm::translate(glm::mat4(1), position)
+			* glm::scale(glm::mat4(1), { scale.x, scale.y, 1 });
+
+		Ref<Texture2D> spriteSheetTexture = subTexture->getSpriteSheetTexture();
+		drawTextureQuad(tsMatrix, spriteSheetTexture, subTexture->getTexCoord(), tillingFactor, tintColor);
+	}
+
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
     {  
        RB_PROFILE_FUNC();  
 
@@ -178,13 +196,15 @@ namespace Rubber {
 			   radians, glm::vec3(0, 0, 1)),
 		   glm::vec3(scale.x, scale.y, 1.0f));
 
-
-	   drawTextureQuad(tsMatrix, texture, tillingFactor, tintColor);
+	   drawTextureQuad(tsMatrix, texture, RendererData::UNIT_QUAD_TEX_COORD, tillingFactor, tintColor);
     }
 
 	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const glm::vec4& color, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
 	{
 		RB_PROFILE_FUNC();
+		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+			flush();
+		}
 
 		glm::mat4 tsMatrix = glm::scale(                                  
 				glm::rotate(                             
@@ -193,6 +213,24 @@ namespace Rubber {
 				glm::vec3(scale.x, scale.y, 1.0f));
 
 		drawColorQuad(tsMatrix, color, TillingFactor,tintColor);
+	}
+
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<SubTexture2D>& subTexture, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	{
+
+		RB_PROFILE_FUNC();
+		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+			flush();
+		}
+
+		glm::mat4 tsMatrix = glm::scale(
+			glm::rotate(
+				glm::translate(glm::mat4(1.0f), position),
+				radians, glm::vec3(0, 0, 1)),
+			glm::vec3(scale.x, scale.y, 1.0f));
+
+		Ref<Texture2D> spriteSheetTexture = subTexture->getSpriteSheetTexture();  
+		drawTextureQuad(tsMatrix, spriteSheetTexture, subTexture->getTexCoord(), TillingFactor,tintColor);
 	}
 
 	void Renderer2D::endScene()
@@ -219,13 +257,12 @@ namespace Rubber {
 	}
 
 
-	void Renderer2D::drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const glm::vec2* textCoord,  const float tillingFactor, const glm::vec4& tintColor)
 	{
 		RB_PROFILE_FUNC();
-		//scale->translation
-		float texIndex = 0.0f;
 
-		// check if we already have this texture, if we do, just use that as the index
+		float texIndex = 0.0f;
+		// check if we already have this texture, if we do, reuse
 		for (uint32_t i = 1; i < data.m_ValidTextureCount; i++) {
 			if (*texture == *(data.m_TexturesMap[i])) {
 				texIndex = static_cast<float>(i);
@@ -242,12 +279,15 @@ namespace Rubber {
 
 		RB_CORE_ASSERT(texIndex != 0.0f, "Texture is not binded sucessfully!");
 
-		const glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; //white for default, since we draw texture instead of a color
-
+		const glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; //white for default, since we draw texture instead of a specific color
+		if  (textCoord == nullptr){
+			textCoord = RendererData::UNIT_QUAD_TEX_COORD;
+		}
+		
 		for (int i = 0; i < 4; i++) {
 			data.m_VerticesInsertPosPtr->m_Position = transformation * RendererData::UNIT_QUAD_POS[i];
 			data.m_VerticesInsertPosPtr->m_Color = color;
-			data.m_VerticesInsertPosPtr->m_TexCoord = RendererData::UNIT_QUAD_TEX_COORD[i];
+			data.m_VerticesInsertPosPtr->m_TexCoord = textCoord[i];
 			data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
 			data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFactor;
 			data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
@@ -265,9 +305,6 @@ namespace Rubber {
 	{
 		RB_PROFILE_FUNC();
 		//scale->translation
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
-			flush();
-		}
 		const float texIndex = 0.0f; // in this function we only draw color, no texture (white texture by default)
 		for (int i = 0; i < 4; i++) {
 			data.m_VerticesInsertPosPtr->m_Position = transformation * data.UNIT_QUAD_POS[i];

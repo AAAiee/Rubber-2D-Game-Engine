@@ -25,13 +25,13 @@ namespace Rubber
 		* initialize the ImGui context and set up the style,
 		* also enable mouse and keyboard navigation
 		*/
-		virtual void onAttach(Ref<EventManager> em) final override;
+		virtual void onAttach(const Ref<EventManager>& em) final override;
 
 		/**
 		* @brief detach the layer from the application.
 		* 
 		*/ 
-		virtual void onDetach(Ref<EventManager> em) final override;
+		virtual void onDetach() final override;
 
 		virtual void  onImGuiRender() final override;
 		void begin();

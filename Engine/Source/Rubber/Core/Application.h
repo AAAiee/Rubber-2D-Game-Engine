@@ -11,51 +11,50 @@ namespace Rubber
 	class EventManager;
 	class Camera;
 	class ImGuiLayer;
-	/* Application
-	*  this class controls the application 
-	*/
+
+
 	class  Application
 	{
 	public:
-		Application();
+		Application(const std::string_view name="");
 		virtual ~Application();
 
-		void run();
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* layer);
-
+	public:
 		// get the window object
 		static Window& getWindow();
-
 		//get the eventManager
 		static Ref<EventManager>& getEventManager() {
 			return s_Instance->m_Em;
 		};
-
 		static Scope<Timer>& getTimer(){
 			return s_Instance->m_Timer;
 		}
+
+	public:
+		void run();
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* layer);
 
 	private:
 		Window& getWindowImpl() {
 			return *m_Window;
 		}
-
 		void attachAll();
 
 	private:
-		Scope<Window> m_Window;
 		bool m_Runing = true;
 		//when minimized, stop layer update, (but keep ImGui update)
 		bool m_IsWindowMinimized = false;
-		LayerStack m_LayerStack;
 		// a static instance of the application
 		static Application* s_Instance;
+		bool m_FirstRun = true;
+
+	private:
+		Scope<Window> m_Window;
+		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		Ref<EventManager> m_Em;
 		Scope<Timer> m_Timer;
-		bool m_FirstRun = true;
-
 	
 	private:
 		// handling event delegate

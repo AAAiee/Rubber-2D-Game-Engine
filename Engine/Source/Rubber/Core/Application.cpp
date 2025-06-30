@@ -36,7 +36,7 @@ namespace Rubber
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string_view name)
 	{
 		RB_PROFILE_FUNC();
 		  
@@ -46,9 +46,9 @@ namespace Rubber
 		// Create a window when an application instance is created
 		{
 			RB_PROFILE_SCOPE("WindowCreate");
-			this->m_Window = Window::create();
+			this->m_Window = Window::create(WindowProps(name));
 		}
-		this->m_Em = makeRef<EventManager>();
+		this->m_Em = EventManager::create(128);
 		this->m_Window->setEventManager(m_Em);
 
 		// push ImGui to be the last layer (rendered last )
@@ -113,7 +113,6 @@ namespace Rubber
 		double lag = 0.0;
 		while (m_Runing)
 		{
-			
 			RB_PROFILE_SCOPE("Application::Running");
 
 			{// startFrame

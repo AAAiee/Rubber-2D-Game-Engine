@@ -12,21 +12,19 @@
 namespace Rubber{
 
 
-	OrthoCameraController::OrthoCameraController(float aspectRatio, Ref<EventManager>& em, bool rotation /*= false*/)
+	OrthoCameraController::OrthoCameraController(float aspectRatio, const Ref<EventManager>& em, bool rotation /*= false*/)
 		:m_AspectRatio(aspectRatio), m_Bounds({ -aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }), m_IsRotationEnabled(rotation),
 		m_Camera(glm::ortho(m_Bounds.left, m_Bounds.right, m_Bounds.bottom, m_Bounds.top)), m_EventManager(em)
 	{ 
-		m_EventManager->subscribe<WindowResizeEvent>("Camera Resize", [this](const WindowResizeEvent& e) { return onWindowResize(e); });
-		m_EventManager->subscribe<MouseScrolledEvent>("Camera Zoom", [this](const MouseScrolledEvent& e) { return onMouseScrolled(e); });
+
 	}
 
 	OrthoCameraController::~OrthoCameraController()
 	{
-		m_EventManager->unsubscribe<WindowResizeEvent>("Camera Resize");
-		m_EventManager->unsubscribe<MouseScrolledEvent>("Camera Zoom");
+		unsubscribeAllEvent();
 	}
 
-	void OrthoCameraController::setProjection()
+	void OrthoCameraController::updateProjectionMatrix()
 	{
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.setProjection(glm::ortho(m_Bounds.left, m_Bounds.right, m_Bounds.bottom, m_Bounds.top));
@@ -34,9 +32,7 @@ namespace Rubber{
 
 	bool OrthoCameraController::onWindowResize(const WindowResizeEvent& e)
 	{
-		m_AspectRatio = (float)e.getWidth() / (float)e.getHeight();
-		setProjection();
-
+		updateAspectRatio((float)e.getWidth(), (float)e.getHeight());
 		return false;
 	}
 
@@ -101,8 +97,7 @@ namespace Rubber{
 		m_ZoomLevel -= e.getYOffset() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		updateCurrentSpeed();
-		setProjection();
-
+		updateProjectionMatrix();
 		return false;
 	}
 
@@ -111,6 +106,26 @@ namespace Rubber{
 	void OrthoCameraController::updateCurrentSpeed()
 	{
 		m_TranslationSpeed = m_ZoomLevel * 5.0f;
+	}
+
+	void OrthoCameraController::updateAspectRatio(const float width, const float height)
+	{
+		m_AspectRatio = width / height;
+		updateProjectionMatrix();
+	}
+
+	void OrthoCameraController::subscribeAllEvent()
+	{
+		RB_INFO("subscribe all events");
+		m_EventManager->subscribe<WindowResizeEvent>("Camera Resize", [this](const WindowResizeEvent& e) { return onWindowResize(e); });
+		m_EventManager->subscribe<MouseScrolledEvent>("Camera Zoom", [this](const MouseScrolledEvent& e) { return onMouseScrolled(e); });
+	}
+
+	void OrthoCameraController::unsubscribeAllEvent()
+	{
+		RB_INFO("unsubscribe all events");
+		m_EventManager->unsubscribe<WindowResizeEvent>("Camera Resize");
+		m_EventManager->unsubscribe<MouseScrolledEvent>("Camera Zoom");
 	}
 
 	void OrthoCameraController::setViewMatrix(const glm::vec3& position, const float rotationAngles)

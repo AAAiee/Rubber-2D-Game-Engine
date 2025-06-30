@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <string>
-#include <functional>
 
 // define macros that controls the flow  
 // of the program

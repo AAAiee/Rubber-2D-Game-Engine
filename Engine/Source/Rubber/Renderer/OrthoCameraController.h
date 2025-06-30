@@ -26,7 +26,7 @@ namespace Rubber{
 
 	class OrthoCameraController {
 	public:
-		OrthoCameraController(float aspectRatio, Ref<EventManager>& em, bool rotation = false);
+		OrthoCameraController(float aspectRatio, const Ref<EventManager>& em, bool rotation = false);
 		~OrthoCameraController();
 
 		const Camera& getCamera() const;
@@ -46,9 +46,13 @@ namespace Rubber{
 		inline const OrthoCameraBounds& getBounds() const{
 			return m_Bounds;
 		}
+		void updateAspectRatio(const float width, const float height);
 
+		void subscribeAllEvent();
+		void unsubscribeAllEvent();
+		
 	private:
-		void setProjection();
+		void updateProjectionMatrix();
 		bool onWindowResize(const WindowResizeEvent& e);
 		bool onMouseScrolled(const MouseScrolledEvent& e);
 		void updateCurrentSpeed();

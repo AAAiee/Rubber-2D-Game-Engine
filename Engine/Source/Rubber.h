@@ -34,6 +34,8 @@
 #include "Rubber/Renderer/VertexArray.h"
 #include "Rubber/Renderer/CameraController.h"
 #include "Rubber/Renderer/Texture.h"
+#include "Rubber/Renderer/Subtexture2D.h"
+#include "Rubber/Renderer/FrameBuffer.h"
 #include "Rubber/Renderer/OrthoCameraController.h"
 
 // profile

@@ -19,7 +19,7 @@ public:
 		return this->m_Width;
 	};  
 
-	virtual inline int32_t getHeight() const {  
+	virtual inline int32_t getHeight() const {
 		return this->m_Height;  
 	};   
 
@@ -30,10 +30,10 @@ public:
 
 private:  
 	uint32_t  m_RendererID;  
-	int32_t m_Height;  
-	int32_t m_Width;  
+	int32_t m_Height;
+	int32_t m_Width;
 	std::string m_Path;  
-	int32_t m_Channels;  
+	int32_t m_Channels;
 	GLint m_InternalFormat; 
 	GLint m_DataFormat;
 };  

@@ -7,11 +7,7 @@ namespace Rubber{
 	class EventManager{
 	private:
 		public: 
-		
-		EventManager()
-		{
-			m_EventQueue.reserve(128);
-		}
+		EventManager(uint32_t capacity);
 
 		template<typename Event>
 		void subscribe(std::string_view name, EventBus<Event>::EventHandler&& callBack){
@@ -21,6 +17,11 @@ namespace Rubber{
 		template<typename Event>
 		void unsubscribe(std::string_view name){
 			 EventBus<Event>::unsubscribe(name);
+		}
+
+		template<typename Event>
+		void deactivateEventHandler(std::string_view name){
+
 		}
 
 		template<typename Event>
@@ -36,25 +37,16 @@ namespace Rubber{
 			this->m_EventQueue.emplace_back(fn);
 		}
 
-		void flush() {
-			RB_PROFILE_FUNC();
-			for(auto& fn : m_EventQueue){
-				fn();
-			}
-			m_EventQueue.clear();
-		}
-
-
 		template<typename Event>
-		void clear(const Event& e){
+		void clear(const Event& e) {
 			EventBus<Event>::clear();
 		}
+
+		void flush();
+		static Ref<EventManager> create(uint32_t capacity=128);
 
 	private:
 		Vector<std::function<void()>> m_EventQueue;
 	};
-	
-
-
 }
 

@@ -17,6 +17,7 @@ namespace  Rubber {
 
 	public:
 		virtual void init() = 0;
+		virtual ~RendererAPI() {};
 		virtual void setViewPort(int width, int height) = 0;
 		virtual void clearColor(const glm::vec4& color) = 0;
 		virtual void clear() = 0; 

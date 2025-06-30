@@ -18,3 +18,6 @@ group "Engine"
    include "Engine/RBVendor/imGui/Build-imGui.lua"
 group "App"
    include "App/Build-App.lua"
+
+group "Editor"
+   include "Editor/Build-Editor.lua"

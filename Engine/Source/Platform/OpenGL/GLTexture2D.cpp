@@ -2,6 +2,8 @@
 #include "GLTexture2D.h"
 #include <glad/glad.h>
 #include <stb_image.h>
+#include <glm/glm.hpp> 
+#include <glm/gtc/integer.hpp>
 
 
 namespace Rubber{
@@ -40,15 +42,16 @@ namespace Rubber{
 		//glGenTextures(1, &this->m_RendererID);
 		//glBindTexture(GL_TEXTURE_2D, this->m_RendererID);
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, internalFormat, this->m_Width, this->m_Height);
+		uint32_t mipMapCount = static_cast<uint32_t>(1.0f + glm::floor(glm::log2(std::max((float)m_Width, (float)m_Height))));
+		glTextureStorage2D(m_RendererID, mipMapCount, internalFormat, this->m_Width, this->m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, this->m_Width, this->m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
-		glGenerateTextureMipmap(GL_TEXTURE_2D);
+		glGenerateTextureMipmap(m_RendererID);
 
 		stbi_image_free(data);
 	}
@@ -60,12 +63,13 @@ namespace Rubber{
 		m_DataFormat = GL_RGBA;
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, this->m_Width, this->m_Height);
+		uint32_t mipMapCount = static_cast<uint32_t>(1.0f + glm::floor(glm::log2(std::max((float)m_Width, (float)m_Height))));
+		glTextureStorage2D(m_RendererID, mipMapCount, m_InternalFormat, width, height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	}
 
 	GLTexture2D::~GLTexture2D()
@@ -95,6 +99,7 @@ namespace Rubber{
 		uint16_t bytePerPixel = m_DataFormat == GL_RGB ? 3 : 4;
 		RB_CORE_ASSERT(size == bytePerPixel * m_Width * m_Height, "Size of data must be the size of the full texture!");
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+		glGenerateTextureMipmap(m_RendererID);
 	}
 
 }
