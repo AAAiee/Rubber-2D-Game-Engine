@@ -2,7 +2,7 @@
 workspace "Rubber Engine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "App"
+   startproject "Editor"
 
    -- Workspace-wide build options for MSVC
    filter "system:windows"

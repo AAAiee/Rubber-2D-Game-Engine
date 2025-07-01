@@ -4,17 +4,18 @@ project "Editor"
    cppdialect "C++20"
    staticruntime "on"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "src/**.h", "src/**.cpp" }
 
    includedirs
    {
-      "Source",
+      "src",
 
 	  -- Include Core
 	  "../Engine/Source",
       "../Engine/RBVendor/spdlogs/include",
       "../Engine/RBVendor/glm",
-      "../Engine/RBVendor/imGui"
+      "../Engine/RBVendor/imGui",
+      "../Engine/RBVendor/entt/include"
 
    }
 

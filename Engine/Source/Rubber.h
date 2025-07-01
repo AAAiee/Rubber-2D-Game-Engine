@@ -47,3 +47,9 @@
 #include "Rubber/Utility/Utility.h"
 
 
+//ECS
+#include "Rubber/Scene/Scene.h"
+#include "Rubber/Scene/Component.h"
+#include "Rubber/Scene/Entity.h"
+
+

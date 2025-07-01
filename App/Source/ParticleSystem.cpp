@@ -1,7 +1,7 @@
 #include <Rubber.h>
 #include "ParticleSystem.h"
 
-const float ParticleSystem::FIXED_TIME_STAMP = 1.0 / 120.f;
+const float ParticleSystem::FIXED_TIME_STAMP = 1.f / 120.f;
 
 ParticleSystem::ParticleSystem(uint32_t maxCountParticles)
 {

@@ -8,6 +8,7 @@
 #include <functional>
 
 namespace Rubber {
+	// TODO::REFACTOR THIS CODE, ALSO CONSIDERING REPLACING FUNCTION OBJECT FOR BETTER PERFORMANCE
 
 	namespace{
 

@@ -12,6 +12,8 @@ project "Engine"
    IncludeDir["imGui"] = "RBVendor/imGui"
    IncludeDir["stb_image"] = "RBVendor/stb_image"
    IncludeDir["glm"] = "RBVendor/glm"
+   IncludeDir["entt"] = "RBVendor/entt/include"
+
 
    includedirs
    {
@@ -21,7 +23,8 @@ project "Engine"
       "%{IncludeDir.Glad}",
       "%{IncludeDir.imGui}",
       "%{IncludeDir.glm}",
-      "%{IncludeDir.stb_image}"
+      "%{IncludeDir.stb_image}",
+      "%{IncludeDir.entt}"
    }
 
    links

@@ -7,19 +7,21 @@
 
 
 
-class Editor : public Rubber::Application {
-public:
-	Editor()
-	  :Application("Editor")
+namespace Rubber {
+	class Editor : public Application {
+	public:
+		Editor()
+			:Application("Editor")
+		{
+			pushLayer(new EditorLayer());
+
+		}
+		~Editor() {};
+	};
+
+
+	Application* CreateApp()
 	{
-		pushLayer(new EditorLayer());
-
+		return new Editor();
 	}
-	~Editor() {};
-};
-
-
-Rubber::Application* Rubber::CreateApp()  
-{  
-   return new Editor();  
 }

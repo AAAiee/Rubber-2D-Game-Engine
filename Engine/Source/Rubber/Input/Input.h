@@ -2,6 +2,9 @@
 #include "Rubber/Core/Core.h"
 #include <utility>
 
+//TODO:: Refactor this code, so input should be decided during compile time, (only the corresponding input impl will be compiled
+// do not singleton design at all
+
 namespace Rubber {
 	/**
 	* @breif Input class can be used to track the status 
