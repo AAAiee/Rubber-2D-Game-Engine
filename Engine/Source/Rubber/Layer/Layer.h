@@ -14,7 +14,7 @@ namespace Rubber
 
 		virtual void onAttach(const Ref<EventManager>& em = {}) = 0;
 		virtual void onDetach()  = 0;
-		virtual void onUpdate() {};
+		virtual void onUpdate(const float ts) {};
 		virtual void onImGuiRender() {};
 
 		inline const std::string& getName() const {

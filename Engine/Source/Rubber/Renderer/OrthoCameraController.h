@@ -1,5 +1,5 @@
 #pragma once 
-#include "Rubber/Renderer/Camera.h"
+#include <Rubber/Renderer/OrthoCamera.h>
 
 
 namespace Rubber{
@@ -29,7 +29,7 @@ namespace Rubber{
 		OrthoCameraController(float aspectRatio, const Ref<EventManager>& em, bool rotation = false);
 		~OrthoCameraController();
 
-		const Camera& getCamera() const;
+		const OrthoCamera& getCamera() const;
 		inline void setPosition(const glm::vec3& newPos){
 			m_Position = newPos;
 		}
@@ -38,8 +38,9 @@ namespace Rubber{
 			return m_Position;
 		}
 
-		void ProcessInputs();
+		void ProcessInputs(const float ts);
 		void setViewMatrix(const glm::vec3& position, const float rotation);
+
 		inline void setZoomLevel(float zoomLevel){
 			m_ZoomLevel = zoomLevel;
 		}
@@ -62,7 +63,7 @@ namespace Rubber{
 		float m_ZoomLevel{ 1.0f };
 
 		OrthoCameraBounds m_Bounds;
-		Camera m_Camera;
+		OrthoCamera m_Camera;
 
 		bool m_IsRotationEnabled{ false };
 		glm::vec3 m_Position{ 0.0f, 0.0f, 0.0f };

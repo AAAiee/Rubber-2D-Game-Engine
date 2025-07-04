@@ -35,6 +35,9 @@
 namespace Rubber
 {
 	Application* Application::s_Instance = nullptr;
+	const float Application::FIXED_TIME_STAMP = 1.0f / 120.0f;
+
+	
 
 	Application::Application(const std::string_view name)
 	{
@@ -132,12 +135,12 @@ namespace Rubber
 
 				if (!this->m_IsWindowMinimized) {
 					//update all layers;
-					while (lag >= 1 / 120.0) {
+					while (lag >= FIXED_TIME_STAMP){
 						for (Layer* layer : m_LayerStack)
 						{
-							layer->onUpdate();
+							layer->onUpdate(FIXED_TIME_STAMP);
 						}
-						lag -= (1.0 / 120.0);
+						lag -= FIXED_TIME_STAMP;
 					}
 				}
 			}// logic update + rendering
@@ -188,6 +191,7 @@ namespace Rubber
 		Renderer::onWindowResize(resizedToWidth,resizedToHeight);
 		return false;
 	}
+
 
 	void Application::attachAll()
 	{

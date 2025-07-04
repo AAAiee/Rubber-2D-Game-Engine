@@ -28,7 +28,6 @@ namespace Rubber {
 	*/
 	void Renderer::beginScene(const Camera& camera)
 	{
-		s_SceneDataPtr->m_VPMatrix = camera.getViewProjectionMatrix();
 	}
 
 	void Renderer::endScene()

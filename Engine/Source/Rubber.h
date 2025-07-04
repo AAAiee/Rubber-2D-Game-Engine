@@ -42,14 +42,12 @@
 #include "Rubber/Debug/Profiler.h"
 #include "Rubber/Timer/Timer.h"
 
-
 //Utilities
 #include "Rubber/Utility/Utility.h"
 
-
 //ECS
 #include "Rubber/Scene/Scene.h"
-#include "Rubber/Scene/Component.h"
-#include "Rubber/Scene/Entity.h"
+#include "Rubber/Scene/Utili/Component.h"
+#include "Rubber/Scene/Utili/Entity.h"
 
 

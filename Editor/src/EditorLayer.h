@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+
 namespace Rubber {
 
 	class EditorLayer : public Layer
@@ -30,24 +31,31 @@ namespace Rubber {
 			m_FrameBuffer = FrameBuffer::create({ width,height,1,false });
 
 			m_ActiveScene = Scene::create();
-			m_SquareEntity = m_ActiveScene->createEntity("Square");
+			m_SquareEntity = m_ActiveScene->createEntity("Square Entity"); 
 			m_SquareEntity.addComponent<TransformComponent>(m_SquareTransform);
 			m_SquareEntity.addComponent<SpriteComponent>(m_SquareColor);
+
+			// test purpose, camera entity
+			auto cameraEntity = m_ActiveScene->createEntity();
+			cameraEntity.addComponent<TransformComponent>(glm::mat4(1.0f));
+			cameraEntity.addComponent<CameraComponent>();
+			cameraEntity.addComponent<PrimaryCameraTag>();
 		}
 
 		void onDetach() {
 
 		}
 
-		void onUpdate() override
+		void onUpdate(const float ts) override
 		{
 			if (m_IsViewPortFocused) {
-				m_Camera->ProcessInputs();
+				m_Camera->ProcessInputs(ts);
 			}
 			glm::vec2 frameBufferSizeBefore = { m_FrameBuffer->getSpecification().m_Width, m_FrameBuffer->getSpecification().m_Height };
 			if (m_ViewPortDimension.x * m_ViewPortDimension.y != 0.0f && frameBufferSizeBefore != m_ViewPortDimension) {
 				m_FrameBuffer->resize((uint32_t)m_ViewPortDimension.x, (uint32_t)m_ViewPortDimension.y);
 			}
+
 			auto frameBufferSpecAfter = m_FrameBuffer->getSpecification();
 			m_Camera->updateAspectRatio((float)frameBufferSpecAfter.m_Width, (float)frameBufferSpecAfter.m_Height);
 
@@ -58,13 +66,12 @@ namespace Rubber {
 			auto& spriteCom = m_SquareEntity.getComponent<SpriteComponent>();
 			spriteCom.color = m_SquareColor;
 
+			// frame buffer
 			m_FrameBuffer->bind();
 			Renderer2D::resetRendererStat();
 			RendererCommand::clearColor({ 0.1f, 0.1f, 0.1f, 1 });
 			RendererCommand::clear();
-
-			m_ActiveScene->onSceneUpdate();
-
+			m_ActiveScene->onSceneUpdate(ts);
 			m_FrameBuffer->unbind();
 		}
 
@@ -171,7 +178,6 @@ namespace Rubber {
 			else {
 				m_Camera->subscribeAllEvent();
 			}
-
 			ImVec2 curViewPortSize = ImGui::GetContentRegionAvail();
 			m_ViewPortDimension = { curViewPortSize.x, curViewPortSize.y };
 			ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer->getColorAttachmentID()), *(ImVec2*)&m_ViewPortDimension, { 0,1 }, { 1,0 });
@@ -199,7 +205,7 @@ namespace Rubber {
 
 	//test, to be removed
 	private:
-		glm::vec3 m_SquarePosition = glm::vec3(1.0f);
+		glm::vec3 m_SquarePosition = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::mat4 m_SquareTransform = glm::mat4(1.0f);
 		glm::vec4 m_SquareColor = glm::vec4(1.0f); // default white 
 

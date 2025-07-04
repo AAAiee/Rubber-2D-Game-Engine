@@ -1,11 +1,29 @@
 #include <pch.h>
-#include "Rubber/Scene/Component.h"
 #include "Scene.h"
+#include "Rubber/Scene/Utili/Component.h"
 #include "Rubber/Renderer/Renderer2D.h"
 
 namespace Rubber{
 
-    Entity Scene::createEntity(std::string_view tag)
+	SystemList::SystemList() = default;
+
+	Scene::Scene()
+	{
+		// init all system;
+		std::apply([this](auto&... system) {
+			(system.init(m_Registry), ...);
+			}, m_Systems.allSystem);
+	}
+
+	Scene::~Scene()
+	{
+		std::apply([this](auto&... system) {
+			(system.shutdown(), ...);
+			}, m_Systems.allSystem);
+
+	}
+
+	Entity Scene::createEntity(std::string_view tag)
 	{
 		entt::entity entityHandler =  m_Registry.create();
 		auto me = shared_from_this();
@@ -18,25 +36,20 @@ namespace Rubber{
 		return entity;
 	}
 
-    void Scene::onSceneUpdate()  
+    void Scene::onSceneUpdate(const float ts)  
     {  
-		Renderer2D::beginScene(Camera(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f)));
-       auto view = m_Registry.view<TransformComponent, SpriteComponent>();
-       for (auto entity : view)  
-       {  
-           auto& transform = view.get<TransformComponent>(entity);  
-           auto& sprite = view.get<SpriteComponent>(entity);  
+		std::apply([this,ts](auto&... system) {
 
-           Renderer2D::drawColorQuad(transform.transform, sprite.color);  
-       }  
+			(system.onUpdate(ts),...);
 
-	   Renderer2D::endScene();
+			}, m_Systems.allSystem);
     }
 
 	Rubber::Ref<Rubber::Scene> Scene::create()
 	{
 		return makeRef<Scene>();
 	}
+
 
 }
 

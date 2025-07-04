@@ -5,7 +5,7 @@
 #include "Rubber/Renderer/Buffers.h"
 #include "Rubber/Renderer/VertexArray.h"
 #include "Rubber/Renderer/Texture.h"
-#include "Rubber/Renderer/Camera.h"
+#include "Rubber/Renderer/OrthoCamera.h"
 #include "Rubber/Renderer/RendererCommand.h"
 
 #include "Rubber/Renderer/Subtexture2D.h"
@@ -135,11 +135,18 @@ namespace Rubber {
 		
 	}
 
-	void Renderer2D::beginScene(const Camera& camera)
+	void Renderer2D::beginScene(const glm::mat4& vpMatrix)
 	{
 		RB_PROFILE_FUNC();
 		Ref<Shader> shader = data.m_ShaderLib->getShader("CommonShader");
-		shader->setMat4("u_ViewProjectionMatrix", camera.getViewProjectionMatrix()); //TODO: AN  ORTHOGONAL MATRIX FOR 2D
+		shader->setMat4("u_ViewProjectionMatrix", vpMatrix); 
+	}
+
+	void Renderer2D::beginScene(const OrthoCamera& camera)
+	{
+		RB_PROFILE_FUNC();
+		Ref<Shader> shader = data.m_ShaderLib->getShader("CommonShader");
+		shader->setMat4("u_ViewProjectionMatrix", camera.getVpMatrix());
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, const float tillingFactor, const glm::vec4& tintColor)

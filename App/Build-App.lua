@@ -14,8 +14,8 @@ project "App"
 	  "../Engine/Source",
       "../Engine/RBVendor/spdlogs/include",
       "../Engine/RBVendor/glm",
-      "../Engine/RBVendor/imGui"
-
+      "../Engine/RBVendor/imGui",
+      "../Engine/RBVendor/entt/include"
    }
 
    links

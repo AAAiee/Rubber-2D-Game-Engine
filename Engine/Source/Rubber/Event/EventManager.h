@@ -20,11 +20,6 @@ namespace Rubber{
 		}
 
 		template<typename Event>
-		void deactivateEventHandler(std::string_view name){
-
-		}
-
-		template<typename Event>
 		// this needs to be a unique pointer for complex event, 
 		// this only works for event with primitive data 
 		void enqueue(Event event){

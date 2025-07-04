@@ -10,9 +10,9 @@ public:
 
 	}
 
-	void onAttach(const Ref<Rubber::EventManager>& em) {
-		m_ParticleSystem = makeRef<ParticleSystem>(1024);
-		m_Camera = makeScope<Rubber::OrthoCameraController>(16.0f / 9.0f, em, true);
+	void onAttach(const Rubber::Ref<Rubber::EventManager>& em) override {
+		m_ParticleSystem = Rubber::makeRef<ParticleSystem>(1024);
+		m_Camera = Rubber::makeScope<Rubber::OrthoCameraController>(16.0f / 9.0f, em, true);
 		m_Camera->setPosition({ 0.0f, 0.0f, 0.0f });
 		m_Camera->subscribeAllEvent();
 
@@ -36,15 +36,15 @@ public:
 
 	}
 
-	void onUpdate() override
+	void onUpdate(const float ts) override
 	{
-		m_Camera->ProcessInputs();
+		m_Camera->ProcessInputs(ts);
 
 		Rubber::Renderer2D::resetRendererStat();
 		Rubber::RendererCommand::clearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Rubber::RendererCommand::clear();
 
-		Rubber::Renderer2D::beginScene(m_Camera->getCamera());
+		Rubber::Renderer2D::beginScene(m_Camera->getCamera().getVpMatrix());
 		for (float i = -5.0f ; i  < 5.0f; i+= 0.5f ){
 			for (float j = -5.0f; j < 5.0f; j+= 0.5f){
 				glm::vec4 color = { (i + 5.0f) / 10.0f, 0.3f, (j + 5.0f) / 10.0f, 1.0f };
@@ -95,11 +95,11 @@ public:
 	}
 
 private:
-	Scope<Rubber::OrthoCameraController> m_Camera;
-	Ref<Rubber::Texture2D> m_Chessboard;
-	Ref<Rubber::Texture2D> m_SpriteSheet;
-	Ref<ParticleSystem> m_ParticleSystem;
-	Ref<Rubber::SubTexture2D> m_Axe; 
+	Rubber::Scope<Rubber::OrthoCameraController> m_Camera;
+	Rubber::Ref<Rubber::Texture2D> m_Chessboard;
+	Rubber::Ref<Rubber::Texture2D> m_SpriteSheet;
+	Rubber::Ref<ParticleSystem> m_ParticleSystem;
+	Rubber::Ref<Rubber::SubTexture2D> m_Axe;
 	ParticleProps m_Particle;
 }; 
 

@@ -60,6 +60,9 @@ namespace Rubber
 		// handling event delegate
 		bool onWindowClose(const WindowCloseEvent& e);
 		bool onWindowResize(const WindowResizeEvent& e);
+
+	private:
+		static const float FIXED_TIME_STAMP;
 	};
 	
 }

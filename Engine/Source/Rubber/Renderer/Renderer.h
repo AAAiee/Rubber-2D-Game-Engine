@@ -31,7 +31,6 @@ namespace Rubber {
 			}
 		};
 
-		// hold our scenedata
 		static SceneData* s_SceneDataPtr;
 	};
 

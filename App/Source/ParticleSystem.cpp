@@ -27,7 +27,7 @@ void ParticleSystem::processAllParticles()
 	}
 }
 
-void ParticleSystem::onRender(const Rubber::Camera& camera) 
+void ParticleSystem::onRender(const Rubber::OrthoCamera& camera) 
 {
 	Rubber::Renderer2D::beginScene(camera);
 	for(auto& particle:m_ParticlePool){

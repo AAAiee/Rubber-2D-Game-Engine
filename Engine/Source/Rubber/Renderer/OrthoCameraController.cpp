@@ -36,9 +36,8 @@ namespace Rubber{
 		return false;
 	}
 
-	void OrthoCameraController::ProcessInputs()
+	void OrthoCameraController::ProcessInputs(const float ts)
 	{
-		float ts = 1.0f / 120.0f;
 		float movementVelocity = m_TranslationSpeed * ts;
 		float angularVelocity = m_RotationSpeed * ts;
 
@@ -135,7 +134,7 @@ namespace Rubber{
 		m_Camera.setViewMatrix(viewMatrix);
 	}
 
-	const Rubber::Camera& OrthoCameraController::getCamera() const
+	const Rubber::OrthoCamera& OrthoCameraController::getCamera() const
 	{
 		return m_Camera;
 	}

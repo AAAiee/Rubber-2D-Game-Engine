@@ -21,7 +21,7 @@ public:
 
 	void processAllParticles();
 
-	void onRender(const Rubber::Camera& camera);
+	void onRender(const Rubber::OrthoCamera& camera);
 
 	void Emit(const ParticleProps& props);
 	 

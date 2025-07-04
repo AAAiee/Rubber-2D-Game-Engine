@@ -8,6 +8,7 @@ namespace Rubber{
 	class Camera;
 	class Texture2D;
 	class SubTexture2D;
+	class OrthoCamera;
 
 	class Renderer2D{
 		
@@ -16,7 +17,10 @@ namespace Rubber{
 
 		static void shutdown();
 
-		static void beginScene(const Camera& camera);
+		static void beginScene(const glm::mat4& vpMatrix);
+
+		//legacy, to delete 
+		static void beginScene(const OrthoCamera& camera);
 
 		// Direct Input, Texture
 		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
