@@ -27,8 +27,9 @@ namespace Rubber {
         None = 0,
         MouseScrolled, MouseButtonPressed, MouseButtonReleased,MouseMoved,
         KeyboardPressed, KeyboardReleased,
-        WindowClosed, WindowResized, WindowFocus, WindowLostFocus, WindowMoved,
-        AppTick, AppRender, AppUpdate
+        WindowClosed, WindowResized, WindowFocus, WindowLostFocus, WindowMoved, 
+        AppTick, AppRender, AppUpdate, 
+        ViewPortResize
     };
 
     /**
@@ -69,7 +70,7 @@ namespace Rubber {
      * @brief Base class for all events
 	 * a interface class that all events should inherit from
      */
-    class RB_API Event
+    class  Event
     {
     public:
         /**

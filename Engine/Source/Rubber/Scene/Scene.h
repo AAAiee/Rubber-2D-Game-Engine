@@ -2,34 +2,43 @@
 #include <entt.hpp>
 #include <memory>
 #include "Rubber/Scene/Utili/Entity.h"  
-#include "Rubber/Scene/System/CameraSystem.h"
-#include "Rubber/Scene/System/RenderSystem.h"
-#include "Rubber/Scene/System/ScriptSystem.h"
+#include "Rubber/Scene/System/System.h"
 
 
 namespace Rubber {  
 
-	struct SystemList {
-		SystemList();
-		std::tuple<ScriptSystem, CameraSystem, RendererSystem> allSystem;
-	};
-
+	class SceneHierachyPanel;
 
 	class Scene : public std::enable_shared_from_this<Scene> {  
-	public:  
-		Scene();
-		~Scene();
+	public:
+		void systemsInit();
+
+		void systemShutDow();
 
 		Entity createEntity(std::string_view tag="");  
-		void onSceneUpdate(const float ts);  
+
+		void onSystemsUpdate(const float ts);  
+
+		void addSystem(Scope<SystemBase> system);
+
+		inline entt::registry& getRegistry() {
+			return m_Registry;
+		}
+
+		~Scene() = default;
+
+	private:
+		Scene() =default;
 
 	public:  
 		static Ref<Scene> create();  
 
 	private:  
 		entt::registry m_Registry;
-		friend class Entity;  
-		SystemList m_Systems;
+		Vector<Scope<SystemBase>>  m_Systems;
+
+		friend class Entity;
+		friend class SceneHierachyPanel;
 	};  
 
 }

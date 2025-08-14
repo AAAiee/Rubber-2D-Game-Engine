@@ -36,4 +36,9 @@ namespace Rubber {
 	}
 
 
+	void RendererCommand::setPolygonMode(RendererPolygonMode mode)
+	{
+		s_RendererAPI->setPolygonMode(mode);
+	}
+
 }

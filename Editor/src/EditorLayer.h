@@ -1,5 +1,8 @@
 #pragma once
+
 #include<Rubber.h>
+
+#include"Panels/SceneHierachyPanel.h"
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -17,29 +20,34 @@ namespace Rubber {
 
 		}
 
-		void onAttach(const Ref<EventManager>& em) override {
-			m_EventManager = em;
-			m_Camera = makeScope<OrthoCameraController>(16.0f / 9.0f, em, true);
-			m_Camera->setPosition({ 0.0f, 0.0f, 0.0f });
+		void onAttach() override {
+			uint32_t width = Application::getWindow().getWidth();
+			uint32_t height = Application::getWindow().getHeight();
 
-			m_Chessboard = Texture2D::create("Asset/texture/chessboard.png");
-			m_SpriteSheet = Texture2D::create("Asset/texture/tilemap_packed.png");
-			m_Axe = SubTexture2D::create(m_SpriteSheet, { 7, 0 }, { 16, 16 }, { 1,1 });
-
-			auto width = Application::getWindow().getWidth();
-			auto height = Application::getWindow().getHeight();
 			m_FrameBuffer = FrameBuffer::create({ width,height,1,false });
-
 			m_ActiveScene = Scene::create();
-			m_SquareEntity = m_ActiveScene->createEntity("Square Entity"); 
-			m_SquareEntity.addComponent<TransformComponent>(m_SquareTransform);
-			m_SquareEntity.addComponent<SpriteComponent>(m_SquareColor);
+			
+			// systems init
+			m_ActiveScene->addSystem(makeScope <WindowSystem>());
+			m_ActiveScene->addSystem(makeScope <RendererSystem>());
+			m_ActiveScene->systemsInit();
 
-			// test purpose, camera entity
-			auto cameraEntity = m_ActiveScene->createEntity();
-			cameraEntity.addComponent<TransformComponent>(glm::mat4(1.0f));
-			cameraEntity.addComponent<CameraComponent>();
-			cameraEntity.addComponent<PrimaryCameraTag>();
+			m_SquareEntity = m_ActiveScene->createEntity("Square Entity"); 
+			m_SquareEntity.addComponent<TransformComponent>(m_SquarePosition, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_SquareEntity.addComponent<SpriteComponent>();
+			m_SquareEntity.addComponent<VisibilityControlComponent>(true);
+			m_SquareEntity.getComponent<SpriteComponent>().color = m_SquareColor;
+
+			m_Camera = m_ActiveScene->createEntity("Main Camera");
+			m_CameraPos = { 0.0f, 1.f, 0.0f };
+			m_Camera.addComponent<TransformComponent>(m_CameraPos, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_Camera.addComponent<CameraComponent>();
+
+			m_SecondCamera = m_ActiveScene->createEntity("Second Camera");
+			m_SecondCamera.addComponent<TransformComponent>(m_SecondCameraPos, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_SecondCamera.addComponent<CameraComponent>();
+
+			m_SceneHierachyPanel.setContext(m_ActiveScene);
 		}
 
 		void onDetach() {
@@ -48,30 +56,20 @@ namespace Rubber {
 
 		void onUpdate(const float ts) override
 		{
-			if (m_IsViewPortFocused) {
-				m_Camera->ProcessInputs(ts);
-			}
-			glm::vec2 frameBufferSizeBefore = { m_FrameBuffer->getSpecification().m_Width, m_FrameBuffer->getSpecification().m_Height };
+			// Resize the frame buffer to match the view port's size 
+			const FrameBufferSpecification& frameBufferSpec = m_FrameBuffer->getSpecification();
+			glm::vec2 frameBufferSizeBefore = { frameBufferSpec.m_Width, frameBufferSpec.m_Height };
+
+			// If viewport changed to  0 * anything,invalid dimension , otherwise resize framebuffer
 			if (m_ViewPortDimension.x * m_ViewPortDimension.y != 0.0f && frameBufferSizeBefore != m_ViewPortDimension) {
 				m_FrameBuffer->resize((uint32_t)m_ViewPortDimension.x, (uint32_t)m_ViewPortDimension.y);
+				Application::getEventManager()->enqueue(ViewPortResizeEvent((uint32_t)m_ViewPortDimension.x,(uint32_t)m_ViewPortDimension.y));
 			}
 
-			auto frameBufferSpecAfter = m_FrameBuffer->getSpecification();
-			m_Camera->updateAspectRatio((float)frameBufferSpecAfter.m_Width, (float)frameBufferSpecAfter.m_Height);
-
-			// test
-			m_SquareTransform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
-			auto& transformCom = m_SquareEntity.getComponent<TransformComponent>();
-			transformCom.transform = m_SquareTransform;
-			auto& spriteCom = m_SquareEntity.getComponent<SpriteComponent>();
-			spriteCom.color = m_SquareColor;
-
-			// frame buffer
+			// Update all systems and render everything into the frame buffer
 			m_FrameBuffer->bind();
 			Renderer2D::resetRendererStat();
-			RendererCommand::clearColor({ 0.1f, 0.1f, 0.1f, 1 });
-			RendererCommand::clear();
-			m_ActiveScene->onSceneUpdate(ts);
+			m_ActiveScene->onSystemsUpdate(ts);
 			m_FrameBuffer->unbind();
 		}
 
@@ -150,6 +148,7 @@ namespace Rubber {
 				ImGui::EndMenuBar();
 			}
 
+			// Stats Panel 
 			ImGui::Begin("Setting");
 			ImGui::Text("DrawCount: %d", Renderer2D::getDrawCallCount());
 			ImGui::Text("QuadCount: %d", Renderer2D::getQuadCount());
@@ -157,27 +156,17 @@ namespace Rubber {
 			ImGui::Text("VertexCount: %d", Renderer2D::getVertexCount());
 			ImGui::Text("Frame Time: %f", Application::getTimer()->getAverageFrameTime());
 			ImGui::Text("Current FPS : %d", Application::getTimer()->getFps());
-
-			ImGui::BeginChild("Square");
-			ImGui::ColorPicker4("squareColor", glm::value_ptr(m_SquareColor));
-			ImGui::SliderFloat3("squarePosition", glm::value_ptr(m_SquarePosition), -15.0f, 15.0f);
-			ImGui::EndChild();
-
 			ImGui::End();
 
-
+			m_SceneHierachyPanel.onImGuiRender();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f,0.0f });
 			ImGui::Begin("ViewPort");
+
+			//TODO:: Only Enable zoom callback when is focused or hovered
 			m_IsViewPortFocused = ImGui::IsWindowFocused();
 			m_IsViewPortHovered = ImGui::IsWindowHovered();
 
-			if (!m_IsViewPortFocused) {
-				m_Camera->unsubscribeAllEvent();
-			}
-			else {
-				m_Camera->subscribeAllEvent();
-			}
 			ImVec2 curViewPortSize = ImGui::GetContentRegionAvail();
 			m_ViewPortDimension = { curViewPortSize.x, curViewPortSize.y };
 			ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer->getColorAttachmentID()), *(ImVec2*)&m_ViewPortDimension, { 0,1 }, { 1,0 });
@@ -189,14 +178,12 @@ namespace Rubber {
 		}
 
 	private:
-		Ref<EventManager> m_EventManager;
-		Scope<OrthoCameraController> m_Camera;
-		Ref<Texture2D> m_Chessboard;
-		Ref<Texture2D> m_SpriteSheet;
 		Ref<FrameBuffer> m_FrameBuffer;
-		Ref<SubTexture2D> m_Axe;
 		Ref<Scene> m_ActiveScene;
+		SceneHierachyPanel m_SceneHierachyPanel;
 		Entity m_SquareEntity;
+		Entity m_SecondCamera;
+		Entity m_Camera;
 
 	private:
 		glm::vec2 m_ViewPortDimension{};
@@ -205,10 +192,10 @@ namespace Rubber {
 
 	//test, to be removed
 	private:
-		glm::vec3 m_SquarePosition = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::mat4 m_SquareTransform = glm::mat4(1.0f);
-		glm::vec4 m_SquareColor = glm::vec4(1.0f); // default white 
-
+		glm::vec3 m_SquarePosition = glm::vec3(0.0f);
+		glm::vec4 m_SquareColor = glm::vec4(1.0f);
+		glm::vec3 m_CameraPos = glm::vec3(0.0f);
+		glm::vec3 m_SecondCameraPos = glm::vec3(0.0f);
 	};
 }
 

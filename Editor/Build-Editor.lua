@@ -32,7 +32,7 @@ project "Editor"
        defines {  }
 
    filter "configurations:Debug"
-       defines { "DEBUG" }
+       defines { "DEBUG", "RB_ENABLE_ASSERTS"}
        runtime "Debug"
        symbols "on"
 

@@ -1,14 +1,15 @@
 #pragma once
 #include <entt.hpp>
+#include <Rubber/Scene/System/System.h>
+
 
 namespace Rubber{
-	struct ScriptSystem {
+	class ScriptSystem : public SystemBase {
+	public:
 		ScriptSystem() = default;
-		void init(entt::registry& registry);
-		void shutdown();
-		void onUpdate(const float ts);
 
-		entt::registry* m_Registry = nullptr; 
+		void shutdown() override;
+		void onUpdate(const float ts) override;
 	};
 
 

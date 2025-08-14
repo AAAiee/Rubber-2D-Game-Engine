@@ -14,7 +14,7 @@ namespace Rubber
 	* depends on GLfW and OpenGL.
 	*/
 	class EventManager;
-	class RB_API ImGuiLayer :public Layer
+	class  ImGuiLayer :public Layer
 	{
 	public:
 		ImGuiLayer();
@@ -25,7 +25,7 @@ namespace Rubber
 		* initialize the ImGui context and set up the style,
 		* also enable mouse and keyboard navigation
 		*/
-		virtual void onAttach(const Ref<EventManager>& em) final override;
+		virtual void onAttach()  final override;
 
 		/**
 		* @brief detach the layer from the application.

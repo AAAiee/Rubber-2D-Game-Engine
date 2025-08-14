@@ -3,13 +3,10 @@
 #include "Rubber/Scene/Utili/Component.h"
 
 namespace Rubber{
-	void ScriptSystem::init(entt::registry& registry)
-	{
-		m_Registry = &registry;
-	}
 
 	void ScriptSystem::shutdown()
 	{
+		SystemBase::shutdown();
 		m_Registry->view<NativeScriptComponent>().each([](auto entity, NativeScriptComponent& nsc) {
 			if (nsc.instance != nullptr){
 				nsc.destroyScript(&nsc);
@@ -20,10 +17,16 @@ namespace Rubber{
 
 	void ScriptSystem::onUpdate(const float ts)
 	{
-		m_Registry->view<NativeScriptComponent>().each([ts](auto entity, NativeScriptComponent& nsc) {
+		SystemBase::onUpdate(ts);
+		RB_CORE_ASSERT(m_Registry, " set registry first");
+
+		m_Registry->view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc) {
 			if (nsc.instance == nullptr){
 				nsc.instance = nsc.initScript();
-				RB_CORE_ASSERT(nsc.instance == nullptr, "failed to init the script!");
+
+				nsc.instance->m_Entity = { entity,m_ScenePtr };
+
+				RB_CORE_ASSERT(nsc.instance != nullptr, "failed to init the script!");
 				nsc.instance->onCreate();
 			}
 			nsc.instance->onUpdate(ts);

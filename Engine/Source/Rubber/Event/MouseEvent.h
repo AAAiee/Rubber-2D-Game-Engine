@@ -7,7 +7,7 @@ namespace Rubber
 	* fields : x The x position of the mouse
 	*          y The y position of the mouse
 	*/
-	class RB_API MouseMoveEvent : public Event
+	class  MouseMoveEvent : public Event
 	{
 	public:
      MouseMoveEvent(float x, float y)
@@ -37,7 +37,7 @@ namespace Rubber
 	*		   yOffset The y offset of the mouse scroll
 	* 
 	**/
-	class RB_API MouseScrolledEvent : public Event
+	class  MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset)
@@ -67,7 +67,7 @@ namespace Rubber
 	* Base class for MousePressedEvent and MouseReleasedEvent
 	* fields : button The button of the mouse
 	**/
-	class RB_API MouseButtonEvent : public Event
+	class  MouseButtonEvent : public Event
 	{
 	public:
 		EVENT_CATEGORY(toUnderType(EventCategory::MOUSE_BUTTON) | toUnderType(EventCategory::INPUT))
@@ -84,7 +84,7 @@ namespace Rubber
 	/**
 	* @brief MousePressedEvent class that represents the mouse pressed event 
 	**/
-	class RB_API MousePressedEvent : public MouseButtonEvent
+	class  MousePressedEvent : public MouseButtonEvent
 	{
 	public:
 		MousePressedEvent(int button)
@@ -103,7 +103,7 @@ namespace Rubber
 	/**
 	* @brief MouseReleasedEvent class that represents the mouse released event
 	**/
-	class RB_API MouseReleasedEvent : public MouseButtonEvent
+	class  MouseReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseReleasedEvent(int button)

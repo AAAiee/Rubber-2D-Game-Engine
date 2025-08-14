@@ -7,7 +7,7 @@ namespace Rubber
 	* @brief A KeyEvent class that represents all kinds of key events.
 	* Key Pressed Event and Key Released Event both have the same key code attribute.
 	*/
-	class RB_API KeyEvent : public Event
+	class  KeyEvent : public Event
 	{
 	protected:
 		KeyEvent(int keyCode)
@@ -25,7 +25,7 @@ namespace Rubber
 	/**
     * @brief A KeyPressedEvent class that represents a key pressed event.
     */
-	class RB_API KeyPressedEvent : public KeyEvent
+	class  KeyPressedEvent : public KeyEvent
 	{
 	public:
 	   /**
@@ -63,7 +63,7 @@ namespace Rubber
 	/**
 	* @brief A KeyReleasedEvent class that represents a key released event.
 	*/
-	class RB_API KeyReleasedEvent : public KeyEvent
+	class  KeyReleasedEvent : public KeyEvent
 	{
 	public:
 	   /**

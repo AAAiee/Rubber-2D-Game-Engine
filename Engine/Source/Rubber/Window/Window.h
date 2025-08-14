@@ -20,7 +20,7 @@ namespace Rubber
 		}
 
 	};
-	class RB_API Window
+	class  Window
 	//base class for all windows on different platforms
 	{
 	public:

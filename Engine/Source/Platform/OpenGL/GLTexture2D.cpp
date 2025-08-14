@@ -7,7 +7,7 @@
 
 
 namespace Rubber{
-	GLTexture2D::GLTexture2D(const std::string& path)
+	GLTexture2D::GLTexture2D(std::string_view path)
 		:m_Path(path)
 	{
 		RB_PROFILE_FUNC();
@@ -17,7 +17,7 @@ namespace Rubber{
 		unsigned char* data = nullptr;
 		{// load
 			RB_PROFILE_SCOPE("StbiLoadImage");
-				data = stbi_load(path.c_str(), &this->m_Width, &this->m_Height, &this->m_Channels, 0);
+				data = stbi_load(path.data(), &this->m_Width, &this->m_Height, &this->m_Channels, 0);
 			if (!data) {
 				RB_CORE_ASSERT(false, "Fail to load the texture image!");
 			}
@@ -45,10 +45,10 @@ namespace Rubber{
 		uint32_t mipMapCount = static_cast<uint32_t>(1.0f + glm::floor(glm::log2(std::max((float)m_Width, (float)m_Height))));
 		glTextureStorage2D(m_RendererID, mipMapCount, internalFormat, this->m_Width, this->m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, this->m_Width, this->m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 		glGenerateTextureMipmap(m_RendererID);
@@ -66,10 +66,10 @@ namespace Rubber{
 		uint32_t mipMapCount = static_cast<uint32_t>(1.0f + glm::floor(glm::log2(std::max((float)m_Width, (float)m_Height))));
 		glTextureStorage2D(m_RendererID, mipMapCount, m_InternalFormat, width, height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 
 	GLTexture2D::~GLTexture2D()

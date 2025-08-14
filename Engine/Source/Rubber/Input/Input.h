@@ -14,7 +14,7 @@ namespace Rubber {
 	* which is why it has protected virtual functions that can adopt
 	* different implementation.
 	*/ 
-	class RB_API Input
+	class  Input
 	{
 	public:
 		static inline bool isKeyPressed(int keyCode) {

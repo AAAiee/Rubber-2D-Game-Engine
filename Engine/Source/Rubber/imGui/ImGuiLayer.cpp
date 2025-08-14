@@ -22,7 +22,7 @@ Rubber::ImGuiLayer::~ImGuiLayer()
 {
 }
 
-void Rubber::ImGuiLayer::onAttach(const Ref<EventManager>& em)
+void Rubber::ImGuiLayer::onAttach()
 {
     RB_PROFILE_FUNC();
     // Setup Dear ImGui context

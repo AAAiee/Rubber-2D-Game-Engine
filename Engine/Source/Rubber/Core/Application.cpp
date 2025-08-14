@@ -21,23 +21,20 @@
 #include "Rubber/Renderer/Renderer.h"
 
 //timer
-#include "Rubber/Timer/Timer.h"
+#include "Rubber/Utility/Timer/GameLoopTimer.h"
 
 //event manager
 #include "Rubber/Event/EventManager.h"
 
 
 #include "Rubber/Utility/Utility.h"
+#include "Rubber/Resources/AssetManager.h"
 
 
-
-// bind event callback  
 namespace Rubber
 {
 	Application* Application::s_Instance = nullptr;
 	const float Application::FIXED_TIME_STAMP = 1.0f / 120.0f;
-
-	
 
 	Application::Application(const std::string_view name)
 	{
@@ -51,21 +48,26 @@ namespace Rubber
 			RB_PROFILE_SCOPE("WindowCreate");
 			this->m_Window = Window::create(WindowProps(name));
 		}
+
+		//TODO:: 128? magic number
 		this->m_Em = EventManager::create(128);
 		this->m_Window->setEventManager(m_Em);
 
-		// push ImGui to be the last layer (rendered last )
+		//IMGUI is the last layer, so it updates after everything else (e.g. always rendered on top)
 		this->m_ImGuiLayer = new ImGuiLayer();
 		pushOverlay(m_ImGuiLayer);
 	
-		{
+		{ 
 			RB_PROFILE_SCOPE("Renderer Init + Random Engine Init");
 			Renderer::init();
 			RandomEngine::init();
 		}
 
+		// Vsync off, use gameLoopTimer to regulate flow
 		this->m_Window->setVsync(false);
-		this->m_Timer = makeScope<Timer>(60);
+		this->m_Timer = makeScope<GameLoopTimer>(60);
+
+		m_AssetManager = makeRef<AssetManager>();
 
 		//event subscription
 		{
@@ -93,14 +95,11 @@ namespace Rubber
 		return s_Instance->getWindowImpl();
 	}
 
-	//delegate the task to m_LayerStack, also immediately attach the layer
 	void Application::pushLayer(Layer* layer)
 	{
 		m_LayerStack.pushLayer(layer);
 	}
 
-
-	// delegate the task to m_LayerStack, also immediately attach the layer
 	void Application::pushOverlay(Layer* layer)
 	{
 		m_LayerStack.pushOverlay(layer);
@@ -108,6 +107,8 @@ namespace Rubber
 
 	void Application::run()
 	{
+
+		//TODO:: This requires all layers to be present at the beginning, which might not be true
 		if (m_FirstRun) {
 			attachAll();
 			m_FirstRun = false;
@@ -118,21 +119,19 @@ namespace Rubber
 		{
 			RB_PROFILE_SCOPE("Application::Running");
 
-			{// startFrame
+			{// start the timer
 				RB_PROFILE_SCOPE("startFrame");
 				this->m_Timer->startFrame();
-			}// startFrame
+			}
 			
 			{// window update
 				RB_PROFILE_SCOPE("FrameWindowUpdate");
 				m_Window->onUpdate();
 			}// window update
 
-
-			{// logic update ++ rendering
+			{//Update all layer in order
 				RB_PROFILE_SCOPE("Frame: OnUpdate");
 				lag += this->m_Timer->getDeltaTime();
-
 				if (!this->m_IsWindowMinimized) {
 					//update all layers;
 					while (lag >= FIXED_TIME_STAMP){
@@ -143,14 +142,14 @@ namespace Rubber
 						lag -= FIXED_TIME_STAMP;
 					}
 				}
-			}// logic update + rendering
+			}
 
-			{// onEvent
+			{// Flush all events held in the queue
 				RB_PROFILE_SCOPE("onEvent");
 			    this->m_Em->flush();
-			}// onEvent
+			}// 
 
-			{// on IMGUI RENDERING
+			{// Begin:: On IMGUI Rendering
 				RB_PROFILE_SCOPE("OnImGuiRendering");
 				m_ImGuiLayer->begin();
 				for (Layer* layer : m_LayerStack)
@@ -158,23 +157,24 @@ namespace Rubber
 					layer->onImGuiRender();
 				}
 				m_ImGuiLayer->end();
-			}// on IMGUI RENDERING
+			}// 
 
-			{// wait 
+			{// Wait if still has time left
 				RB_PROFILE_SCOPE("WaitFrametoEnd");
 				m_Timer->waitForFrameEnd();
-			}// wait
+			}
 		}
 	}
 
-	// this is what we want happen with a window close event
+
+	// Window close callback
 	bool Application::onWindowClose( const WindowCloseEvent& e)
 	{
 		m_Runing = false;
 		return true;
 	}
 	
-	// this is what we want happen with a window resize event
+	//Window resize callback
 	bool Application::onWindowResize(const WindowResizeEvent& e)
 	{
 		RB_PROFILE_FUNC();
@@ -183,7 +183,7 @@ namespace Rubber
 		if (resizedToWidth == 0 || resizedToHeight == 0){
 			this->m_IsWindowMinimized = true;
 
-			//make sure this will be propagated to other layers
+			//make sure the resize event will be propagated to other callback as well
 			return false;
 		}
 
@@ -193,11 +193,13 @@ namespace Rubber
 	}
 
 
+	//Temp::This is quick hack to make current setting work, requires all layers to be present at the time of running
+	// this might not be true
 	void Application::attachAll()
 	{
 		RB_PROFILE_FUNC();
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
-			(*(--it))->onAttach(m_Em);
+			(*(--it))->onAttach();
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace Rubber {
 		virtual void init()final  override;
 		virtual void clearColor(const glm::vec4& color) final override;
 		virtual void setViewPort(int width, int height) override;
+		virtual void setPolygonMode(RendererPolygonMode mode) override;
 
 		virtual void clear() final override;
 

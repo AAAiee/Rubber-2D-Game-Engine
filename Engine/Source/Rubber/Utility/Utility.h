@@ -75,3 +75,15 @@ namespace Rubber {
    using RandomEngine = RandomEngineImpl;
 }
 #endif
+
+namespace Rubber::HashFunc {
+    constexpr uint64_t fnv1a64(std::string_view s) noexcept
+    {
+        uint64_t h = 14695981039346656037ULL;          // offset basis
+        for (unsigned char c : s)
+            h = (h ^ c) * 1099511628211ULL;           // prime
+
+        return h;
+    }
+}
+

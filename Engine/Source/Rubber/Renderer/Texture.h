@@ -2,9 +2,10 @@
 #include <cstdint>
 #include <string>
 #include <Rubber/Core/Core.h>
+#include "Rubber/Resources/Asset.h"
 namespace Rubber{
 
-	class Texture {
+	class Texture: public Asset {
 	public:
 		virtual ~Texture() {};
 		virtual void bind(uint16_t slot) const = 0;
@@ -15,14 +16,20 @@ namespace Rubber{
 	};
 
 
-	class Texture2D: public Texture{
+	class Texture2D: public Texture {
 	public: 
 		virtual ~Texture2D() {};
 		virtual void setData(void* data, uint32_t size) = 0;
-		static Ref<Texture2D> create(const std::string& texturePath);
+		static Ref<Texture2D> create(std::string_view texturePath);
 		static Ref<Texture2D> create(uint16_t width, uint16_t heigh);
 		virtual bool operator==(const Texture& texture)  = 0;
-	};
+		static AssetType getStaticType() {
+			return AssetType::Texture2D;
+		}
+		virtual AssetType getType() const override {
+			return  getStaticType();
+		}
+	}; 
 
 
 

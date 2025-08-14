@@ -8,7 +8,7 @@ class GLTexture2D: public Texture2D {
 
 public:  
 	GLTexture2D(uint16_t width, uint16_t height);
-	GLTexture2D(const std::string& path);  
+	GLTexture2D(std::string_view path);  
 	virtual ~GLTexture2D();  
 	virtual void bind(uint16_t slot) const final override; 
 	virtual void unBind() const final override;  
@@ -28,14 +28,14 @@ public:
 	}
 
 
-private:  
-	uint32_t  m_RendererID;  
+private:
+	uint32_t m_RendererID;
 	int32_t m_Height;
 	int32_t m_Width;
-	std::string m_Path;  
+	std::string m_Path;
 	int32_t m_Channels;
-	GLint m_InternalFormat; 
+	GLint m_InternalFormat;
 	GLint m_DataFormat;
-};  
+};
 
 }

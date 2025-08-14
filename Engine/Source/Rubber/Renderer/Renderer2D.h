@@ -10,6 +10,7 @@ namespace Rubber{
 	class SubTexture2D;
 	class OrthoCamera;
 
+
 	class Renderer2D{
 		
 	public:
@@ -23,26 +24,27 @@ namespace Rubber{
 		static void beginScene(const OrthoCamera& camera);
 
 		// Direct Input, Texture
-		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<Texture2D>& texture, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color, float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		//Direct Input, SubTexture, non-Rotated quad
-		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<SubTexture2D>& subTexture, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2D>& subTexture, const float tillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		// Direct Input, Rotated, texture
-		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, 
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale,  float radians, const Ref<Texture2D>& texture, 
 			const float TillingFactor =1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const glm::vec4& color,
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale,  float radians, const glm::vec4& color,
 			const float TillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		// Direct Input, Rotated, SubTexture Overload
-		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<SubTexture2D>& subTexture,
+		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale,  float radians, const Ref<SubTexture2D>& subTexture,
 			const float TillingFactor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		//Matrix Overload
-		static void drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const glm::vec2* texCoord=nullptr, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawTextureQuad(const glm::mat4& transformation, const Ref<Texture2D>& texture, const glm::vec2* texCoord=nullptr, float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
-		static void drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, const float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void drawColorQuad(const glm::mat4& transformation, const glm::vec4& color,  float tillingFacor = 1.f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
 
 		static void endScene();
 
@@ -58,8 +60,9 @@ namespace Rubber{
 	private:
 		static void flush(); 
 
-	private:
+
 #if ENABLE_RENDERER_STATS
+	private:
 		struct RendererStats{
 			uint32_t m_QuadNumber;
 			uint32_t m_DrawCallCount;
@@ -72,6 +75,7 @@ namespace Rubber{
 				return m_QuadNumber * 6;
 			} 
 		};
+
 
 	public:
 		static RendererStats s_Stats;

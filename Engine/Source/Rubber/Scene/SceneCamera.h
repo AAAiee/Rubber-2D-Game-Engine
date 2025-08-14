@@ -3,41 +3,72 @@
 
 namespace Rubber{
 	class  SceneCamera:  public Camera{
+
 		//fwd
-     	enum class ProjectionType;
 
 	public:
+		enum class ProjectionType { Ortho, Persp };
 		SceneCamera();
+	    void setProjectionType(ProjectionType type);
+		ProjectionType getProjectionType() const;
+		void setOrtho(float size,  float aspectRatio, float clipNear, float clipFar);
+		void onResize(float width, float height);
 
-		void setProjectionType(ProjectionType type){
-			m_ActiveProjectionType = type;
+	public: //ortho
+		inline float getOrthoSize() const {
+			return m_OrthoSize;
 		}
-
-		ProjectionType getProjectionType() const {
-			return m_ActiveProjectionType;
+		inline float getOrthoNearClip() const {
+			return m_OrthoNear;
 		}
-
-		void setOrtho(const float size, const float aspectRatio, const float clipNear, const float clipFar) {
-			m_OrthoSize = size;
-			m_AspectRatio = aspectRatio;
-			m_OrthoNear = clipNear;
-			m_OrthoFar = clipFar;
+		inline 	float getOrthoFarClip() const {
+			return m_OrthoFar;
+		}
+		inline 	void setOrthoSize(float orthoSize) {
+			m_OrthoSize = orthoSize;
 			recalculateMatrix();
 		}
-
-		void onResize(const float width, const float height);
+		inline 	void setOrthoNearClip(float orthoNearClip) {
+			m_OrthoNear = orthoNearClip;
+			recalculateMatrix();
+		}
+		inline 	void setOrthoFarClip(float orthoFarClip) {
+			m_OrthoFar = orthoFarClip;
+			recalculateMatrix();
+		}
 		
+	public://perspective
+		inline 	float getPersFoVY() const {
+			return m_PersFovY;
+		}
+		inline 	float getPersNearClip() const {
+			return m_PersNear;
+		}
+		inline 	float getPersFarClip() const {
+			return m_PersFar;
+		}
+		inline 	void setPersFovY(float persFovY) {
+			m_PersFovY =  persFovY;
+			recalculateMatrix();
+		}
+		inline 	void setPersNearClip(float persNearClip) {
+			m_PersNear = persNearClip;
+			recalculateMatrix();
+		}
+		inline 	void setPersFarClip(float persFarClip) {
+			m_PersFar = persFarClip;
+			recalculateMatrix();
+		}
 	private:
-		void recalculateMatrix();
-
-	private:
-		enum class ProjectionType {Ortho, Persp};
-		
+		inline 	void recalculateMatrix();
+	
 	private:
 		ProjectionType m_ActiveProjectionType = ProjectionType::Ortho; 
-		//TODO: Supports perspective projection as well
+
 		float m_OrthoSize = 10.0f,  m_OrthoNear = -1.0f, m_OrthoFar = 1.0f; // size = the height of the projection
-		float m_AspectRatio = 1.0f;
+		float m_PersFovY = glm::radians(45.0f) , m_PersNear = 0.01f, m_PersFar = 10000.f; 
+
+		float m_AspectRatio = 16.0f/ 9.0f;
 	};
 
 

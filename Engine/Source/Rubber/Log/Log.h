@@ -11,7 +11,7 @@ namespace Rubber
 	* the s_ClientLogger points to the logger for the application.
 	* both are initialized in the Init() function.
 	*/
-	class RB_API Logger
+	class Logger
 	{
 	public:
 	    Logger& operator =(const Logger&) = delete; 

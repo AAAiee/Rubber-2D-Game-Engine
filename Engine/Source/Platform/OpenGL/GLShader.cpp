@@ -131,7 +131,7 @@ namespace Rubber {
 			return it->second;
 
 		GLint loc = glGetUniformLocation(m_ShaderID, name.data());
-		RB_CORE_ASSERT(loc != -1, "Uniform \"%s\" not found", name.data());
+		RB_CORE_ASSERT(loc != -1, "Uniform  not found");
 		m_UniformCache.emplace(std::string(name), loc);
 		return loc;
 	}

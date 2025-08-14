@@ -45,10 +45,10 @@ project "Engine"
 
    filter "system:windows"
        systemversion "latest"
-       defines { }
+       defines { "RB_PLATFORM_WINDOWS" }
 
    filter "configurations:Debug"
-       defines { "DEBUG", "RB_ENABLE_ASSERT" }
+       defines { "RB_DEBUG", "RB_ENABLE_ASSERTS" }
        runtime "Debug"
        symbols "On"
 

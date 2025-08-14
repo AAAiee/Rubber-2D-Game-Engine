@@ -5,21 +5,21 @@
 
 namespace Rubber{
 
-	SystemList::SystemList() = default;
 
-	Scene::Scene()
+
+	void Scene::systemsInit()
 	{
-		// init all system;
-		std::apply([this](auto&... system) {
-			(system.init(m_Registry), ...);
-			}, m_Systems.allSystem);
+		for (auto& systemPtr : m_Systems) {
+			systemPtr->init(shared_from_this());
+		}
+
 	}
 
-	Scene::~Scene()
+	void Scene::systemShutDow()
 	{
-		std::apply([this](auto&... system) {
-			(system.shutdown(), ...);
-			}, m_Systems.allSystem);
+		for (auto& systemPtr : m_Systems) {
+			systemPtr->shutdown();
+		}
 
 	}
 
@@ -29,25 +29,27 @@ namespace Rubber{
 		auto me = shared_from_this();
 		Entity entity(entityHandler, me);
 
-
 		//every entity has a default tag component
 		std::string_view tagText = (tag.empty()) ? "Unknown Entity" : tag;
 		entity.addComponent<TagComponent>(tagText);
 		return entity;
 	}
 
-    void Scene::onSceneUpdate(const float ts)  
+    void Scene::onSystemsUpdate(float ts)  
     {  
-		std::apply([this,ts](auto&... system) {
-
-			(system.onUpdate(ts),...);
-
-			}, m_Systems.allSystem);
+		for (auto& systemPtr : m_Systems) {
+			systemPtr->onUpdate(ts);
+		}
     }
 
-	Rubber::Ref<Rubber::Scene> Scene::create()
+	void Scene::addSystem(Scope<SystemBase> system)
 	{
-		return makeRef<Scene>();
+		m_Systems.push_back(std::move(system));
+	}
+
+	Ref<Scene> Scene::create()
+	{
+		return Ref<Scene>(new Scene());
 	}
 
 

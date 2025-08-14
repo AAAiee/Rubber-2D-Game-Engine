@@ -19,7 +19,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
-#include <map>
 #include <set>
 #include <numeric>
 #include <fstream>
@@ -35,6 +34,6 @@
 
 #include "Rubber/Log/Log.h"
 #include "Rubber/Debug/Profiler.h"
-#include "Rubber/Core/Primitives.h"
 #include "Rubber/Core/Assert.h"
 #include "Rubber/Utility/Utility.h"
+

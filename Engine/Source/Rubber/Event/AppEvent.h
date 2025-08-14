@@ -9,7 +9,7 @@ namespace Rubber
 	*		   height The height of the window
 	* 
 	**/
-	class RB_API WindowResizeEvent : public Event
+	class  WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -37,7 +37,7 @@ namespace Rubber
 	* @brief WindowCloseEvent class that represents the window close event
 	* 
 	**/
-	class RB_API WindowCloseEvent : public Event
+	class  WindowCloseEvent : public Event
 	{ 
 	public:
 		WindowCloseEvent() = default;
@@ -51,8 +51,34 @@ namespace Rubber
 		EVENT_TYPE(EventType::WindowClosed)
 	};
 
+	class ViewPortResizeEvent : public Event {
+	public:
+		ViewPortResizeEvent(uint32_t width, uint32_t height)
+			:m_Width(width), m_Height(height) { }
+		std::string toString() const override {
+			std::stringstream ss;
+			ss << "ViewPort Resize to " << m_Width << m_Height;
+			return ss.str();
+		}
 
-	class RB_API AppTickEvent : public Event
+		uint32_t  getWidth() const {
+			return m_Width;
+		}
+
+		uint32_t getHeight() const {
+			return m_Height;
+		}
+
+		EVENT_CATEGORY(toUnderType(EventCategory::APPLICATION)) 
+		EVENT_TYPE(EventType::ViewPortResize)
+
+	private:
+		uint32_t m_Width, m_Height;
+	};
+
+
+
+	class  AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() = default;
@@ -67,7 +93,7 @@ namespace Rubber
 	};
 
 
-	class RB_API AppUpdateEvent : public Event
+	class  AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() = default;
@@ -82,7 +108,7 @@ namespace Rubber
 	};
 
 
-	class RB_API AppRenderEvent : public Event
+	class  AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() = default;

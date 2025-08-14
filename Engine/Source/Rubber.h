@@ -40,14 +40,38 @@
 
 // profile
 #include "Rubber/Debug/Profiler.h"
-#include "Rubber/Timer/Timer.h"
+#include "Rubber/Utility/Timer/GameLoopTimer.h"
 
 //Utilities
 #include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Search.h"
 
 //ECS
 #include "Rubber/Scene/Scene.h"
 #include "Rubber/Scene/Utili/Component.h"
 #include "Rubber/Scene/Utili/Entity.h"
+#include "Rubber/Scene/System/System.h"
+#include "Rubber/Scene/System/AnimationSystem.h"
+#include "Rubber/Scene/System/ScriptSystem.h"
+#include "Rubber/Scene/System/CameraSystem.h"
+#include "Rubber/Scene/System/FsmSystem.h"
+#include "Rubber/Scene/System/RenderSystem.h"
+#include "Rubber/Scene/System/InputSystem.h"
+#include "Rubber/Scene/System/WindowSystem.h"
+#include "Rubber/Scene/System/MoveSystem.h"
+#include "Rubber/Scene/Utili/ScriptableEntity.h"
+#include "Rubber/Scene/System/CollisionSystem.h"
+#include "Rubber/Scene/System/FsmPostMoving.h"
+
+
+//Asset Manager
+#include "Rubber/Resources/AssetManager.h"
+#include "Rubber/Resources/AssetMetaData.h"
+#include "Rubber/Resources/Asset.h"
+#include "Rubber/Resources/AnimationResources/AnimationAtlas.h"
+#include "Rubber/Resources/AnimationResources/AnimationSpriteSheet.h"
+
+
+namespace RB = Rubber;
 
 

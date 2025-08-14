@@ -1,27 +1,24 @@
 #pragma  once
-#include <entt.hpp>
-#include <Rubber/Scene/Utili/Component.h>
+
+#include "System.h"
+#include "Rubber/Renderer/FrameBuffer.h"
 
 namespace Rubber{
-	class Renderer2D;
 
-	struct RendererSystem{
+	class RendererSystem : public SystemBase{
 
+	public:
 		RendererSystem() = default;
-		using DrawGroup = decltype(
-			std::declval<entt::registry&>()
-			.group<TransformComponent, SpriteComponent>()
-			);
 		
-		void init(entt::registry& regisry);
+		void onUpdate(const float ts) override;
+		void init(Ref<Scene> scene) override;
 
-		void shutdown();
 
-		void onUpdate(const float ts);
-
-		DrawGroup m_Group;
-		entt::registry* m_Registry = nullptr;
+	private:
+		Ref<FrameBuffer> m_WorldFBO;
+		
 	};
+
 
 
 }

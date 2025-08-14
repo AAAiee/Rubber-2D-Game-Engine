@@ -8,19 +8,17 @@
 #include <functional>
 
 namespace Rubber {
-	// TODO::REFACTOR THIS CODE, ALSO CONSIDERING REPLACING FUNCTION OBJECT FOR BETTER PERFORMANCE
 
 	namespace{
 
 		constexpr inline const uint32_t MIN_TO_CLEANUP = 50;
 	}
 
-	// TODO: MAY BE USE A DEQUE INSTEAD OF VECTOR 
 	template <typename T>
 	class EventBus{
 
 	public:
-		using EventHandler = typename std::function<bool(const T& event)>;
+		using EventHandler = std::function<bool(const T& event)>;
 
 		static void subscribe(std::string_view name, EventHandler&& handler) {
 			RB_PROFILE_FUNC();
@@ -30,7 +28,6 @@ namespace Rubber {
 			uint64_t hashVal = std::hash<std::string_view>{}(name);
 
 			bool isExisted = indexMap.find(hashVal) != indexMap.end();
-			//RB_CORE_ASSERT(!isExisted || !callBacks[indexMap[hashVal]].m_IsAlive, "The hanlder with this name is already registered with a Alive handler!");
 
 			bool isAliveFlag;
 			if(isExisted && (isAliveFlag = callBacks[indexMap[hashVal]].m_IsAlive)){

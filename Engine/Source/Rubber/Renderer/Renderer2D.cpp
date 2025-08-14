@@ -60,10 +60,11 @@ namespace Rubber {
 		}
 	};
 
-	RendererData data = RendererData();
+	RendererData s_Data = RendererData();
 #if ENABLE_RENDERER_STATS
 	Renderer2D::RendererStats Renderer2D::s_Stats;
 #endif 
+
 
 	void Renderer2D::init()
 	{
@@ -76,54 +77,55 @@ namespace Rubber {
 			{ShaderType::Float4, "aTintColor",     false }
 		};
 
-		data.m_VAO = VertexArray::create();
-		data.m_VAO->bind();
-		data.m_VBO = VertexBuffer::create(sizeof(Vertex) * data.MAX_VERTEX_PER_DRAW);
+		s_Data.m_VAO = VertexArray::create();
+		s_Data.m_VAO->bind();
+		s_Data.m_VBO = VertexBuffer::create(sizeof(Vertex) * s_Data.MAX_VERTEX_PER_DRAW);
 
-		data.m_VBO->setLayout(VBLayout);
-		data.m_IBO = IndexBuffer::create(sizeof(uint32_t) * data.MAX_INDEX_NUMBER_PER_DRAW);
+		s_Data.m_VBO->setLayout(VBLayout);
+		s_Data.m_IBO = IndexBuffer::create(sizeof(uint32_t) * s_Data.MAX_INDEX_NUMBER_PER_DRAW);
 
-		data.m_VAO->addVertexBuffer(data.m_VBO);
-		data.m_VAO->setIndexBuffer(data.m_IBO);
+		s_Data.m_VAO->addVertexBuffer(s_Data.m_VBO);
+		s_Data.m_VAO->setIndexBuffer(s_Data.m_IBO);
 
-		data.m_ShaderLib = makeRef<ShaderLib>();
-		data.m_ShaderLib->load("Asset/shader/CommonShader.glsl");
+		s_Data.m_ShaderLib = makeRef<ShaderLib>();
+		s_Data.m_ShaderLib->load("Asset/shader/CommonShader.glsl");
 
-		data.m_WhiteTexture = Texture2D::create(1,1);
+		s_Data.m_WhiteTexture = Texture2D::create(1,1);
 
 		uint32_t whiteTexture = 0xFFFFFFFF;
-		data.m_WhiteTexture->setData(&whiteTexture, 4);
+		s_Data.m_WhiteTexture->setData(&whiteTexture, 4);
 
 		// set up a buffer to store all vertices ..
-		data.m_Vertices = new Vertex[RendererData::MAX_VERTEX_PER_DRAW];
+		s_Data.m_Vertices = new Vertex[RendererData::MAX_VERTEX_PER_DRAW];
 
 		//set up a buffer to store all indices 
-		data.m_Indices = new uint32_t[RendererData::MAX_INDEX_NUMBER_PER_DRAW];
+		s_Data.m_Indices = new uint32_t[RendererData::MAX_INDEX_NUMBER_PER_DRAW];
 
 		// fill in index for maxQuad
-		for (uint32_t i = 0, offset = 0; i + 5 < data.MAX_INDEX_NUMBER_PER_DRAW; i += 6 ) {
-			data.m_Indices[i] = offset + 0;
-			data.m_Indices[i + 1] = offset + 1;
-			data.m_Indices[i + 2] = offset + 2;
-			data.m_Indices[i + 3] = offset + 0;
-			data.m_Indices[i + 4] = offset + 2;
-			data.m_Indices[i + 5] = offset + 3;
+		for (uint32_t i = 0, offset = 0; i + 5 < s_Data.MAX_INDEX_NUMBER_PER_DRAW; i += 6 ) {
+			s_Data.m_Indices[i] = offset + 0;
+			s_Data.m_Indices[i + 1] = offset + 1;
+			s_Data.m_Indices[i + 2] = offset + 2;
+			s_Data.m_Indices[i + 3] = offset + 0;
+			s_Data.m_Indices[i + 4] = offset + 2;
+			s_Data.m_Indices[i + 5] = offset + 3;
 			offset += 4;
 		}
 
-		data.m_IBO->uploadIndexData(data.m_Indices, data.MAX_INDEX_NUMBER_PER_DRAW * sizeof(uint32_t));
-		delete[] data.m_Indices;
+		s_Data.m_IBO->uploadIndexData(s_Data.m_Indices, s_Data.MAX_INDEX_NUMBER_PER_DRAW * sizeof(uint32_t));
+		delete[] s_Data.m_Indices;
 
 		// texture
-		data.m_TexturesMap[0] = data.m_WhiteTexture;
-		int samplers[data.MAX_TEXTURE_SLOTS];
-		for (int i = 0; i < data.MAX_TEXTURE_SLOTS; ++i) {
+		s_Data.m_TexturesMap[0] = s_Data.m_WhiteTexture;
+		int samplers[s_Data.MAX_TEXTURE_SLOTS];
+		for (int i = 0; i < s_Data.MAX_TEXTURE_SLOTS; ++i) {
 			samplers[i] = i;
 		}
-		data.m_ShaderLib->getShader("CommonShader")->setIntArray("u_Textures", samplers, data.MAX_TEXTURE_SLOTS);
 
-		data.m_ValidTextureCount++;
-		data.m_VerticesInsertPosPtr = data.m_Vertices;
+		s_Data.m_ShaderLib->getShader("CommonShader")->setIntArray("u_Textures", samplers, s_Data.MAX_TEXTURE_SLOTS);
+
+		s_Data.m_ValidTextureCount++;
+		s_Data.m_VerticesInsertPosPtr = s_Data.m_Vertices;
 
 #if ENABLE_RENDERER_STATS
 		std::memset(&s_Stats, 0ui32, sizeof(RendererStats));
@@ -138,14 +140,14 @@ namespace Rubber {
 	void Renderer2D::beginScene(const glm::mat4& vpMatrix)
 	{
 		RB_PROFILE_FUNC();
-		Ref<Shader> shader = data.m_ShaderLib->getShader("CommonShader");
-		shader->setMat4("u_ViewProjectionMatrix", vpMatrix); 
+		Ref<Shader> shader = s_Data.m_ShaderLib->getShader("CommonShader");
+		shader->setMat4("u_ViewProjectionMatrix", vpMatrix);
 	}
 
 	void Renderer2D::beginScene(const OrthoCamera& camera)
 	{
 		RB_PROFILE_FUNC();
-		Ref<Shader> shader = data.m_ShaderLib->getShader("CommonShader");
+		Ref<Shader> shader = s_Data.m_ShaderLib->getShader("CommonShader");
 		shader->setMat4("u_ViewProjectionMatrix", camera.getVpMatrix());
 	}
 
@@ -153,7 +155,7 @@ namespace Rubber {
 	{
 		RB_PROFILE_FUNC();
 
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+		if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 			flush();
 		}
 
@@ -161,11 +163,11 @@ namespace Rubber {
 		drawColorQuad(tsMatrix, color, tillingFactor, tintColor);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
 	{
 		RB_PROFILE_FUNC();
 
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+		if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 			flush();
 		}
 	
@@ -175,25 +177,25 @@ namespace Rubber {
 	}
 	
 
-	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, Ref<SubTexture2D>& subTexture, const float tillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2D>& subTexture, const float tillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
 	{
 		RB_PROFILE_FUNC();
 
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+		if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 			flush();
 		}
 		glm::mat4 tsMatrix = glm::translate(glm::mat4(1), position)
 			* glm::scale(glm::mat4(1), { scale.x, scale.y, 1 });
 
-		Ref<Texture2D> spriteSheetTexture = subTexture->getSpriteSheetTexture();
+		const Ref<Texture2D>& spriteSheetTexture = subTexture->getSpriteSheetTexture();
 		drawTextureQuad(tsMatrix, spriteSheetTexture, subTexture->getTexCoord(), tillingFactor, tintColor);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const Ref<Texture2D>& texture, const float tillingFactor, const glm::vec4& tintColor)
     {  
        RB_PROFILE_FUNC();  
 
-	   if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+	   if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 		   flush();
 	   }
 
@@ -209,7 +211,7 @@ namespace Rubber {
 	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const glm::vec4& color, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
 	{
 		RB_PROFILE_FUNC();
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+		if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 			flush();
 		}
 
@@ -222,11 +224,11 @@ namespace Rubber {
 		drawColorQuad(tsMatrix, color, TillingFactor,tintColor);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, Ref<SubTexture2D>& subTexture, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, const float radians, const Ref<SubTexture2D>& subTexture, const float TillingFactor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
 	{
 
 		RB_PROFILE_FUNC();
-		if (data.m_ValidIndexCount >= data.MAX_INDEX_NUMBER_PER_DRAW) {
+		if (s_Data.m_ValidIndexCount >= s_Data.MAX_INDEX_NUMBER_PER_DRAW) {
 			flush();
 		}
 
@@ -248,40 +250,42 @@ namespace Rubber {
 	void Renderer2D::flush()
 	{
 		RB_PROFILE_FUNC();
-		data.m_VBO->uploadVertexData(data.m_Vertices, static_cast<uint32_t>((data.m_VerticesInsertPosPtr - data.m_Vertices)) * static_cast<uint32_t> (sizeof(Vertex)));
-		for(uint32_t i = 0;  i < data.m_ValidTextureCount ; ++i){
-			data.m_TexturesMap[i]->bind(i);
+		s_Data.m_VBO->uploadVertexData(s_Data.m_Vertices, static_cast<uint32_t>((s_Data.m_VerticesInsertPosPtr - s_Data.m_Vertices)) * static_cast<uint32_t> (sizeof(Vertex)));
+		for(uint32_t i = 0;  i < s_Data.m_ValidTextureCount ; ++i){
+			s_Data.m_TexturesMap[i]->bind(i);
 		}
-		RendererCommand::drawIndexed(data.m_VAO, data.m_ValidIndexCount);
+
+
+		RendererCommand::drawIndexed(s_Data.m_VAO, s_Data.m_ValidIndexCount);
 
 		// clean up for next batch
-		data.m_VerticesInsertPosPtr = data.m_Vertices;
-		data.m_ValidIndexCount = 0;
-		data.m_ValidTextureCount = 1;
+		s_Data.m_VerticesInsertPosPtr = s_Data.m_Vertices;
+		s_Data.m_ValidIndexCount = 0;
+		s_Data.m_ValidTextureCount = 1;
 #if ENABLE_RENDERER_STATS 
 	s_Stats.m_DrawCallCount++;
 #endif
 	}
 
 
-	void Renderer2D::drawTextureQuad(const glm::mat4& transformation, Ref<Texture2D>& texture, const glm::vec2* textCoord,  const float tillingFactor, const glm::vec4& tintColor)
+	void Renderer2D::drawTextureQuad(const glm::mat4& transformation, const Ref<Texture2D>& texture, const glm::vec2* textCoord,  const float tillingFactor, const glm::vec4& tintColor)
 	{
 		RB_PROFILE_FUNC();
 
 		float texIndex = 0.0f;
 		// check if we already have this texture, if we do, reuse
-		for (uint32_t i = 1; i < data.m_ValidTextureCount; i++) {
-			if (*texture == *(data.m_TexturesMap[i])) {
+		for (uint32_t i = 1; i < s_Data.m_ValidTextureCount; i++) {
+			if (*texture == *(s_Data.m_TexturesMap[i])) {
 				texIndex = static_cast<float>(i);
 				break;
 			}
 		}
 
 		if (texIndex == 0.0f) { // new texture has been passed in, store it in a new texture slot
-			RB_CORE_ASSERT(data.m_ValidTextureCount < data.MAX_TEXTURE_SLOTS, "Cannot have more new textures, slot run out!");
-			data.m_TexturesMap[data.m_ValidTextureCount] = texture;
-			texIndex = static_cast<float> (data.m_ValidTextureCount);
-			data.m_ValidTextureCount++;
+			RB_CORE_ASSERT(s_Data.m_ValidTextureCount < s_Data.MAX_TEXTURE_SLOTS, "Cannot have more new textures, slot run out!");
+			s_Data.m_TexturesMap[s_Data.m_ValidTextureCount] = texture;
+			texIndex = static_cast<float> (s_Data.m_ValidTextureCount);
+			s_Data.m_ValidTextureCount++;
 		}
 
 		RB_CORE_ASSERT(texIndex != 0.0f, "Texture is not binded sucessfully!");
@@ -292,15 +296,15 @@ namespace Rubber {
 		}
 		
 		for (int i = 0; i < 4; i++) {
-			data.m_VerticesInsertPosPtr->m_Position = transformation * RendererData::UNIT_QUAD_POS[i];
-			data.m_VerticesInsertPosPtr->m_Color = color;
-			data.m_VerticesInsertPosPtr->m_TexCoord = textCoord[i];
-			data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
-			data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFactor;
-			data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
-			data.m_VerticesInsertPosPtr++;
+			s_Data.m_VerticesInsertPosPtr->m_Position = transformation * RendererData::UNIT_QUAD_POS[i];
+			s_Data.m_VerticesInsertPosPtr->m_Color = color;
+			s_Data.m_VerticesInsertPosPtr->m_TexCoord = textCoord[i];
+			s_Data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
+			s_Data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFactor;
+			s_Data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
+			s_Data.m_VerticesInsertPosPtr++;
 		}
-		data.m_ValidIndexCount += 6;
+		s_Data.m_ValidIndexCount += 6;
 
 #if ENABLE_RENDERER_STATS
 		s_Stats.m_QuadNumber++;
@@ -308,21 +312,21 @@ namespace Rubber {
 	}
 
 
-	void Renderer2D::drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, const float tillingFacor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
+	void Renderer2D::drawColorQuad(const glm::mat4& transformation, const glm::vec4& color, float  tillingFacor /*= 1.f*/, const glm::vec4& tintColor /*= glm::vec4(1.0f)*/)
 	{
 		RB_PROFILE_FUNC();
 		//scale->translation
 		const float texIndex = 0.0f; // in this function we only draw color, no texture (white texture by default)
 		for (int i = 0; i < 4; i++) {
-			data.m_VerticesInsertPosPtr->m_Position = transformation * data.UNIT_QUAD_POS[i];
-			data.m_VerticesInsertPosPtr->m_Color = color;
-			data.m_VerticesInsertPosPtr->m_TexCoord = data.UNIT_QUAD_TEX_COORD[i];
-			data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
-			data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFacor;
-			data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
-			data.m_VerticesInsertPosPtr++;
+			s_Data.m_VerticesInsertPosPtr->m_Position = transformation * s_Data.UNIT_QUAD_POS[i];
+			s_Data.m_VerticesInsertPosPtr->m_Color = color;
+			s_Data.m_VerticesInsertPosPtr->m_TexCoord = s_Data.UNIT_QUAD_TEX_COORD[i];
+			s_Data.m_VerticesInsertPosPtr->m_TexIndex = { texIndex };
+			s_Data.m_VerticesInsertPosPtr->m_TillingFactor = tillingFacor;
+			s_Data.m_VerticesInsertPosPtr->m_TintFacor = tintColor;
+			s_Data.m_VerticesInsertPosPtr++;
 		}
-		data.m_ValidIndexCount += 6;
+		s_Data.m_ValidIndexCount += 6;
 #if ENABLE_RENDERER_STATS 
 		s_Stats.m_QuadNumber++;
 #endif

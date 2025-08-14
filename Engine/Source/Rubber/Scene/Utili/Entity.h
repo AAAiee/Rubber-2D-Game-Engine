@@ -37,6 +37,25 @@ namespace Rubber{
 			return m_Scene.lock()->m_Registry.get<T>(m_EntityHandler);
 		}
 
+		Ref<Scene> getScene() {
+			return m_Scene.lock();
+		}
+
+		operator uint32_t () const  {
+			return  (uint32_t)m_EntityHandler;
+		}
+
+		operator bool() const {
+			return m_EntityHandler != entt::null && !m_Scene.expired() ;
+		}
+		
+		bool operator ==(const Entity& other) const {
+			return  m_EntityHandler == other.m_EntityHandler && m_Scene.lock() == other.m_Scene.lock();
+		}
+
+		bool operator != (const Entity& other) const {
+			return  !((*this) == other);
+		}
 
 	private:
 		entt::entity m_EntityHandler{ entt::null };

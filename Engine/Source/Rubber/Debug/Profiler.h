@@ -5,7 +5,6 @@
 
 namespace Rubber {
 
-
 	// currently only store the session name, but will be extended
 	struct ProfileCurrentSession{
 		const char* name;

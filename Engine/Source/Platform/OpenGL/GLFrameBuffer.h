@@ -23,7 +23,6 @@ namespace Rubber{
 
 		virtual void recreate();
 		virtual void resize(uint32_t width, uint32_t height) final override;
-
 	public:
 		virtual void bind() final override ;
 		virtual void unbind() final override;

@@ -60,7 +60,7 @@ namespace Rubber{
 
 	private:
 		float m_AspectRatio;
-		float m_ZoomLevel{ 1.0f };
+		float m_ZoomLevel{ 10.0f };
 
 		OrthoCameraBounds m_Bounds;
 		OrthoCamera m_Camera;

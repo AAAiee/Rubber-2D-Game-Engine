@@ -9,7 +9,7 @@ namespace Rubber {
 	* It provides specific implementation for the input system.
 	* Windows window implementation now dependent on GLFW.
 	*/
-	class RB_API WindowInput :public Input
+	class  WindowInput :public Input
 	{
 	protected:
 		virtual bool isKeyPressedImpl(int keyCode)  final override;

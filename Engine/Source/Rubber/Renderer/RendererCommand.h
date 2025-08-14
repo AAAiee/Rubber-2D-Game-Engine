@@ -3,18 +3,18 @@
 #include "Rubber/Core/Core.h"
 
 namespace Rubber {
+	enum class RendererDrawMode;
 
-	// mid layer between redender and actually renderer API
+	// mid layer between renderer and actually renderer API
 	class RendererCommand {
 	public:
 		static void init();
 		static void setViewPort(int width, int height);
 		static void clearColor(const glm::vec4& color);
 		static void clear();
-		static void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count=0);
+		static void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0);
+		static void setPolygonMode(RendererPolygonMode mode);
 	private:
 		static RendererAPI* s_RendererAPI;
 	};
-
-
 }

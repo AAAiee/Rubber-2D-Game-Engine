@@ -4,7 +4,7 @@
 
 #include "Platform/OpenGL/GLTexture2D.h"
 namespace Rubber{
-	Ref<Texture2D> Texture2D::create(const std::string& texturePath)
+	Ref<Texture2D> Texture2D::create(std::string_view texturePath)
 	{
 		switch (Renderer::getAPI())
 		{

@@ -4,6 +4,11 @@
 
 namespace  Rubber {
 	class VertexArray;
+
+	enum class  RendererPolygonMode: uint8_t {
+		FILL = 0,
+		LINE
+	};
 	/**
 	* Renderer API class, the base class for all API implementation
 	* For example, an OpenGL Implementation will be OpenGLRendererAPI which
@@ -22,6 +27,7 @@ namespace  Rubber {
 		virtual void clearColor(const glm::vec4& color) = 0;
 		virtual void clear() = 0; 
 		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count =0) = 0; 
+		virtual void setPolygonMode(RendererPolygonMode mode) = 0;
 		static inline RendererAPI::API getAPI() {
 			return s_API;
 		};
