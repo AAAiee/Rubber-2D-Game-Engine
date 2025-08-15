@@ -1,7 +1,5 @@
 # Rubber-2D-Game-Engine
 
-# Rubber-2D-Game-Engine
-
 ## Clone the Repository
 git clone --branch GameExample --recurse-submodules https://github.com/AAAiee/Rubber-2D-Game-Engine.git
 
