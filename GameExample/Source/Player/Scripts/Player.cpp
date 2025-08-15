@@ -784,7 +784,7 @@ void Player::decreaseHP(RB::Entity ent)
 	}
 
 	if (hpC.currentHealth >= 10) {
-		hpC.currentHealth -= 100.f;
+		hpC.currentHealth -= 5.f;
 		makeInvulnerable();
 	}
 	else {
