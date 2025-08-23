@@ -9,18 +9,23 @@ namespace Rubber{
 
 	void Scene::systemsInit()
 	{
+		if (m_isSystemsInit) {
+			return;
+		}
+
 		for (auto& systemPtr : m_Systems) {
 			systemPtr->init(shared_from_this());
 		}
-
 	}
 
 	void Scene::systemShutDow()
 	{
+
+		RB_CORE_ASSERT(m_isSystemsInit, "Systems are never initted");
+
 		for (auto& systemPtr : m_Systems) {
 			systemPtr->shutdown();
 		}
-
 	}
 
 	Entity Scene::createEntity(std::string_view tag)
@@ -37,6 +42,8 @@ namespace Rubber{
 
     void Scene::onSystemsUpdate(float ts)  
     {  
+
+		RB_CORE_ASSERT(m_isSystemsInit, "Systems are not initted yet!");
 		for (auto& systemPtr : m_Systems) {
 			systemPtr->onUpdate(ts);
 		}

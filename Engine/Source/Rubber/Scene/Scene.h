@@ -36,6 +36,7 @@ namespace Rubber {
 	private:  
 		entt::registry m_Registry;
 		Vector<Scope<SystemBase>>  m_Systems;
+		bool m_isSystemsInit = false;
 
 		friend class Entity;
 		friend class SceneHierachyPanel;
