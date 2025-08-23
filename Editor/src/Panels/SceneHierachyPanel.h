@@ -19,6 +19,8 @@ namespace Rubber {
 		void drawEntityNode(Entity entity);
 		void drawComponentNode(Entity entity);
 
+
+		// template function used to draw different components
 		template<typename T>
 		void drawComponent(std::string_view name, Entity entity, void(*func)(Entity)) {
 			if (entity.hasComponent<T>()) {
@@ -29,7 +31,6 @@ namespace Rubber {
 				}
 			}
 		}
-
 
 	private:
 		Ref<Scene> m_Context;

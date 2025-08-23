@@ -52,6 +52,8 @@ namespace Rubber {
 
 		void onDetach() {
 
+			m_ActiveScene->systemShutDown();
+
 		}
 
 		void onUpdate(const float ts) override

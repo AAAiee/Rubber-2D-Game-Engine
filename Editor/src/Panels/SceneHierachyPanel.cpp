@@ -18,7 +18,7 @@ namespace Rubber {
 
 	void SceneHierachyPanel::onImGuiRender()
 	{
-		{// Show all entities within a scene
+		{// Show all entities within a scene 
 			ImGui::Begin("Scene Hierarchy");
 			auto view = m_Context->m_Registry.view<entt::entity>();
 			for (auto entity : view) {
@@ -41,8 +41,6 @@ namespace Rubber {
 			}
 			ImGui::End();
 		}
-
-		//ImGui::ShowDemoWindow();
 	} 
 
 	void SceneHierachyPanel::drawEntityNode(Entity entity)
@@ -52,6 +50,7 @@ namespace Rubber {
 		// Only include the selected flag when the entity is selected
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 
+		// Draw Entity Node
 		bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked()) {
 			m_SelectionContext = entity;
@@ -63,12 +62,16 @@ namespace Rubber {
 
 	void SceneHierachyPanel::drawComponentNode(Entity entity) 
 	{
+
 		drawComponent<TagComponent>("Tag", entity, [](Entity entity)
 			{ 
+				// Use a char buffer to store the tag string temporarily
 				std::string& tag = entity.getComponent<TagComponent>().tag;
 				char buffer[256];
 				memset(buffer, 0, sizeof(buffer));  //ensure clean buffer
 				strcpy_s(buffer, sizeof(buffer), tag.c_str());
+
+				// output the buffer's content into the input text field
 				if (ImGui::InputText("Tag", buffer, sizeof(buffer))) {
 					tag = std::string(buffer);
 				}
@@ -76,6 +79,7 @@ namespace Rubber {
 
 		drawComponent<TransformComponent>("Transform", entity, [](Entity entity)
 			{
+				// position, rotation, scale drag bar
 				TransformComponent& tsC = entity.getComponent<TransformComponent>();
 				ImGui::DragFloat3("Position", glm::value_ptr(tsC.position), 0.1f);
 				ImGui::DragFloat("Rotation", &tsC.rotation);
@@ -85,10 +89,10 @@ namespace Rubber {
 
 		drawComponent<CameraComponent>("Camera", entity, [](Entity entity)
 			{
-				
-				CameraComponent& cc = entity.getComponent<CameraComponent>();
+				auto& cc = entity.getComponent<CameraComponent>();
 				SceneCamera& camera = cc.camera;
 
+				// two check boxes for  primary and fixed aspect ratio properties for each camera 
 				ImGui::Checkbox("Primary", &cc.isPrimary);
 				ImGui::Checkbox("IsFixedRatio", &cc.isFixedAspectRatio);
 
@@ -99,7 +103,7 @@ namespace Rubber {
 				{
 					for (int i = 0; i < 2; i++) {
 
-						bool isSelected = strcmp(currentProjectionName, projectionTypeName[i]);
+						bool isSelected = strcmp(currentProjectionName, projectionTypeName[i]) == 0;
 						if (ImGui::Selectable(projectionTypeName[i], isSelected)) {
 							currentProjectionName = projectionTypeName[i];
 							camera.setProjectionType(static_cast<SceneCamera::ProjectionType>(i));
@@ -107,11 +111,11 @@ namespace Rubber {
 
 						if (isSelected)
 							ImGui::SetItemDefaultFocus();
-
 					}
 					ImGui::EndCombo();
 				}
 
+				// show specifications of each camera 
 				switch (camera.getProjectionType()) {
 					case SceneCamera::ProjectionType::Ortho:
 					{
@@ -154,9 +158,9 @@ namespace Rubber {
 			});
 
 
+		// only supports a color picker for a color renderable sprite component.
 		drawComponent<SpriteComponent>("Sprite Renderable", entity, [](Entity entity) {
 				auto& sprite = entity.getComponent<SpriteComponent>();
-
 				ImGui::ColorEdit4("Color Picker", glm::value_ptr(sprite.color));
 			});
 	}

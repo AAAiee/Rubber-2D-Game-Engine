@@ -13,7 +13,7 @@ namespace Rubber {
 	public:
 		void systemsInit();
 
-		void systemShutDow();
+		void systemShutDown();
 
 		Entity createEntity(std::string_view tag="");  
 

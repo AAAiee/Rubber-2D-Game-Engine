@@ -13,12 +13,14 @@ namespace Rubber{
 			return;
 		}
 
+		m_isSystemsInit = true;
+
 		for (auto& systemPtr : m_Systems) {
 			systemPtr->init(shared_from_this());
 		}
 	}
 
-	void Scene::systemShutDow()
+	void Scene::systemShutDown()
 	{
 
 		RB_CORE_ASSERT(m_isSystemsInit, "Systems are never initted");
