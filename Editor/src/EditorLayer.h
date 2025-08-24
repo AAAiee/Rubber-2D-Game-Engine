@@ -33,18 +33,18 @@ namespace Rubber {
 			m_ActiveScene->systemsInit();
 
 			m_SquareEntity = m_ActiveScene->createEntity("Square Entity"); 
-			m_SquareEntity.addComponent<TransformComponent>(m_SquarePosition, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_SquareEntity.addComponent<TransformComponent>(m_SquarePosition);
 			m_SquareEntity.addComponent<SpriteComponent>();
 			m_SquareEntity.addComponent<VisibilityControlComponent>(true);
 			m_SquareEntity.getComponent<SpriteComponent>().color = m_SquareColor;
 
 			m_Camera = m_ActiveScene->createEntity("Main Camera");
 			m_CameraPos = { 0.0f, 1.f, 0.0f };
-			m_Camera.addComponent<TransformComponent>(m_CameraPos, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_Camera.addComponent<TransformComponent>(m_CameraPos);
 			m_Camera.addComponent<CameraComponent>();
 
 			m_SecondCamera = m_ActiveScene->createEntity("Second Camera");
-			m_SecondCamera.addComponent<TransformComponent>(m_SecondCameraPos, glm::vec2{1.0f, 1.0f}, 0.0f);
+			m_SecondCamera.addComponent<TransformComponent>(m_SecondCameraPos);
 			m_SecondCamera.addComponent<CameraComponent>();
 
 			m_SceneHierachyPanel.setContext(m_ActiveScene);

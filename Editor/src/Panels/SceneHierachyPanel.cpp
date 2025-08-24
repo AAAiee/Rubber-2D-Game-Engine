@@ -3,12 +3,72 @@
 #include <entt.hpp>
 
 
+
+ namespace {
+
+	 void drawVec3Control(std::string_view label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 70.0f) {
+		 ImGui::PushID(label.data()); // Avoid ID collisions
+		 if (ImGui::BeginTable("vec3Control", 2, ImGuiTableFlags_SizingStretchProp)) {
+			 ImGui::TableSetupColumn("LabelCol", ImGuiTableColumnFlags_WidthFixed, columnWidth);
+			 ImGui::TableSetupColumn("ControlCol", ImGuiTableColumnFlags_WidthStretch);
+
+			 ImGui::TableNextRow();
+
+			 // Label
+			 ImGui::TableSetColumnIndex(0);
+			 ImGui::Text("%s", label.data());
+
+			 // Controls
+			 ImGui::TableSetColumnIndex(1);
+			 float lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+			 ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+			 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0)); // No gaps between button & drag
+			 ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x / 3.0f - buttonSize.x);
+
+			 // --- X ---
+			 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+			 if (ImGui::Button("X", buttonSize)) values.x = resetValue;
+			 ImGui::SameLine();
+			 ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+			 ImGui::PopStyleColor(3);
+
+			 // --- Y ---
+			 ImGui::SameLine();
+			 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+			 if (ImGui::Button("Y", buttonSize)) values.y = resetValue;
+			 ImGui::SameLine();
+			 ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+			 ImGui::PopStyleColor(3);
+
+			 // --- Z ---
+			 ImGui::SameLine();
+			 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
+			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
+			 if (ImGui::Button("Z", buttonSize)) values.z = resetValue;
+			 ImGui::SameLine();
+			 ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+			 ImGui::PopStyleColor(3);
+
+			 ImGui::PopItemWidth();
+			 ImGui::PopStyleVar();
+
+			 ImGui::EndTable();
+		 }
+		 ImGui::PopID();
+	 }
+}
+
 namespace Rubber {
 
 	SceneHierachyPanel::SceneHierachyPanel(const Ref<Scene>& scene)
 	{
 		setContext(scene);
-
 	}
 
 	void SceneHierachyPanel::setContext(const Ref<Scene>& scene)
@@ -22,16 +82,14 @@ namespace Rubber {
 			ImGui::Begin("Scene Hierarchy");
 			auto view = m_Context->m_Registry.view<entt::entity>();
 			for (auto entity : view) {
-
 				drawEntityNode({ entity, m_Context });
 			}
 
-			// if left mouse button is pressed and not being consumed by other items, deselect
+			// If left mouse button is pressed and not being consumed by other items, de-select
 			if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(0)) {
 				m_SelectionContext = {};
 			}
 			ImGui::End();
-
 		}
 
 		{// Show properties presented for a specific entity
@@ -79,11 +137,14 @@ namespace Rubber {
 
 		drawComponent<TransformComponent>("Transform", entity, [](Entity entity)
 			{
-				// position, rotation, scale drag bar
+				// Position, rotation, scale drag bar
 				TransformComponent& tsC = entity.getComponent<TransformComponent>();
-				ImGui::DragFloat3("Position", glm::value_ptr(tsC.position), 0.1f);
-				ImGui::DragFloat("Rotation", &tsC.rotation);
-				ImGui::DragFloat2("Scale", glm::value_ptr(tsC.scale), 0.1f);
+
+				drawVec3Control("Position", tsC.position);
+				glm::vec3 rotation = glm::degrees(tsC.rotation);
+				drawVec3Control("Rotation", rotation);
+				tsC.rotation = glm::radians(rotation);
+				drawVec3Control("Scale", tsC.scale);
 			});
 
 
@@ -92,7 +153,7 @@ namespace Rubber {
 				auto& cc = entity.getComponent<CameraComponent>();
 				SceneCamera& camera = cc.camera;
 
-				// two check boxes for  primary and fixed aspect ratio properties for each camera 
+				// Two check boxes for  primary and fixed aspect ratio properties for each camera 
 				ImGui::Checkbox("Primary", &cc.isPrimary);
 				ImGui::Checkbox("IsFixedRatio", &cc.isFixedAspectRatio);
 
@@ -115,7 +176,7 @@ namespace Rubber {
 					ImGui::EndCombo();
 				}
 
-				// show specifications of each camera 
+				// Show specifications of each camera 
 				switch (camera.getProjectionType()) {
 					case SceneCamera::ProjectionType::Ortho:
 					{
@@ -158,7 +219,7 @@ namespace Rubber {
 			});
 
 
-		// only supports a color picker for a color renderable sprite component.
+		// Only supports a color picker for a color renderable sprite component.
 		drawComponent<SpriteComponent>("Sprite Renderable", entity, [](Entity entity) {
 				auto& sprite = entity.getComponent<SpriteComponent>();
 				ImGui::ColorEdit4("Color Picker", glm::value_ptr(sprite.color));
