@@ -5,6 +5,8 @@
 
 void Enemy::onCreate()
 {
+	m_CharBase = &getComponent<CharacterBaseComponent>();
+
 	auto& gC = getComponent<GroundComponent>();
 	gC.groundY = ARENA_GROUND_Y;
 
@@ -109,8 +111,8 @@ void Enemy::onCreate()
 
 	// Enemy's Initial State
 	switchState(EnemyStates::Idle);
-	m_CharBase.setClip(m_Entity, "Left_Idle");
-	m_CharBase.m_FaceDirection = -1;
+	m_CharBase->setClip(m_Entity, "Left_Idle");
+	m_CharBase->faceDirection = -1;
 }
 
 void Enemy::onUpdate(float ts)
@@ -188,7 +190,7 @@ void Enemy::onIdleEnter()
 	mvC.velocity = { 0.0f, 0.0f };
 
 	mvC.enableGravity = true; 
-	m_CharBase.updateClipConfigBasedOnFaceDir(m_Entity, "Idle");
+	m_CharBase->updateClipConfigBasedOnFaceDir(m_Entity, "Idle");
 
 	m_IdleTimer.restart();
  }
@@ -211,7 +213,7 @@ void Enemy::onJumpEnter()
 	// add a jump in air speed
 	jumpC.isJumpping = true;
 	mvC.velocity.y = jumpC.jumpImpulseSpeed;
-	m_CharBase.updateClipConfigBasedOnFaceDir(m_Entity, "Jump");
+	m_CharBase->updateClipConfigBasedOnFaceDir(m_Entity, "Jump");
 }
 
 void Enemy::onAimEnter()
@@ -221,7 +223,7 @@ void Enemy::onAimEnter()
 	mvC.velocity = { 0.0f, 0.0f };
 	
 	m_AimStateTimer.restart();
-	m_CharBase.updateClipConfigBasedOnFaceDir(m_Entity, "Aim");
+	m_CharBase->updateClipConfigBasedOnFaceDir(m_Entity, "Aim");
 
 }
 
@@ -238,7 +240,7 @@ void Enemy::onAirDashEnter()
 	
 	mvC.velocity.x = dir.x * m_DashInAirSpeed;
 	mvC.velocity.y = dir.y * m_DashInAirSpeed;
-	m_CharBase.updateClipConfigBasedOnFaceDir(m_Entity, "AirDash");
+	m_CharBase->updateClipConfigBasedOnFaceDir(m_Entity, "AirDash");
 }
 
 
@@ -257,7 +259,7 @@ void Enemy::onGroundDashEnter()
 	float dashDir = (dir.x > 0.0f) ? 1.0f : -1.0f;
 
 	mvC.velocity.x = dashDir * m_DashOnGround;
-	m_CharBase.updateClipConfigBasedOnFaceDir(m_Entity, "DashOnFloor");
+	m_CharBase->updateClipConfigBasedOnFaceDir(m_Entity, "DashOnFloor");
 }
 
 
@@ -303,9 +305,9 @@ void Enemy::faceDirectionUpdate(RB::Entity ent, float ts)
 	glm::vec3 playerPosition = player.getComponent<RB::TransformComponent>().position;
 
 	int shouldFaceTo = (enemyPos.x - playerPosition.x > 0) ? -1 : 1;
-	if (shouldFaceTo != m_CharBase.m_FaceDirection) {
-		m_CharBase.m_FaceDirection = shouldFaceTo;
-		animeC.specs.m_IsOpposizeDireciton = (m_CharBase.m_FaceDirection > 0);
+	if (shouldFaceTo != m_CharBase->faceDirection) {
+		m_CharBase->faceDirection = shouldFaceTo;
+		animeC.specs.m_IsOpposizeDireciton = (m_CharBase->faceDirection > 0);
 		mvC.velocity.x = -mvC.velocity.x;
 	}
 }
@@ -353,10 +355,10 @@ void Enemy::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		auto& leftIdle = m_CharBase.m_AnimationPool["Left_Idle"];
+		auto& leftIdle = m_CharBase->m_AnimationPool["Left_Idle"];
 		leftIdle = config;
 
-		auto& rightIdle = m_CharBase.m_AnimationPool["Right_Idle"];
+		auto& rightIdle = m_CharBase->m_AnimationPool["Right_Idle"];
 		config.isFlipped = true;
 		rightIdle = config;
 	}
@@ -371,10 +373,10 @@ void Enemy::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		auto& leftRun = m_CharBase.m_AnimationPool["Left_Run"];
+		auto& leftRun = m_CharBase->m_AnimationPool["Left_Run"];
 		leftRun = config;
 
-		auto& rightRun = m_CharBase.m_AnimationPool["Right_Run"];
+		auto& rightRun = m_CharBase->m_AnimationPool["Right_Run"];
 		config.isFlipped = true;
 		rightRun = config;
 	}
@@ -389,10 +391,10 @@ void Enemy::animationPoolInit()
 		config.loop = false;
 		config.onFinished = nullptr;
 
-		auto& leftAim = m_CharBase.m_AnimationPool["Left_Aim"];
+		auto& leftAim = m_CharBase->m_AnimationPool["Left_Aim"];
 		leftAim = config;
 
-		auto& rightAim = m_CharBase.m_AnimationPool["Right_Aim"];
+		auto& rightAim = m_CharBase->m_AnimationPool["Right_Aim"];
 		config.isFlipped = true;
 		rightAim = config;
 	}
@@ -411,10 +413,10 @@ void Enemy::animationPoolInit()
 
 			};
 
-		auto& leftAim = m_CharBase.m_AnimationPool["Left_Jump"];
+		auto& leftAim = m_CharBase->m_AnimationPool["Left_Jump"];
 		leftAim = config;
 
-		auto& rightAim = m_CharBase.m_AnimationPool["Right_Jump"];
+		auto& rightAim = m_CharBase->m_AnimationPool["Right_Jump"];
 		config.isFlipped = true;
 		rightAim = config;
 	}
@@ -430,10 +432,10 @@ void Enemy::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		auto& leftAim = m_CharBase.m_AnimationPool["Left_AirDash"];
+		auto& leftAim = m_CharBase->m_AnimationPool["Left_AirDash"];
 		leftAim = config;
 
-		auto& rightAim = m_CharBase.m_AnimationPool["Right_AirDash"];
+		auto& rightAim = m_CharBase->m_AnimationPool["Right_AirDash"];
 		config.isFlipped = true;
 		rightAim = config;
 	}
@@ -450,10 +452,10 @@ void Enemy::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		auto& leftAim = m_CharBase.m_AnimationPool["Left_DashOnFloor"];
+		auto& leftAim = m_CharBase->m_AnimationPool["Left_DashOnFloor"];
 		leftAim = config;
 
-		auto& rightAim = m_CharBase.m_AnimationPool["Right_DashOnFloor"];
+		auto& rightAim = m_CharBase->m_AnimationPool["Right_DashOnFloor"];
 		config.isFlipped = true;
 		rightAim = config;
 	}
@@ -468,10 +470,10 @@ void Enemy::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		auto& leftAim = m_CharBase.m_AnimationPool["Left_Dead"];
+		auto& leftAim = m_CharBase->m_AnimationPool["Left_Dead"];
 		leftAim = config;
 
-		auto& rightAim = m_CharBase.m_AnimationPool["Right_Dead"];
+		auto& rightAim = m_CharBase->m_AnimationPool["Right_Dead"];
 		config.isFlipped = true;
 		rightAim = config;
 	}

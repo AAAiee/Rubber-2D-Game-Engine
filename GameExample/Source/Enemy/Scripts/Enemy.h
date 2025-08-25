@@ -1,7 +1,6 @@
 #pragma once  
 #include <Rubber.h>  
 #include "Enemy/EnemyStates.h"
-#include "CharacterBase.h"
 
 class Enemy final: public RB::ScriptableEntity {  
 public:  
@@ -41,8 +40,8 @@ private:
 	float m_JumpSpeed = 3.5f;
 	float m_DashInAirSpeed = 8.0f;
 	float m_DashOnGround = 8.0f;
-
 	bool m_IsVulnerable = false;
 
-	CharacterBase m_CharBase;  
+private:
+	CharacterBaseComponent* m_CharBase = nullptr;
 };
