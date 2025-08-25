@@ -71,6 +71,39 @@ struct StatsComponent {
 };
 
 
+struct CharacterBaseComponent {
+
+	CharacterBaseComponent() = default;
+	~CharacterBaseComponent() = default;
+
+
+	void setClip(RB::Entity& e, std::string_view animeName)
+	{
+		auto& animeCC = e.getComponent<RB::AnimationComponent>();
+		auto it = m_AnimationPool.find(animeName);
+		RB_CORE_ASSERT(it != m_AnimationPool.end(), "Not registered animation");
+		RB::AnimationClipConfig& config = it->second;
+		animeCC.specs.setSpec(config);
+	}
+
+	void updateClipConfigBasedOnFaceDir(RB::Entity& e, std::string_view animeName)
+	{
+		std::string key;
+		if (faceDirection == +1) {
+			key.append("Right_").append(animeName);
+			setClip(e, key);
+		}
+		else if (faceDirection == -1) {
+			key.append("Left_").append(animeName);
+			setClip(e, key);
+		}
+	}
+
+	std::unordered_map<std::string, RB::AnimationClipConfig, RB::stringHash, std::equal_to<>>  m_AnimationPool;
+	int faceDirection = +1;
+	int lastFaceDirection = +1;
+};
+
 
 
 

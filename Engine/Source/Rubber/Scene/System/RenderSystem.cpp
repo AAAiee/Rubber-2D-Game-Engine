@@ -62,14 +62,8 @@ namespace Rubber{
 				auto& visibilityCC = view.get<VisibilityControlComponent>(entity);
 
 				if (!visibilityCC.isVisible) continue; // if no texture / visibility level is false, renderer nothing
-				glm::vec3 posAfterOffset{};
-				posAfterOffset.x = transform.position.x + sprite.localOffset.x;
-				posAfterOffset.y = transform.position.y + sprite.localOffset.y;
-				posAfterOffset.z = transform.position.z;
-
-				glm::mat4 tsMatrix = glm::scale(
-					glm::rotate(glm::translate(glm::mat4(1.0f), posAfterOffset), transform.rotation, glm::vec3(0.0f, 0.0f, 1.0f)),
-					glm::vec3(transform.scale.x, transform.scale.y, 1.0f));
+				glm::mat4 tsMatrix = transform.getTransformMatrix();
+				tsMatrix = glm::translate(tsMatrix, glm::vec3(sprite.localOffset, 0.0f));
 
 				if (sprite.texture == nullptr) {
 					Renderer2D::drawColorQuad(tsMatrix, sprite.color);

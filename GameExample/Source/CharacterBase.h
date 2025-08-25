@@ -4,7 +4,6 @@
 #include <string>
 #include <entt.hpp>
 
-static float inline CHAR_DEFAULT_GROUND_Y = -3.55f;
 
 struct CharacterBase {
 
@@ -17,5 +16,4 @@ struct CharacterBase {
 
 	int m_FaceDirection = +1;
 	float m_JumpImpulseSpeed = 5.0f;
-
 };

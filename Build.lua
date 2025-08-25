@@ -19,5 +19,3 @@ group "Engine"
 group "GameExample"
    include "GameExample/Build-Game.lua"
 
-group "Editor"
-   include "Editor/Build-Editor.lua"

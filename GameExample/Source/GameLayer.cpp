@@ -49,7 +49,7 @@ void GameLayer::onAttach()
 
 
 	RB::Entity cameraEntity = m_ActiveScene->createEntity("Camera Entity");
-	cameraEntity.addComponent<RB::TransformComponent>(glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec2{ 1.0f, 1.0f }, 0.0f);
+	cameraEntity.addComponent<RB::TransformComponent>(glm::vec3{ 0.0f, 0.0f, 0.0f });
 	cameraEntity.addComponent<RB::CameraComponent>();
 	cameraEntity.getComponent<RB::CameraComponent>().isPrimary = true;
 	cameraEntity.getComponent<RB::CameraComponent>().isFixedAspectRatio = false;
@@ -60,6 +60,7 @@ void GameLayer::onAttach()
 	m_Player.addComponent<RB::AnimationComponent>();
 	m_Player.addComponent<RB::StateMachineComponent<PlayerState>>();
 	m_Player.addComponent<RB::InputComponent>();
+	m_Player.addComponent<CharacterBaseComponent>();
 	m_Player.addComponent<RB::CollisionComponent>();
 	m_Player.addComponent<RB::CollisionBoxOnRenderFlag>(true);
 	m_Player.addComponent<RB::NativeScriptComponent>();
@@ -75,7 +76,7 @@ void GameLayer::onAttach()
 
 	//background
 	RB::Entity backGroundEntity = m_ActiveScene->createEntity("BackGround Entity");
-	backGroundEntity.addComponent<RB::TransformComponent>(glm::vec3{ 0.0f, 0.0f, -0.5f }, glm::vec2{17.8f, 10.f}, 0.0f);
+	backGroundEntity.addComponent<RB::TransformComponent>(glm::vec3{ 0.0f, 0.0f, -0.5f }, glm::vec3{ 17.8f, 10.0f, 0.0f }, glm::vec3(0.0f));
 	backGroundEntity.addComponent<RB::SpriteComponent>(BackGroundSub);
 	backGroundEntity.addComponent<RB::VisibilityControlComponent>(true);
 

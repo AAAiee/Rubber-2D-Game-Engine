@@ -4,46 +4,50 @@
 #include "Player.h"
 #include "Player/PlayerKeyBindings.h"
 #include "ECS/GameComponents/GameComponents.h"
+#include "Arena/ArenaConfig.h"
 
 
 void Player::onCreate()
 {
-	// initial position
-	tsC =  &getComponent<RB::TransformComponent>();
-	tsC->position = glm::vec3{ -3.0f, m_Ground, -0.4f };
+	m_CharBaseC = &getComponent<CharacterBaseComponent>();
+	m_TsC = &getComponent<RB::TransformComponent>();
+	m_InputC = &getComponent<RB::InputComponent>();
+	m_Gc = &getComponent<GroundComponent>();
+	m_MoveC = &getComponent<RB::MoveComponent>();
+	m_JumpC = &getComponent<JumpComponent>();
+	m_CollisionC = &getComponent<RB::CollisionComponent>();
+	m_VisbC = &getComponent<RB::VisibilityControlComponent>();
+	m_FsmC = &getComponent<RB::StateMachineComponent<PlayerState>>();
 
-	//customized keyBindings
-    inputC = &getComponent<RB::InputComponent>();
-	inputC->setKeyBindings(PlayerKeyBindings);
+	// Initial position
+	m_TsC->position = glm::vec3{ -3.0f, ARENA_GROUND_Y, -0.4f };
 
-	//init ground component
-	gC = &getComponent<GroundComponent>();
-	gC->groundY = m_Ground;
-	gC->onGround = true;
+	//Customized keyBindings
+	m_InputC->setKeyBindings(PlayerKeyBindings);
+
+	//Init ground component
+	m_Gc->groundY = ARENA_GROUND_Y;
+	m_Gc->onGround = true;
 
 	// Move Component
-	mvC = &getComponent<RB::MoveComponent>();
-	mvC->gravity = -9.8f;
-	mvC->moveEnabled = true;
-	mvC->enableGravity = true ;
+	m_MoveC->gravity = -9.8f;
+	m_MoveC->moveEnabled = true;
+	m_MoveC->enableGravity = true ;
 
-	// jump component
-	jumpC = &getComponent<JumpComponent>();
-	jumpC->isJumpping = false;
-	jumpC->jumpImpulseSpeed = m_jumpImpulsSpeed;
+	// Jump component
+	m_JumpC->isJumpping = false;
+	m_JumpC->jumpImpulseSpeed = m_jumpImpulsSpeed;
 
-	//collision box
-	auto& collisionC = getComponent<RB::CollisionComponent>();
-	collisionC.enabled = true;
-	collisionC.srcLayer = RB::CollisionLayer::Player;
-	collisionC.targetLayer = RB::CollisionLayer::None;
-	collisionC.onCollision = [this](RB::Entity ent) {
+	//Collision box
+	m_CollisionC->enabled = true;
+	m_CollisionC->srcLayer = RB::CollisionLayer::Player;
+	m_CollisionC->targetLayer = RB::CollisionLayer::None;
+	m_CollisionC->onCollision = [this](RB::Entity ent) {
 			decreaseHP(ent);
 		};
 
 	//Visibility control component
-	auto& visibilityCC = getComponent<RB::VisibilityControlComponent>();
-	visibilityCC.isVisible = true;
+	m_VisbC->isVisible = true;
 
 	//State Machine Init
 	stateMachineInit();
@@ -62,7 +66,7 @@ void Player::onCreate()
 		    rollC.isRollCdComplete = true;
 		});
 
-	//Attack CD timer Init
+	//Attack CD timer config
 	auto& attackC = getComponent<AttackComponent>();
 	attackC.isAttackCDComplete = true;
 	attackC.isAttacking = false;
@@ -72,47 +76,42 @@ void Player::onCreate()
 			attackC.isAttackCDComplete = true;
 		});
 
-	//invincible for 1s when hit
+	//Invincible timer config:  1s invincible when hit(blinking visual effect)
 	m_TimerInvulnerableBlink.runOnlyOnce(false);
 	m_TimerInvulnerableBlink.setWaitTime(0.075f);
 	m_TimerInvulnerableBlink.setOnTimeOut([this]() {
-		auto& visibC = getComponent<RB::VisibilityControlComponent>();
-		visibC.isVisible = !visibC.isVisible;
+		m_VisbC->isVisible = !m_VisbC->isVisible;
 		});
 	m_TimerInvulnerableBlink.Pause();
 
+	// Invulnerable /blinking total duration
 	m_TimerInvulnerableStatus.runOnlyOnce(true);
 	m_TimerInvulnerableStatus.setWaitTime(1.0f);
 	m_TimerInvulnerableStatus.setOnTimeOut([this]() {
 		m_IsInvulnerable = false;
-		auto& visibC = getComponent<RB::VisibilityControlComponent>();
-		m_TimerInvulnerableBlink.Pause();
-		visibC.isVisible = true;
+		m_VisbC->isVisible = true;
 		});
 	
-
 	// Player's Initial State
-	auto& fsmCC = getComponent<RB::StateMachineComponent<PlayerState>>();
-	fsmCC.currentState = PlayerState::Idle;
-	setClip("Right_Idle");
-	m_FaceDirection = +1;
+	m_FsmC->currentState = PlayerState::Idle;
+	m_CharBaseC->setClip(m_Entity,"Right_Idle");
+	m_CharBaseC->faceDirection = +1;
 }
 
 void Player::onUpdate(float ts)
 {
-	float movingDirX = (float)inputC->actionState["Move_Right"] - (float)inputC->actionState["Move_Left"];
+	float movingDirX = (float)m_InputC->actionState["Move_Right"] - (float)m_InputC->actionState["Move_Left"];
 	if (movingDirX != 0.0f) {
-		m_LastFaceDireciton = m_FaceDirection;
-		m_FaceDirection = (movingDirX > 0.0f) ? +1 : -1;
+		m_CharBaseC->lastFaceDirection = m_CharBaseC->faceDirection;
+		m_CharBaseC->faceDirection = (movingDirX > 0.0f) ? +1 : -1;
 	}
 
-	if (inputC->actionState["Attack"]) {
-		m_AttackDir = getAttackDir({inputC->mouseXWorld, inputC->mouseYWorld});
+	if (m_InputC->actionState["Attack"]) {
+		m_AttackDir = getAttackDir({m_InputC->mouseXWorld, m_InputC->mouseYWorld});
 	}
 
 	m_TimerInvulnerableBlink.onUpdate(ts);
 	m_TimerInvulnerableStatus.onUpdate(ts);
-
 }
 
 
@@ -125,31 +124,6 @@ void Player::onDestory()
 Player::~Player() {
 
 
-}
-
-
-void Player::setClip(std::string_view animeName)  
-{  
-   auto& animeCC = getComponent<RB::AnimationComponent>();  
-   auto it = m_AnimationPool.find(animeName);  
-   RB_CORE_ASSERT(it != m_AnimationPool.end(), "Not registered animation");  
-   RB::AnimationClipConfig& config = it->second;  
-   animeCC.specs.setSpec(config);
-   animeCC.specs.m_Timer.restart();
-}
-
-
-void Player::updateClipConfig(std::string_view animeName)
-{
-	std::string key;
-	if (m_FaceDirection == +1) {
-		key.append("Right_").append(animeName);
-		setClip(key);
-	}
-	else if (m_FaceDirection == -1) {
-		key.append("Left_").append(animeName);
-		setClip(key);
-	}
 }
 
 void Player::animationPoolInit()
@@ -165,10 +139,10 @@ void Player::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		RB::AnimationClipConfig& rightIdleConfig = m_AnimationPool["Right_Idle"];
+		RB::AnimationClipConfig& rightIdleConfig = m_CharBaseC->m_AnimationPool["Right_Idle"];
 		rightIdleConfig = config;
 
-		RB::AnimationClipConfig& leftIdleConfig = m_AnimationPool["Left_Idle"];
+		RB::AnimationClipConfig& leftIdleConfig = m_CharBaseC->m_AnimationPool["Left_Idle"];
 		config.isFlipped = true;
 		leftIdleConfig = config;
 	}
@@ -183,10 +157,10 @@ void Player::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		RB::AnimationClipConfig& rightRunConfig = m_AnimationPool["Right_Run"];
+		RB::AnimationClipConfig& rightRunConfig = m_CharBaseC->m_AnimationPool["Right_Run"];
 		rightRunConfig = config;
 
-		RB::AnimationClipConfig& leftRunConfig = m_AnimationPool["Left_Run"];
+		RB::AnimationClipConfig& leftRunConfig = m_CharBaseC->m_AnimationPool["Left_Run"];
 		config.isFlipped = true;
 		leftRunConfig = config;
 	}
@@ -202,10 +176,10 @@ void Player::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		RB::AnimationClipConfig& rightJumpConfig = m_AnimationPool["Right_Jump"];
+		RB::AnimationClipConfig& rightJumpConfig = m_CharBaseC->m_AnimationPool["Right_Jump"];
 		rightJumpConfig = config;
 
-		RB::AnimationClipConfig& leftJumpConfig = m_AnimationPool["Left_Jump"];
+		RB::AnimationClipConfig& leftJumpConfig = m_CharBaseC->m_AnimationPool["Left_Jump"];
 		config.isFlipped = true;
 		leftJumpConfig = config;
 	}
@@ -221,10 +195,10 @@ void Player::animationPoolInit()
 		config.loop = true;
 		config.onFinished = nullptr;
 
-		RB::AnimationClipConfig&  RightFallConfig = m_AnimationPool["Right_Fall"];
+		RB::AnimationClipConfig&  RightFallConfig = m_CharBaseC->m_AnimationPool ["Right_Fall"];
 		RightFallConfig = config;
 
-		RB::AnimationClipConfig& leftFallConfig = m_AnimationPool["Left_Fall"];
+		RB::AnimationClipConfig& leftFallConfig = m_CharBaseC->m_AnimationPool ["Left_Fall"];
 		config.isFlipped = true;
 		leftFallConfig = config;
 	}
@@ -244,10 +218,10 @@ void Player::animationPoolInit()
 			m_IsInvulnerable = false;
 			};
 
-		RB::AnimationClipConfig& RightRollConfig = m_AnimationPool["Right_Roll"];
+		RB::AnimationClipConfig& RightRollConfig = m_CharBaseC->m_AnimationPool["Right_Roll"];
 		RightRollConfig = config;
 
-		RB::AnimationClipConfig& leftRollConfig = m_AnimationPool["Left_Roll"];
+		RB::AnimationClipConfig& leftRollConfig = m_CharBaseC->m_AnimationPool["Left_Roll"];
 		config.isFlipped = true;
 		leftRollConfig = config;
 	 }
@@ -265,10 +239,10 @@ void Player::animationPoolInit()
 			attackC.isAttacking = false;
 			};
 
-		RB::AnimationClipConfig& RightAttackConfig = m_AnimationPool["Right_Attack"];
+		RB::AnimationClipConfig& RightAttackConfig = m_CharBaseC->m_AnimationPool["Right_Attack"];
 		RightAttackConfig = config;
 
-		RB::AnimationClipConfig& leftAttackConfig = m_AnimationPool["Left_Attack"];
+		RB::AnimationClipConfig& leftAttackConfig = m_CharBaseC->m_AnimationPool["Left_Attack"];
 		config.isFlipped = true;
 		leftAttackConfig = config;
 	}
@@ -284,10 +258,10 @@ void Player::animationPoolInit()
 		config.loop = false;
 		config.onFinished = nullptr;
 
-		RB::AnimationClipConfig& RightAttackConfig = m_AnimationPool["Right_Dead"];
+		RB::AnimationClipConfig& RightAttackConfig = m_CharBaseC->m_AnimationPool["Right_Dead"];
 		RightAttackConfig = config;
 
-		RB::AnimationClipConfig& leftAttackConfig = m_AnimationPool["Left_Dead"];
+		RB::AnimationClipConfig& leftAttackConfig = m_CharBaseC->m_AnimationPool["Left_Dead"];
 		config.isFlipped = true;
 		leftAttackConfig = config;
 	}
@@ -296,7 +270,7 @@ void Player::animationPoolInit()
 
 AttackDir Player::getAttackDir(glm::vec2 mouseCoord)
 {
-	glm::vec2 playerPos = { tsC->position.x, tsC->position.y };
+	glm::vec2 playerPos = { m_TsC->position.x, m_TsC->position.y };
 	float anglesInRad = glm::atan(mouseCoord.y - playerPos.y, mouseCoord.x - playerPos.x);
 
 	constexpr float PI = 3.1415936f;
@@ -586,11 +560,11 @@ void Player::stateMachineInit()
 		if (hpC.currentHealth <= 0.0f) return;
 
 		// update player's facing direction
-		if (m_FaceDirection != m_LastFaceDireciton) {
-			m_LastFaceDireciton = m_FaceDirection;
+		if (m_CharBaseC->faceDirection != m_CharBaseC->lastFaceDirection) {
+			m_CharBaseC->lastFaceDirection = m_CharBaseC->faceDirection;
 			if (fsmCC.currentState != PlayerState::Roll) {
-			    animC.specs.m_IsOpposizeDireciton = (m_FaceDirection < 0);
-				mvC->velocity.x = -mvC->velocity.x;
+				animC.specs.m_IsOpposizeDireciton = (m_CharBaseC->faceDirection < 0);
+				m_MoveC->velocity.x = -m_MoveC->velocity.x;
 			}
 		}
 
@@ -602,19 +576,19 @@ void Player::stateMachineInit()
 		switch (m_AttackDir)
 		{
 		case AttackDir::DOWN:
-			vAttackTs.position = tsC->position + glm::vec3{ 0.0f,  -0.25f, 0.0f };
+			vAttackTs.position = m_TsC->position + glm::vec3{ 0.0f,  -0.25f, 0.0f };
 			break;
 		case AttackDir::LEFT:
-			vAttackTs.position = tsC->position + glm::vec3{ -0.25f, 0.0f, 0.0f };
+			vAttackTs.position = m_TsC->position + glm::vec3{ -0.25f, 0.0f, 0.0f };
 			break;
 		case AttackDir::RIGHT:
-			vAttackTs.position = tsC->position + glm::vec3{ 0.25f, 0.0f, 0.0f };
+			vAttackTs.position = m_TsC->position + glm::vec3{ 0.25f, 0.0f, 0.0f };
 			break;
 		case AttackDir::UP:
-			vAttackTs.position = tsC->position + glm::vec3{ 0.0f,  0.25f, 0.0f };
+			vAttackTs.position = m_TsC->position + glm::vec3{ 0.0f,  0.25f, 0.0f };
 			break;
 		case AttackDir::NONE:
-			vAttackTs.position = tsC->position;
+			vAttackTs.position = m_TsC->position;
 			break;
 		}
 
@@ -627,21 +601,21 @@ void Player::stateMachineInit()
 
 
 void Player::onIdleEnter() {
-	mvC->velocity = { 0.0f, 0.0f };
-	updateClipConfig("Idle");
+	m_MoveC->velocity = { 0.0f, 0.0f };
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Idle");
 }
 
 void Player::onRunEnter() {
-	updateClipConfig("Run");
-	mvC->velocity.x = m_RunningSpeed * m_FaceDirection;
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Run");
+	m_MoveC->velocity.x = m_RunningSpeed * m_CharBaseC->faceDirection;
 }
 
 void Player::onJumpEnter() {
-	mvC->velocity.y = jumpC->jumpImpulseSpeed;
-	mvC->velocity.x = m_RunningSpeed * m_FaceDirection;
-	jumpC->isJumpping = true;
+	m_MoveC->velocity.y = m_JumpC->jumpImpulseSpeed;
+	m_MoveC->velocity.x = m_RunningSpeed * m_CharBaseC->faceDirection;
+	m_JumpC->isJumpping = true;
 	
-	updateClipConfig("Jump");
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Jump");
 
 	{ // VFX Jump 
 		auto& childEntitiesC = getComponent<PlayerChilds>();
@@ -654,9 +628,9 @@ void Player::onJumpEnter() {
 		visbC.isVisible = true;
 		animeCC.specs.m_Timer.restart();
 		animeCC.specs.m_FrameIndex = 0;
-		vfxJumpTs.position.x = tsC->position.x;
-		vfxJumpTs.position.y = tsC->position.y;
-		vfxJumpTs.position.z = tsC->position.z + 0.05f;
+		vfxJumpTs.position.x = m_TsC->position.x;
+		vfxJumpTs.position.y = m_TsC->position.y;
+		vfxJumpTs.position.z = m_TsC->position.z + 0.05f;
 	}
 }
 
@@ -676,12 +650,12 @@ void Player::onAttackEnter()
 
 	//player's animation update
 	if (m_AttackDir == AttackDir::LEFT) {
-		m_FaceDirection = -1;
+		m_CharBaseC->faceDirection = -1;
 	}
 	else if(m_AttackDir == AttackDir::RIGHT) {
-		m_FaceDirection = +1;
+		m_CharBaseC->faceDirection = +1;
 	}
-	updateClipConfig("Attack");
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Attack");
 
 	//VFX effect
 	auto& vAnimeCC = playerChilds.attack.getComponent<RB::AnimationComponent>();
@@ -712,7 +686,7 @@ void Player::onAttackEnter()
 
 void Player::onFallEnter(){
 
-	updateClipConfig("Fall");
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,	"Fall");
 }
 
 void Player::onRollEnter()
@@ -724,21 +698,21 @@ void Player::onRollEnter()
 
 	m_IsInvulnerable = true; // only makes it invulnerable, no blinking
 
-	updateClipConfig("Roll");
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Roll");
 
-	mvC->velocity.x = m_RollImpulseSpeed * m_FaceDirection;
+	m_MoveC->velocity.x = m_RollImpulseSpeed * m_CharBaseC->faceDirection;
 }
 
 void Player::onDeadEnter()
 {
 	auto& mvC = getComponent<RB::MoveComponent>();
 	mvC.velocity = { 0.0f, 0.0f };
-	updateClipConfig("Dead");
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Dead");
 }
 
 void Player::onJumpExit()
 {
-	jumpC->isJumpping = false;
+	m_JumpC->isJumpping = false;
 }
 
 void Player::onFallExit()
@@ -759,9 +733,9 @@ void Player::onFallExit()
 	animeCC.specs.m_FrameIndex = 0;
 	animeCC.specs.m_Timer.restart();
 	visbC.isVisible = true;
-	vfxLandTs.position.x = tsC->position.x;
-	vfxLandTs.position.y = tsC->position.y;
-	vfxLandTs.position.z = tsC->position.z + 0.05f;
+	vfxLandTs.position.x = m_TsC->position.x;
+	vfxLandTs.position.y = m_TsC->position.y;
+	vfxLandTs.position.z = m_TsC->position.z + 0.05f;
 }
 
 void Player::onAttackExit()

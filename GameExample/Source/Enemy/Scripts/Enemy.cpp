@@ -1,15 +1,16 @@
 #include "Enemy.h"
 #include <ECS/GameComponents/GameComponents.h>
 #include "Enemy/EnemyStates.h"
+#include "Arena/ArenaConfig.h"
 
 void Enemy::onCreate()
 {
 	auto& gC = getComponent<GroundComponent>();
-	gC.groundY = CHAR_DEFAULT_GROUND_Y;
+	gC.groundY = ARENA_GROUND_Y;
 
 	// initial position
 	auto& tsC = getComponent<RB::TransformComponent>();
-	tsC.position = glm::vec3{ 3.0f, gC.groundY, -0.4f };
+	tsC.position = glm::vec3{ 3.0f, ARENA_GROUND_Y, -0.4f };
 	gC.onGround = true;
 
 	// Move Component

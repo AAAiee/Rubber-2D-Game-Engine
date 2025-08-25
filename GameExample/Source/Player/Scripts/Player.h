@@ -36,23 +36,15 @@ private:
 	void makeInvulnerable();
 
 private:
-	void setClip(std::string_view animeName);
-	void updateClipConfig(std::string_view animeName);
 	void stateMachineInit();
 	void animationPoolInit();
 	AttackDir getAttackDir(glm::vec2 mouseCoord); 
 
 private:
-	int m_LastFaceDireciton = +1;
-	int m_FaceDirection = +1;
 
-	const float m_Ground = -3.55f; 
 	const float m_RunningSpeed = 2.0f;
 	const float m_jumpImpulsSpeed = 6.0f;
 	const float m_RollImpulseSpeed = 4.0f;
-
-	const float m_LeftBound = -4.0f;
-	const float m_RightBound = 4.0f;
 
 	AttackDir m_AttackDir = AttackDir::NONE;
 
@@ -61,16 +53,19 @@ private:
 	RB::AnimationTimer	m_TimerInvulnerableStatus;
 	bool m_IsInvulnerable = false;
 
-	std::unordered_map<std::string, RB::AnimationClipConfig, RB::stringHash, std::equal_to<>>  m_AnimationPool;
 
 private:// cached component's pointer
-	RB::TransformComponent* tsC = nullptr;
-	RB::SpriteComponent* spC = nullptr;
-	RB::MoveComponent* mvC = nullptr;
-	GroundComponent* gC = nullptr;
-	RB::InputComponent* inputC = nullptr;
-	RollComponent* rollC = nullptr;
-	JumpComponent* jumpC = nullptr;
+	RB::TransformComponent* m_TsC = nullptr;
+	RB::SpriteComponent* m_SpriteC = nullptr;
+	RB::MoveComponent* m_MoveC = nullptr;
+	GroundComponent* m_Gc = nullptr;
+	RB::InputComponent* m_InputC = nullptr;
+	RollComponent* m_RollC = nullptr;
+	JumpComponent* m_JumpC = nullptr;
+	CharacterBaseComponent* m_CharBaseC = nullptr;
+	RB::CollisionComponent* m_CollisionC = nullptr;
+	RB::VisibilityControlComponent* m_VisbC = nullptr;
+	RB::StateMachineComponent<PlayerState>* m_FsmC = nullptr;
 };
 
 
