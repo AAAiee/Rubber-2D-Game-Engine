@@ -121,6 +121,7 @@ void GameLayer::onAttach()
 	m_Enemy.addComponent<RB::CollisionBoxOnRenderFlag>(true);
 	m_Enemy.addComponent<RB::MoveComponent>();
 	m_Enemy.addComponent<JumpComponent>();
+	m_Enemy.addComponent<CharacterBaseComponent>();
 	m_Enemy.addComponent<RB::NativeScriptComponent>();
 	m_Enemy.addComponent<GroundComponent>();
 	m_Enemy.addComponent<RB::VisibilityControlComponent>(true);
@@ -167,6 +168,7 @@ void GameLayer::onUpdate(float ts)
 
 void GameLayer::onImGuiRender()
 {
+	// the game engine currently does not support rendering text so here uses dear imgui instead
 	ImGui::Begin("PLayer Health");
 	auto& playerHpC = m_Player.getComponent<HPComponent>();
 	ImGui::TextColored({ 1.0f, 0.0f, 0.0f,1.0f }, "Player Health: %.2f", playerHpC.currentHealth);

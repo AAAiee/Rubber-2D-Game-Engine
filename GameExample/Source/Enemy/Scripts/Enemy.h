@@ -35,7 +35,6 @@ private:
 	RB::AnimationTimer m_GroundDashTimer;
 	RB::AnimationTimer m_InvulnerableTimer;
 
-
 	float m_RunningSpeed = 2.0f;
 	float m_JumpSpeed = 3.5f;
 	float m_DashInAirSpeed = 8.0f;
