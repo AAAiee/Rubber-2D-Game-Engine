@@ -1,7 +1,7 @@
 # Rubber-2D-Game-Engine
 
 ## Clone the Repository
-git clone --branch GameExample --recurse-submodules https://github.com/AAAiee/Rubber-2D-Game-Engine.git
+git clone --branch ECS_ENTT_IMPL_GAME_EXAMPLE --recurse-submodules https://github.com/AAAiee/Rubber-2D-Game-Engine.git
 
 ## Build and Run
 Currently supported platform: Windows 64-bit.
