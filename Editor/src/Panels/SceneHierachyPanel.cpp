@@ -8,7 +8,7 @@
 
 	 void drawVec3Control(std::string_view label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 70.0f) {
 		 ImGui::PushID(label.data()); // Avoid ID collisions
-		 if (ImGui::BeginTable("vec3Control", 2, ImGuiTableFlags_SizingStretchProp)) {
+		 if (ImGui::BeginTable("Vec3Control", 2, ImGuiTableFlags_SizingStretchProp)) {
 			 ImGui::TableSetupColumn("LabelCol", ImGuiTableColumnFlags_WidthFixed, columnWidth);
 			 ImGui::TableSetupColumn("ControlCol", ImGuiTableColumnFlags_WidthStretch);
 
@@ -89,6 +89,14 @@ namespace Rubber {
 			if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(0)) {
 				m_SelectionContext = {};
 			}
+
+			//if right click at blank space, pop up a context window where user can create an empty entity
+			if (ImGui::BeginPopupContextWindow(0,  1 | ImGuiPopupFlags_NoOpenOverItems)) {
+				if (ImGui::MenuItem("Create Entity")) 
+					m_Context->createEntity("Empty Entity");
+				ImGui::EndPopup();
+			}
+
 			ImGui::End();
 		}
 
@@ -96,6 +104,36 @@ namespace Rubber {
 			ImGui::Begin("Property Channel");
 			if (m_SelectionContext) {
 				drawComponentNode(m_SelectionContext);
+
+				// draw an additional button to let user add components to current selected entity
+				if (ImGui::Button("Add Component"))
+					ImGui::OpenPopup("AddComponent");
+
+				if (ImGui::BeginPopup("AddComponent")) {
+
+					if (ImGui::MenuItem("Camera")) {
+						m_SelectionContext.addComponent<CameraComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("Sprite Renderer")) {
+						m_SelectionContext.addComponent <SpriteComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("Transform")) {
+						m_SelectionContext.addComponent <TransformComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("Visibility")) {
+						m_SelectionContext.addComponent <VisibilityControlComponent>(true);
+						ImGui::CloseCurrentPopup();
+					}
+
+					ImGui::EndPopup();
+				}
+
 			}
 			ImGui::End();
 		}
@@ -108,13 +146,34 @@ namespace Rubber {
 		// Only include the selected flag when the entity is selected
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 
-		// Draw Entity Node
-		bool opened = ImGui::TreeNodeEx((void*)(uint32_t)entity, flags, tag.c_str());
+		// draw the entity's tree node
+		bool opened = ImGui::TreeNodeEx((void*)(uintptr_t)entity, flags, tag.c_str());
+
+		// if the entity node is clicked, select it
 		if (ImGui::IsItemClicked()) {
 			m_SelectionContext = entity;
 		}
+
+		// mark the entity to be removed 
+		bool shouldRemoveEntity = false;
+		//add a pop up item to let the user delete the entity
+		if (ImGui::BeginPopupContextItem()) {
+			if (ImGui::MenuItem("Delete Entity")) 
+				shouldRemoveEntity = true;
+			ImGui::EndPopup();
+		}
+
 		if (opened) {
 			ImGui::TreePop();
+		}
+
+		// remove if anything else that could possibly query info from the entity is done
+		if (shouldRemoveEntity) {
+			m_Context->removeEntity(entity);
+
+			// de-select entity if the selected entity is deleted
+			if(m_SelectionContext == entity)
+				m_SelectionContext = {};
 		}
 	}
 
@@ -133,7 +192,7 @@ namespace Rubber {
 				if (ImGui::InputText("Tag", buffer, sizeof(buffer))) {
 					tag = std::string(buffer);
 				}
-			});
+			}, false);
 
 		drawComponent<TransformComponent>("Transform", entity, [](Entity entity)
 			{
@@ -145,7 +204,12 @@ namespace Rubber {
 				drawVec3Control("Rotation", rotation);
 				tsC.rotation = glm::radians(rotation);
 				drawVec3Control("Scale", tsC.scale);
-			});
+			}, true);
+
+		drawComponent <VisibilityControlComponent>("Visibility", entity, [](Entity entity) {
+			auto& vc = entity.getComponent<VisibilityControlComponent>();
+			ImGui::Checkbox("isVisible", &vc.isVisible);
+			}, true);
 
 
 		drawComponent<CameraComponent>("Camera", entity, [](Entity entity)
@@ -216,13 +280,13 @@ namespace Rubber {
 						break;
 					}
 				}
-			});
+			}, true);
 
 
 		// Only supports a color picker for a color renderable sprite component.
 		drawComponent<SpriteComponent>("Sprite Renderable", entity, [](Entity entity) {
 				auto& sprite = entity.getComponent<SpriteComponent>();
 				ImGui::ColorEdit4("Color Picker", glm::value_ptr(sprite.color));
-			});
+			}, true);
 	}
 }

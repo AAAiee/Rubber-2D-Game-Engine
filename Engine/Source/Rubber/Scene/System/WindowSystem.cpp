@@ -34,6 +34,8 @@ namespace Rubber {
 		for (auto& entity : view) {
 			CameraComponent& cc = view.get<CameraComponent>(entity);
 			if (!cc.isFixedAspectRatio) {
+
+				// making the scene also store the viewport's width and height?
 				float newWidth = static_cast<float> (e.getWidth());
 				float newHeight = static_cast<float> (e.getHeight());
 				cc.camera.onResize(newWidth, newHeight);

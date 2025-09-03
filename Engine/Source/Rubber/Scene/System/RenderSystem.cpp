@@ -22,6 +22,7 @@ namespace Rubber{
 	{
 		glm::mat4* projectionMatrix = nullptr;
 		glm::mat4 viewMatrix;
+		bool foundMainCamera = false;
 
 		{// find the main camera and calculate the VP matrix
 			auto view = (*m_Registry).view<CameraComponent, TransformComponent>();
@@ -32,8 +33,12 @@ namespace Rubber{
 
 				auto& tsC = view.get<TransformComponent>(entity);
 				projectionMatrix = &(cc.camera.getProjection());
-
 				viewMatrix = glm::inverse(tsC.getTransformMatrix());
+				foundMainCamera = true;
+			}
+
+			if (!foundMainCamera) {
+				RendererCommand::clear();
 			}
 		}// find the main camera;
 

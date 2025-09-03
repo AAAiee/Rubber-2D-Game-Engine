@@ -238,8 +238,8 @@ namespace Rubber {
 				radians, glm::vec3(0, 0, 1)),
 			glm::vec3(scale.x, scale.y, 1.0f));
 
-		Ref<Texture2D> spriteSheetTexture = subTexture->getSpriteSheetTexture();  
-		drawTextureQuad(tsMatrix, spriteSheetTexture, subTexture->getTexCoord(), TillingFactor,tintColor);
+		Ref<Texture2D> spriteSheetTexture = subTexture->getSpriteSheetTexture();
+		drawTextureQuad(tsMatrix, spriteSheetTexture, subTexture->getTexCoord(), TillingFactor, tintColor);
 	}
 
 	void Renderer2D::endScene()

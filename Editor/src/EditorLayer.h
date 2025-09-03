@@ -66,6 +66,7 @@ namespace Rubber {
 			if (m_ViewPortDimension.x * m_ViewPortDimension.y != 0.0f && frameBufferSizeBefore != m_ViewPortDimension) {
 				m_FrameBuffer->resize((uint32_t)m_ViewPortDimension.x, (uint32_t)m_ViewPortDimension.y);
 				Application::getEventManager()->enqueue(ViewPortResizeEvent((uint32_t)m_ViewPortDimension.x,(uint32_t)m_ViewPortDimension.y));
+				m_ActiveScene->updatesViewportSize(m_ViewPortDimension);
 			}
 
 			// Update all systems and render everything into the frame buffer
@@ -171,7 +172,7 @@ namespace Rubber {
 
 			ImVec2 curViewPortSize = ImGui::GetContentRegionAvail();
 			m_ViewPortDimension = { curViewPortSize.x, curViewPortSize.y };
-			ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer->getColorAttachmentID()), *(ImVec2*)&m_ViewPortDimension, { 0,1 }, { 1,0 });
+			ImGui::Image(reinterpret_cast<void*>((uint64_t)m_FrameBuffer->getColorAttachmentID()), *(ImVec2*)&m_ViewPortDimension, { 0,1 }, { 1,0 });
 			ImGui::End();
 			ImGui::PopStyleVar();
 
