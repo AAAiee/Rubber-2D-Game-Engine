@@ -33,6 +33,7 @@ namespace Rubber {
        m_AnchorMode = config.anchorMode;  
 
 	   m_Timer.setWaitTime(config.frameDuration);
+	   m_Timer.restart();
 	   Ref<AssetManager> manager = Application::getAssetManager();
 	   const AssetMetaData& metadata = manager->getAssetMetadata(config.clipHandle);
 	   RB_CORE_ASSERT(metadata.type == AssetType::AnimationSpriteSheet || metadata.type == AssetType::AnimationAtlas, "wrong type");

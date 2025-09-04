@@ -12,7 +12,7 @@ void PlayerAttack::onCreate()
 		RB::AnimationClipConfig config;
 		config.anchorMode = RB::AnimationSpec::AnchorMode::BOTTOMCENTERED;
 		config.clipHandle = RB::AssetHandle("Player_VAttackLeft");
-		config.frameDuration = 0.12f;
+		config.frameDuration = 0.05f;
 		config.isFlipped = false;
 		config.loop = false;
 		config.onFinished = [this]() {
@@ -31,9 +31,6 @@ void PlayerAttack::onCreate()
 		atkClips.donwAttack = config;
 	}
 
-	//collision box
-	RB::CollisionBoxOnRenderFlag& flag = getComponent<RB::CollisionBoxOnRenderFlag>();
-	flag.onDebugRender = true;
 
 	RB::CollisionComponent& CC = getComponent<RB::CollisionComponent>();
 	CC.enabled = false;

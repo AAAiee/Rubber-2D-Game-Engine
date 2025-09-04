@@ -108,7 +108,7 @@ void GameLayer::onAttach()
 	playerAttack.addComponent<RB::VisibilityControlComponent>(false);
 	playerAttack.addComponent<RB::CollisionComponent>();
 	playerAttack.addComponent<ParentEntityComponent>(m_Player);
-	playerAttack.addComponent<RB::CollisionBoxOnRenderFlag>();
+	playerAttack.addComponent<RB::CollisionBoxOnRenderFlag>(true);
 	playerAttack.getComponent<RB::NativeScriptComponent>().bind<PlayerAttack>();
 
 	//Enemy
@@ -136,7 +136,7 @@ void GameLayer::onAttach()
 	enemyAttack.addComponent<RB::TransformComponent>();
 	enemyAttack.addComponent<RB::CollisionComponent>();
 	enemyAttack.addComponent<RB::SpriteComponent>();
-	enemyAttack.addComponent<RB::CollisionBoxOnRenderFlag>();
+	enemyAttack.addComponent<RB::CollisionBoxOnRenderFlag>(true);
 	enemyAttack.addComponent<RB::NativeScriptComponent>();
 	enemyAttack.addComponent <ParentEntityComponent>();
 	enemyAttack.addComponent<RB::VisibilityControlComponent>(true);

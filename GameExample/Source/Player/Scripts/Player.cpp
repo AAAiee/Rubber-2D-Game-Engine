@@ -70,7 +70,7 @@ void Player::onCreate()
 	auto& attackC = getComponent<AttackComponent>();
 	attackC.isAttackCDComplete = true;
 	attackC.isAttacking = false;
-	attackC.timerAttackCD.setWaitTime(0.5f);
+	attackC.timerAttackCD.setWaitTime(1.0f);
 	attackC.timerAttackCD.runOnlyOnce(true);
 	attackC.timerAttackCD.setOnTimeOut([&]() {
 			attackC.isAttackCDComplete = true;
@@ -231,7 +231,7 @@ void Player::animationPoolInit()
 		RB::AnimationClipConfig config;
 		config.anchorMode = RB::AnimationSpec::AnchorMode::BOTTOMCENTERED;
 		config.clipHandle = RB::AssetHandle("Player_Right_Attack");
-		config.frameDuration = 0.05f;
+		config.frameDuration = 0.075f;
 		config.isFlipped = false;
 		config.loop = false;
 		config.onFinished = [this]() {
@@ -317,6 +317,7 @@ void Player::stateMachineInit()
 			auto& inputC = e.getComponent<RB::InputComponent>();
 			auto& attackComponent = e.getComponent<AttackComponent>();
 			bool canAttack = attackComponent.isAttackCDComplete && attackComponent.isAttacking == false;
+			RB_INFO("Can attack: {0}, isAttacking: {1}", canAttack, attackComponent.isAttacking);
 			return inputC.actionState["Attack"] && canAttack;
 		}},
 
@@ -452,6 +453,7 @@ void Player::stateMachineInit()
 			auto& gC = e.getComponent<GroundComponent>();
 			bool netZero = inputC.actionState["Move_Left"]
 				== inputC.actionState["Move_Right"];
+			RB_INFO("Attack to Idle");
 			return  !attackC.isAttacking && netZero && gC.onGround;
 		}},
 
@@ -639,47 +641,31 @@ void Player::onAttackEnter()
 {
 
 	auto& playerChilds = getComponent<PlayerChilds>();
-
 	auto& attackC = getComponent<AttackComponent>();
-	bool& isVisble = playerChilds.attack.getComponent<RB::VisibilityControlComponent>().isVisible;
+	bool& isWeaponVisble = playerChilds.attack.getComponent<RB::VisibilityControlComponent>().isVisible;
 
 	attackC.timerAttackCD.restart();
 	attackC.isAttacking = true;
 	attackC.isAttackCDComplete = false;
-	isVisble = true;
+	isWeaponVisble = true;
 
-	//player's animation update
-	if (m_AttackDir == AttackDir::LEFT) {
-		m_CharBaseC->faceDirection = -1;
-	}
-	else if(m_AttackDir == AttackDir::RIGHT) {
-		m_CharBaseC->faceDirection = +1;
-	}
-	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity,"Attack");
+	if (m_AttackDir == AttackDir::LEFT)      m_CharBaseC->faceDirection = -1;
+	else if(m_AttackDir == AttackDir::RIGHT) m_CharBaseC->faceDirection = +1;
 
-	//VFX effect
+	// Set clip AND reset animation playback state
+	m_CharBaseC->updateClipConfigBasedOnFaceDir(m_Entity, "Attack");
+
+	// VFX attack
 	auto& vAnimeCC = playerChilds.attack.getComponent<RB::AnimationComponent>();
 	auto& vAttackAnimeC = playerChilds.attack.getComponent<AttackAnimaitonConfigComponent>();
-	auto& parentTsC = getComponent<RB::TransformComponent>();
-	auto& vfxTsC = playerChilds.attack.getComponent<RB::TransformComponent>();
-
-	switch (m_AttackDir)
-	{
-	case AttackDir::DOWN:
-		vAnimeCC.specs.setSpec(vAttackAnimeC.donwAttack);
-		break;
-	case AttackDir::LEFT:
-		vAnimeCC.specs.setSpec(vAttackAnimeC.leftAttack);
-		break;
-	case AttackDir::RIGHT:
-		vAnimeCC.specs.setSpec(vAttackAnimeC.rightAttack);
-		break;
-	case AttackDir::UP:
-		vAnimeCC.specs.setSpec(vAttackAnimeC.upAttack);
-		break;
+	switch (m_AttackDir) {
+		case AttackDir::DOWN:  vAnimeCC.specs.setSpec(vAttackAnimeC.donwAttack); break;
+		case AttackDir::LEFT:  vAnimeCC.specs.setSpec(vAttackAnimeC.leftAttack); break;
+		case AttackDir::RIGHT: vAnimeCC.specs.setSpec(vAttackAnimeC.rightAttack); break;
+		case AttackDir::UP:    vAnimeCC.specs.setSpec(vAttackAnimeC.upAttack); break;
+		default: break;
 	}
-
-	auto& collisionCC = playerChilds.attack.getComponent<RB::CollisionComponent >();
+	auto& collisionCC = playerChilds.attack.getComponent<RB::CollisionComponent>();
 	collisionCC.enabled = true;
 } 
 
@@ -744,7 +730,6 @@ void Player::onAttackExit()
 	auto& playerChildsC = getComponent<PlayerChilds>();
 
 	attackC.isAttacking = false;
-
 	RB::Entity attackEntity = playerChildsC.attack;
 	auto& collisionC = attackEntity.getComponent<RB::CollisionComponent>();
 	collisionC.enabled = false;
