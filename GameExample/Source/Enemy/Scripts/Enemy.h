@@ -1,5 +1,6 @@
 #pragma once  
 #include <Rubber.h>  
+#include"ECS/GameComponents/GameComponents.h"
 #include "Enemy/EnemyStates.h"
 
 class Enemy final: public RB::ScriptableEntity {  

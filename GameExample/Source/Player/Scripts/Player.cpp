@@ -82,7 +82,6 @@ void Player::onCreate()
 	m_TimerInvulnerableBlink.setOnTimeOut([this]() {
 		m_VisbC->isVisible = !m_VisbC->isVisible;
 		});
-	m_TimerInvulnerableBlink.Pause();
 
 	// Invulnerable /blinking total duration
 	m_TimerInvulnerableStatus.runOnlyOnce(true);
@@ -90,6 +89,7 @@ void Player::onCreate()
 	m_TimerInvulnerableStatus.setOnTimeOut([this]() {
 		m_IsInvulnerable = false;
 		m_VisbC->isVisible = true;
+		m_TimerInvulnerableBlink.Pause();
 		});
 	
 	// Player's Initial State
