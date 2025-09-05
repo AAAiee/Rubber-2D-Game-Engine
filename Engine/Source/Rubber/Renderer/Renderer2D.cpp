@@ -88,7 +88,7 @@ namespace Rubber {
 		s_Data.m_VAO->setIndexBuffer(s_Data.m_IBO);
 
 		s_Data.m_ShaderLib = makeRef<ShaderLib>();
-		s_Data.m_ShaderLib->load("Asset/shader/CommonShader.glsl");
+		s_Data.m_ShaderLib->load("assets/shader/CommonShader.glsl");
 
 		s_Data.m_WhiteTexture = Texture2D::create(1,1);
 

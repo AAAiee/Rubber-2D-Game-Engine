@@ -1,10 +1,11 @@
 #include "Panels/SceneHierachyPanel.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "Utilities/FontsManager/FontManager.h"
 #include <entt.hpp>
 
 
 
- namespace {
+namespace { // utility functions for draw modules
 
 	 void drawVec3Control(std::string_view label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 70.0f) {
 		 ImGui::PushID(label.data()); // Avoid ID collisions
@@ -30,10 +31,12 @@
 			 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
 			 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
 			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+			 ImGui::PushFont(FontManager::getFont("OpenSans-Bold"));
 			 if (ImGui::Button("X", buttonSize)) values.x = resetValue;
 			 ImGui::SameLine();
 			 ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
 			 ImGui::PopStyleColor(3);
+			 ImGui::PopFont();
 
 			 // --- Y ---
 			 ImGui::SameLine();
@@ -42,18 +45,23 @@
 			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
 			 if (ImGui::Button("Y", buttonSize)) values.y = resetValue;
 			 ImGui::SameLine();
+			 ImGui::PushFont(FontManager::getFont("OpenSans-Bold"));
 			 ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
 			 ImGui::PopStyleColor(3);
+			 ImGui::PopFont();
 
 			 // --- Z ---
 			 ImGui::SameLine();
 			 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
 			 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
 			 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
+			 ImGui::PushFont(FontManager::getFont("OpenSans-Bold"));
 			 if (ImGui::Button("Z", buttonSize)) values.z = resetValue;
 			 ImGui::SameLine();
 			 ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
 			 ImGui::PopStyleColor(3);
+			 ImGui::PopFont();
+
 
 			 ImGui::PopItemWidth();
 			 ImGui::PopStyleVar();
@@ -61,6 +69,42 @@
 			 ImGui::EndTable();
 		 }
 		 ImGui::PopID();
+	 }
+
+
+	 template<typename T>
+	 void drawComponent(std::string_view name, RB::Entity entity, void(*func)(RB::Entity), bool removable = true) {
+		 // allow overlap to make the button on the same line as the tree node
+		 ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap; 
+		 flag |= ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
+
+		 if (entity.hasComponent<T>()) {
+			 bool isNodeOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flag, name.data());
+			 ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+
+			 // button 
+			 if (ImGui::Button("...", ImVec2{ 20, 20 })) {
+				 ImGui::OpenPopup("ComponentSettings");
+			 }
+
+			 // should remove component
+			 bool shouldRemoveComponent = false;
+			 if (ImGui::BeginPopup("ComponentSettings")) {
+				 if (removable) {
+					 if (ImGui::MenuItem("Remove Component"))
+						 shouldRemoveComponent = true;
+				 }
+				 ImGui::EndPopup();
+			 }
+
+			 if (isNodeOpen) {
+				 func(entity);
+				 ImGui::TreePop();
+			 }
+
+			 if (shouldRemoveComponent)
+				 entity.removeComponent<T>();
+		 }
 	 }
 }
 
@@ -141,10 +185,12 @@ namespace Rubber {
 
 	void SceneHierachyPanel::drawEntityNode(Entity entity)
 	{
-		auto& tag = entity.getComponent<TagComponent>().tag; 
- 
+		auto& tag = entity.getComponent<TagComponent>().tag;
+
 		// Only include the selected flag when the entity is selected
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth; // make the node span the entire width of the window
 
 		// draw the entity's tree node
 		bool opened = ImGui::TreeNodeEx((void*)(uintptr_t)entity, flags, tag.c_str());
@@ -283,8 +329,8 @@ namespace Rubber {
 			}, true);
 
 
-		// Only supports a color picker for a color renderable sprite component.
-		drawComponent<SpriteComponent>("Sprite Renderable", entity, [](Entity entity) {
+		// Only supports a color picker for a color sprite component for now
+		drawComponent<SpriteComponent>("Sprite Renderer", entity, [](Entity entity) {
 				auto& sprite = entity.getComponent<SpriteComponent>();
 				ImGui::ColorEdit4("Color Picker", glm::value_ptr(sprite.color));
 			}, true);

@@ -1,8 +1,10 @@
 #pragma once
 
+#include"Panels/SceneHierachyPanel.h"
+#include "Utilities/FontsManager/FontManager.h"
+
 #include<Rubber.h>
 
-#include"Panels/SceneHierachyPanel.h"
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,6 +23,23 @@ namespace Rubber {
 		}
 
 		void onAttach() override {
+
+			auto io = ImGui::GetIO();
+
+			FontInfo info;
+			info.name = "OpenSans-Bold";
+			info.path = "assets/fonts/OpenSans/static/OpenSans-Bold.ttf"	;
+			info.size = 18;
+
+			// load fonts
+			FontManager::loadFontFromTTF(info);
+			info.name = "OpenSans-Regular";
+			info.path = "assets/fonts/OpenSans/static/OpenSans-Regular.ttf";
+			FontManager::loadFontFromTTF(info);
+
+			// set default font to OpenSans 
+			FontManager::setDefaultFont("OpenSans-Regular");
+
 			uint32_t width = Application::getWindow().getWidth();
 			uint32_t height = Application::getWindow().getHeight();
 
