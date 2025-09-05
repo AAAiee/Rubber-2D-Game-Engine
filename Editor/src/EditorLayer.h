@@ -29,7 +29,7 @@ namespace Rubber {
 			FontInfo info;
 			info.name = "OpenSans-Bold";
 			info.path = "assets/fonts/OpenSans/static/OpenSans-Bold.ttf"	;
-			info.size = 18;
+			info.size = 18.0f;
 
 			// load fonts
 			FontManager::loadFontFromTTF(info);

@@ -29,10 +29,10 @@ project "Editor"
 
    filter "system:windows"
        systemversion "latest"
-       defines {  }
+       defines { "RB_PLATFORM_WINDOWS" }
 
    filter "configurations:Debug"
-       defines { "DEBUG", "RB_ENABLE_ASSERTS"}
+       defines { "RB_DEBUG", "RB_ENABLE_ASSERTS"}
        runtime "Debug"
        symbols "on"
 

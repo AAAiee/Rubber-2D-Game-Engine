@@ -3,7 +3,7 @@
 #include <sstream>
 
 
-static std::unordered_map<std::string_view, uint32_t> s_FontsMap;
+static std::unordered_map < std::string, uint32_t, RB::stringHash, std::equal_to<>> s_FontsMap;
 static uint32_t s_FontCount = 0;
 
 void FontManager::loadFontFromTTF(FontInfo fontInfo)
@@ -20,7 +20,7 @@ ImFont* FontManager::getFont(std::string_view fontName)
 {
 	RB_ASSERT(s_FontsMap.find(fontName) != s_FontsMap.end());
 
-	uint32_t pos = s_FontsMap[fontName];
+	uint32_t pos = s_FontsMap[fontName.data()];
 	return ImGui::GetIO().Fonts->Fonts[pos];
 }
 
