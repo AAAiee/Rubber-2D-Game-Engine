@@ -13,7 +13,7 @@ namespace Rubber
 		unsigned int width;
 		unsigned int height;
 
-		WindowProps(std::string_view title = "Rubber Engine", unsigned int width = 1280, unsigned int height = 720)
+		WindowProps(std::string_view title = "Rubber Engine", unsigned int width = 1600, unsigned int height = 900)
 			:title(title), width(width), height(height)
 		{
 

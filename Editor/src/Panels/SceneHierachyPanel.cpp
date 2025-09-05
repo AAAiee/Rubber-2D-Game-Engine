@@ -79,11 +79,19 @@ namespace { // utility functions for draw modules
 		 flag |= ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
 		 if (entity.hasComponent<T>()) {
+			 float lineHeight =  ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+			 ImVec2 contentRegionWidth = ImGui::GetContentRegionAvail();
+
+			 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
+			 
+			 ImGui::Separator();
 			 bool isNodeOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flag, name.data());
-			 ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+
+			 ImGui::PopStyleVar();
+			 ImGui::SameLine(contentRegionWidth.x - lineHeight * 0.5f );
 
 			 // button 
-			 if (ImGui::Button("...", ImVec2{ 20, 20 })) {
+			 if (ImGui::Button("...", ImVec2{ lineHeight, lineHeight})) {
 				 ImGui::OpenPopup("ComponentSettings");
 			 }
 
@@ -148,36 +156,6 @@ namespace Rubber {
 			ImGui::Begin("Property Channel");
 			if (m_SelectionContext) {
 				drawComponentNode(m_SelectionContext);
-
-				// draw an additional button to let user add components to current selected entity
-				if (ImGui::Button("Add Component"))
-					ImGui::OpenPopup("AddComponent");
-
-				if (ImGui::BeginPopup("AddComponent")) {
-
-					if (ImGui::MenuItem("Camera")) {
-						m_SelectionContext.addComponent<CameraComponent>();
-						ImGui::CloseCurrentPopup();
-					}
-
-					if (ImGui::MenuItem("Sprite Renderer")) {
-						m_SelectionContext.addComponent <SpriteComponent>();
-						ImGui::CloseCurrentPopup();
-					}
-
-					if (ImGui::MenuItem("Transform")) {
-						m_SelectionContext.addComponent <TransformComponent>();
-						ImGui::CloseCurrentPopup();
-					}
-
-					if (ImGui::MenuItem("Visibility")) {
-						m_SelectionContext.addComponent <VisibilityControlComponent>(true);
-						ImGui::CloseCurrentPopup();
-					}
-
-					ImGui::EndPopup();
-				}
-
 			}
 			ImGui::End();
 		}
@@ -235,10 +213,63 @@ namespace Rubber {
 				strcpy_s(buffer, sizeof(buffer), tag.c_str());
 
 				// output the buffer's content into the input text field
-				if (ImGui::InputText("Tag", buffer, sizeof(buffer))) {
+				if (ImGui::InputText("##Tag", buffer, sizeof(buffer))) {
 					tag = std::string(buffer);
 				}
 			}, false);
+
+		ImGui::SameLine();
+		ImGui::PushItemWidth(-2);
+		// draw an additional button to let user add components to current selected entity
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("AddComponent");
+
+		if (ImGui::BeginPopup("AddComponent")) {
+
+			if (ImGui::MenuItem("Camera")) {
+				if (m_SelectionContext.hasComponent<CameraComponent>()) {
+					ImGui::CloseCurrentPopup();
+				}
+				else {
+					m_SelectionContext.addComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (ImGui::MenuItem("Sprite Renderer")) {
+				if(m_SelectionContext.hasComponent<SpriteComponent>()) {
+					ImGui::CloseCurrentPopup();
+				}
+				else {
+					m_SelectionContext.addComponent <SpriteComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (ImGui::MenuItem("Transform")) {
+				if(m_SelectionContext.hasComponent<TransformComponent>()) {
+					ImGui::CloseCurrentPopup();
+				}
+				else {
+					m_SelectionContext.addComponent <TransformComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (ImGui::MenuItem("Visibility")) {
+				if (m_SelectionContext.hasComponent<VisibilityControlComponent>()) {
+					ImGui::CloseCurrentPopup();
+				}
+				else {
+					m_SelectionContext.addComponent <VisibilityControlComponent>(true);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::PopItemWidth();
 
 		drawComponent<TransformComponent>("Transform", entity, [](Entity entity)
 			{

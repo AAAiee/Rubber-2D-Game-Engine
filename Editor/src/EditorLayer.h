@@ -141,12 +141,21 @@ namespace Rubber {
 				ImGui::PopStyleVar(2);
 
 			// Submit the DockSpace
+
+			// config the minimum window width for any docked windows
+			float windowMinimumSizeX = ImGui::GetWindowWidth();
+			ImGuiStyle& style = ImGui::GetStyle();
+			style.WindowMinSize.x = 420.0f;
+			
 			ImGuiIO& io = ImGui::GetIO();
 			if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 			{
 				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 			}
+
+			// the rest of windows' minimum width stay what it was
+			style.WindowMinSize.x = windowMinimumSizeX;
 
 			if (ImGui::BeginMenuBar())
 			{

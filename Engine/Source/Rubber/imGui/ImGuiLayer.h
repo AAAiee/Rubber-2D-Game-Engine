@@ -37,6 +37,8 @@ namespace Rubber
 		void begin();
 		void end();
 
+		void setDarkThemeColors();
+
 
 	private:
 		float m_Time = 0.0f;
