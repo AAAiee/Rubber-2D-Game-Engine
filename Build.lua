@@ -16,6 +16,7 @@ group "Engine"
    include "Engine/RBVendor/glfw/Build-GLFW.lua"
    include "Engine/RBVendor/Glad/Build-Glad.lua"
    include "Engine/RBVendor/imGui/Build-imGui.lua"
+   include "Engine/RBVendor/yaml-cpp/Build-Yaml-cpp.lua"
 
 group "Editor"
    include "Editor/Build-Editor.lua"

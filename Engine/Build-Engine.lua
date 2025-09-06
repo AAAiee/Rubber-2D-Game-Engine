@@ -5,14 +5,16 @@ project "Engine"
    staticruntime "on"
 
    files { "Source/**.h", "Source/**.cpp", "RBVendor/stb_image/stb_image.h" , "RBVendor/stb_image/stb_image.cpp"}
+   
    IncludeDir = {}
-   IncludeDir["GLFW"] = "RBVendor/glfw/include"
-   IncludeDir["Glad"] = "RBVendor/glad/include"
+   IncludeDir["GLFW"]    = "RBVendor/glfw/include"
+   IncludeDir["Glad"]    = "RBVendor/glad/include"
    IncludeDir["spdlogs"] ="RBVendor/spdlogs/include"
-   IncludeDir["imGui"] = "RBVendor/imGui"
+   IncludeDir["imGui"]   = "RBVendor/imGui"
    IncludeDir["stb_image"] = "RBVendor/stb_image"
-   IncludeDir["glm"] = "RBVendor/glm"
-   IncludeDir["entt"] = "RBVendor/entt/include"
+   IncludeDir["glm"]       = "RBVendor/glm"
+   IncludeDir["entt"]     = "RBVendor/entt/include"
+   IncludeDir["yaml_cpp"] = "RBVendor/yaml-cpp/include"
 
 
    includedirs
@@ -24,15 +26,17 @@ project "Engine"
       "%{IncludeDir.imGui}",
       "%{IncludeDir.glm}",
       "%{IncludeDir.stb_image}",
-      "%{IncludeDir.entt}"
-   }
+      "%{IncludeDir.entt}",
+      "%{IncludeDir.yaml_cpp}"
+   } 
 
    links
    {
         "GLFW",
         "Glad",
         "imGui",
-        "opengl32.lib"
+        "opengl32.lib",
+        "yaml-cpp"
    }
 
    pchheader "pch.h"

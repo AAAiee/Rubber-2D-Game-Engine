@@ -2,6 +2,7 @@
 
 #include"Panels/SceneHierachyPanel.h"
 #include "Utilities/FontsManager/FontManager.h"
+#include "Rubber/Scene/Utili/Serializer/SceneSerializer.h"
 
 #include<Rubber.h>
 
@@ -67,6 +68,10 @@ namespace Rubber {
 			m_SecondCamera.addComponent<CameraComponent>();
 
 			m_SceneHierachyPanel.setContext(m_ActiveScene);
+
+
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.serialize("assets/scene/saved/scene.rubber");
 		}
 
 		void onDetach() {

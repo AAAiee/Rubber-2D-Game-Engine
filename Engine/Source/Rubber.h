@@ -48,6 +48,7 @@
 
 //ECS
 #include "Rubber/Scene/Scene.h"
+#include "Rubber/Scene/Utili/Serializer/SceneSerializer.h"
 #include "Rubber/Scene/Utili/Component.h"
 #include "Rubber/Scene/Utili/Entity.h"
 #include "Rubber/Scene/System/System.h"

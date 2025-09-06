@@ -10,3 +10,6 @@
 [submodule "Engine/RBVendor/glm"]
 	path = Engine/RBVendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Engine/RBVendor/yaml-cpp"]
+	path = Engine/RBVendor/yaml-cpp
+	url = https://github.com/AAAiee/yaml-cpp.git

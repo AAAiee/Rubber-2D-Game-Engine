@@ -54,6 +54,7 @@ namespace Rubber {
 		glm::vec2 m_ViewPortDimension;
 		friend class Entity;
 		friend class SceneHierachyPanel;
+		friend class SceneSerializer;
 	};  
 
 	
