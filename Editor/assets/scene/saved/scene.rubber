@@ -45,3 +45,5 @@ Entities:
       Scale: [1, 1, 1]
     SpriteComponent:
       Color: [1, 1, 1, 1]
+    VisibilityControl:
+      IsVisible: true

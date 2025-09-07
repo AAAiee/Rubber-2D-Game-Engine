@@ -9,6 +9,56 @@
 #include <yaml-cpp/yaml.h>
 
 
+namespace YAML { // overloads for glm types
+
+	template<>
+	struct convert<glm::vec3> {
+		static Node encode(const glm::vec3& rhs) {
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec3& rhs) {
+			if (!node.IsSequence() || node.size() != 3) {
+				return false;
+			}
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			return true;
+		}
+	};
+
+
+	template<>
+	struct convert<glm::vec4> {
+		static Node encode(const glm::vec4& rhs) {
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.push_back(rhs.w);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec4& rhs) {
+			if (!node.IsSequence() || node.size() != 4) {
+				return false;
+			}
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			rhs.w = node[3].as<float>();
+			return true;
+		}
+	};
+}
+
 namespace Rubber {
 
 	namespace { // serialization helpers
@@ -75,6 +125,10 @@ namespace Rubber {
 				out << YAML::Key << "Color" << YAML::Value << component.color;
 			});
 
+			serializeComponent<VisibilityControlComponent>(out, entity, "VisibilityControl", [](YAML::Emitter& out, const VisibilityControlComponent& component) {
+				out << YAML::Key << "IsVisible" << YAML::Value << component.isVisible;
+				});
+
 			out << YAML::EndMap;
 		}
 
@@ -92,7 +146,8 @@ namespace Rubber {
 
 			fout << out.c_str();
 		}
-	}
+	} // namespace serialization helpers
+
 
 	SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
 		:m_Context(scene) { }
@@ -129,7 +184,84 @@ namespace Rubber {
 
 	bool SceneSerializer::deserialize(const std::filesystem::path& filepath)
 	{
-		return false;
+		std::ifstream stream(filepath);
+		std::stringstream strStream;
+		strStream << stream.rdbuf();
+
+		YAML::Node data = YAML::Load(strStream.str());
+		if (!data["Scene"])
+			return false;
+
+		std::string sceneName = data["Scene"].as<std::string>();
+		RB_INFO("Deserializing scene: {0}", sceneName);
+
+		auto entities = data["Entities"];
+		if (entities) {
+			for (const auto& entity : entities) {
+				
+				uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO:: ADD UUID
+				std::string name;
+
+				auto tagComponent = entity["TagComponent"];
+				if (tagComponent) {
+					name = tagComponent["Tag"].as<std::string>();
+				}
+				RB_INFO("Deserialized entity with ID: {0}, name: {1}", uuid, name);
+				Entity deserializedEntity = m_Context->createEntity(name);
+
+				{//deserialize transform Component
+					auto transformComponent = entity["TransformComponent"];
+					if (transformComponent) {
+						auto& tc = deserializedEntity.addComponent<TransformComponent>();
+						tc.position = transformComponent["Position"].as<glm::vec3>();
+						tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
+						tc.scale = transformComponent["Scale"].as<glm::vec3>();
+					}
+					RB_INFO("Deserialized Transform Component");
+				}// deserialize transform Component
+
+
+				{ // deserialize Camera Component
+					auto cameraComponent = entity["CameraComponent"];
+					if (cameraComponent) {
+						auto& cc = deserializedEntity.addComponent<CameraComponent>();
+						auto cameraProps = cameraComponent["Camera"];
+						cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+						cc.camera.setPersFovY(cameraProps["PerspectiveFovY"].as<float>());
+						cc.camera.setPersNearClip(cameraProps["PerspectiveNearClip"].as<float>());
+						cc.camera.setPersFarClip(cameraProps["PerspectiveFarClip"].as<float>());
+						cc.camera.setOrthoSize(cameraProps["OrthographicSize"].as<float>());
+						cc.camera.setOrthoNearClip(cameraProps["OrthographicNearClip"].as<float>());
+						cc.camera.setOrthoFarClip(cameraProps["OrthographicFarClip"].as<float>());
+						cc.isPrimary = cameraComponent["Primary"].as<bool>();
+						cc.isFixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+					}
+					RB_INFO("Deserialized Camera Component");
+				} // deserialize Camera Component
+
+
+				{//deserialize Sprite Component
+					auto spriteComponent = entity["SpriteComponent"];
+					if (spriteComponent) {
+						auto& sc = deserializedEntity.addComponent<SpriteComponent>();
+						sc.color = spriteComponent["Color"].as<glm::vec4>();
+					}
+
+					RB_INFO("Deserialized Sprite Component");
+				} // deserialize Sprite Component
+
+				{// deserialize Visibility Control Component
+					auto visibilityControlComponent = entity["VisibilityControl"];
+					if (visibilityControlComponent) {
+						auto& vcc = deserializedEntity.addComponent<VisibilityControlComponent>();
+						vcc.isVisible = visibilityControlComponent["IsVisible"].as<bool>();
+					}
+
+					RB_INFO("Deserialized Visibility Control Component");
+				} //deserialize Visibility Control Component
+			}
+		}
+		return true;
 	}
 
 	bool SceneSerializer::deserializeRunTime(const std::filesystem::path& filepath)
