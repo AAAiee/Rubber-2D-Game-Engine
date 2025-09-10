@@ -1,4 +1,30 @@
 #include <pch.h>
+#include <glm/glm.hpp>
+
+
+namespace fmt {
+
+	template<>
+	struct formatter<glm::vec3> : formatter<std::string>
+	{
+		auto format(glm::vec3 my, format_context& ctx) const -> decltype(ctx.out())
+		{
+			return fmt::format_to(ctx.out(), "[glm::vec3 x={} y={} z={}]", my.x, my.y, my.z);
+		}
+	};
+
+
+	template<>
+	struct formatter<glm::vec4> : formatter<std::string>
+	{
+		auto format(glm::vec4 my, format_context& ctx) const -> decltype(ctx.out())
+		{
+			return fmt::format_to(ctx.out(), "[glm::vec4 x={} y={} z={} w={}]", my.x, my.y, my.z, my.w);
+		}
+	};
+}
+
+
 namespace Rubber
 {
 	void Rubber::Logger::Init()

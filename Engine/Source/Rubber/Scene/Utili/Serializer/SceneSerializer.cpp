@@ -31,7 +31,7 @@ namespace YAML { // overloads for glm types
 			rhs.z = node[2].as<float>();
 			return true;
 		}
-	};
+	}; // overload for glm::vec3, glm::vec4
 
 
 	template<>
@@ -62,13 +62,14 @@ namespace YAML { // overloads for glm types
 namespace Rubber {
 
 	namespace { // serialization helpers
-		// overload for custom types
+		// operator overload for glm::vec3 
 		YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& vec) {
 			out << YAML::Flow;
 			out << YAML::BeginSeq << vec.x << vec.y << vec.z << YAML::EndSeq;
 			return out;
 		}
 
+		// operator overload for glm::vec4
 		YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& vec) {
 			out << YAML::Flow;
 			out << YAML::BeginSeq << vec.x << vec.y << vec.z << vec.w << YAML::EndSeq;
@@ -77,7 +78,7 @@ namespace Rubber {
 
 
 		template<typename ComponentType, typename ComponentFunc>
-		void serializeComponent(YAML::Emitter& out, Entity entity,std::string_view componentName, ComponentFunc func) { 
+		void serializeComponent(YAML::Emitter& out, Entity entity, std::string_view componentName, ComponentFunc func) {
 			if (entity.hasComponent<ComponentType>()) {
 				out << YAML::Key << componentName;
 				out << YAML::BeginMap;
@@ -94,18 +95,18 @@ namespace Rubber {
 			//tag component
 			serializeComponent<TagComponent>(out, entity, "TagComponent", [](YAML::Emitter& out, const TagComponent& component) {
 				out << YAML::Key << "Tag" << YAML::Value << component.tag;
-			});
+				});
 
 			serializeComponent<TransformComponent>(out, entity, "TransformComponent", [](YAML::Emitter& out, const TransformComponent& component) {
 				out << YAML::Key << "Position" << YAML::Value << component.position;
 				out << YAML::Key << "Rotation" << YAML::Value << component.rotation;
 				out << YAML::Key << "Scale" << YAML::Value << component.scale;
-			});
+				});
 
 			serializeComponent<CameraComponent>(out, entity, "CameraComponent", [](YAML::Emitter& out, const CameraComponent& component) {
 				const SceneCamera& camera = component.camera;
-     
-				out << YAML::Key << "Camera"  << YAML::Value  << YAML::BeginMap;
+
+				out << YAML::Key << "Camera" << YAML::Value << YAML::BeginMap;
 				{
 					out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.getProjectionType();
 					out << YAML::Key << "PerspectiveFovY" << YAML::Value << camera.getPersFoVY();
@@ -119,11 +120,11 @@ namespace Rubber {
 
 				out << YAML::Key << "Primary" << YAML::Value << component.isPrimary;
 				out << YAML::Key << "FixedAspectRatio" << YAML::Value << component.isFixedAspectRatio;
-			});
+				});
 
 			serializeComponent<SpriteComponent>(out, entity, "SpriteComponent", [](YAML::Emitter& out, const SpriteComponent& component) {
 				out << YAML::Key << "Color" << YAML::Value << component.color;
-			});
+				});
 
 			serializeComponent<VisibilityControlComponent>(out, entity, "VisibilityControl", [](YAML::Emitter& out, const VisibilityControlComponent& component) {
 				out << YAML::Key << "IsVisible" << YAML::Value << component.isVisible;
@@ -140,13 +141,10 @@ namespace Rubber {
 
 			std::ofstream fout(filepath);
 
-			if (!fout) {
-				throw std::runtime_error("Could not open file for writing: " + filepath.string());
-			}
-
+			RB_ASSERT(fout.is_open(), "Could not open file for writing!");
 			fout << out.c_str();
 		}
-	} // namespace serialization helpers
+	};// namespace serialization helpers
 
 
 	SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
@@ -163,7 +161,7 @@ namespace Rubber {
 		out << YAML::Key << "Entities" << YAML::BeginSeq;
 		for (auto entityID: m_Context->m_Registry.storage<entt::entity>()) {
 
-			Entity entity = { entityID, m_Context};
+			Entity entity = { entityID, m_Context.get()};
 			
 			if (!entity)
 				continue;
@@ -193,12 +191,14 @@ namespace Rubber {
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		RB_INFO("Deserializing scene: {0}", sceneName);
+		RB_INFO("Deserializing Scene: {0}", sceneName);
 
 		auto entities = data["Entities"];
+
+		// serialize all entities
 		if (entities) {
 			for (const auto& entity : entities) {
-				
+
 				uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO:: ADD UUID
 				std::string name;
 
@@ -216,8 +216,7 @@ namespace Rubber {
 						tc.position = transformComponent["Position"].as<glm::vec3>();
 						tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
 						tc.scale = transformComponent["Scale"].as<glm::vec3>();
-					}
-					RB_INFO("Deserialized Transform Component");
+						RB_INFO("Deserialized Transform Component");
 				}// deserialize transform Component
 
 
@@ -235,8 +234,8 @@ namespace Rubber {
 						cc.camera.setOrthoFarClip(cameraProps["OrthographicFarClip"].as<float>());
 						cc.isPrimary = cameraComponent["Primary"].as<bool>();
 						cc.isFixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+						RB_INFO("Deserialized Camera Component");
 					}
-					RB_INFO("Deserialized Camera Component");
 				} // deserialize Camera Component
 
 
@@ -245,9 +244,8 @@ namespace Rubber {
 					if (spriteComponent) {
 						auto& sc = deserializedEntity.addComponent<SpriteComponent>();
 						sc.color = spriteComponent["Color"].as<glm::vec4>();
+						RB_INFO("Deserialized Sprite Component");
 					}
-
-					RB_INFO("Deserialized Sprite Component");
 				} // deserialize Sprite Component
 
 				{// deserialize Visibility Control Component
@@ -255,23 +253,22 @@ namespace Rubber {
 					if (visibilityControlComponent) {
 						auto& vcc = deserializedEntity.addComponent<VisibilityControlComponent>();
 						vcc.isVisible = visibilityControlComponent["IsVisible"].as<bool>();
+						RB_INFO("Deserialized Visibility Control Component");
 					}
-
-					RB_INFO("Deserialized Visibility Control Component");
 				} //deserialize Visibility Control Component
+
+				}
 			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
-	bool SceneSerializer::deserializeRunTime(const std::filesystem::path& filepath)
-	{
+	bool SceneSerializer::deserializeRunTime(const std::filesystem::path & filepath) {
 
 		RB_CORE_ASSERT(false);
 		return false;
 	}
-
-	
 }
 
 

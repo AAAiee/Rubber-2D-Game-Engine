@@ -4,7 +4,7 @@
 
 namespace Rubber {
 
-	void SystemBase::init(Ref<Scene> scene)
+	void SystemBase::init(Scene* scene)
 	{
 		if (!m_HadInit) {
 			m_HadInit = true;
@@ -26,6 +26,7 @@ namespace Rubber {
 	{
 		RB_CORE_ASSERT(m_HadInit, "The system is not initialized yet!");
 	}
+
 
 }
 

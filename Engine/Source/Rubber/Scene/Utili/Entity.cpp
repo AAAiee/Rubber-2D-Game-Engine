@@ -5,10 +5,9 @@
 
 namespace Rubber{
 
-	Entity::Entity(entt::entity entity, const Ref<Scene>& activeScence)
+	Entity::Entity(entt::entity entity, Scene* activeScence)
 		:m_EntityHandler(entity), m_Scene(activeScence)
 	{
-
 	}
 
 }

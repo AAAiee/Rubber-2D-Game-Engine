@@ -6,7 +6,7 @@
 namespace Rubber {
 	class AnimaitonSystem :public SystemBase {
 	public:
-		void init(Ref<Scene> scene) override;
+		void init(Scene* scene) override;
 
 		void onUpdate(float ts) override;
 	};

@@ -124,14 +124,14 @@ namespace Rubber{
 		Renderer2D::endScene();
 	}
 
-	void RendererSystem::init(Ref<Scene> scene)
+	void RendererSystem::init(Scene* scene)
 	{
 		SystemBase::init(scene);
 
 		FrameBufferSpecification spec;
 
 		spec.m_Width = Application::getWindow().getWidth();
-		spec.m_Height = Application::getWindow().getWidth();
+		spec.m_Height = Application::getWindow().getHeight();
 
 		m_WorldFBO->create(spec); 
 	}

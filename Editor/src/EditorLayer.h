@@ -3,6 +3,7 @@
 #include"Panels/SceneHierachyPanel.h"
 #include "Utilities/FontsManager/FontManager.h"
 #include "Rubber/Scene/Utili/Serializer/SceneSerializer.h"
+#include "Rubber/Scene/Utili/Platform/PlatformUtil.h"
 
 #include<Rubber.h>
 
@@ -46,37 +47,11 @@ namespace Rubber {
 
 			m_FrameBuffer = FrameBuffer::create({ width,height,1,false });
 			m_ActiveScene = Scene::create();
-			
-			// systems init
-			m_ActiveScene->addSystem(makeScope <WindowSystem>());
-			m_ActiveScene->addSystem(makeScope <RendererSystem>());
-			m_ActiveScene->systemsInit();
-
-			//m_SquareEntity = m_ActiveScene->createEntity("Square Entity"); 
-			//m_SquareEntity.addComponent<TransformComponent>(m_SquarePosition);
-			//m_SquareEntity.addComponent<SpriteComponent>();
-			//m_SquareEntity.addComponent<VisibilityControlComponent>(true);
-			//m_SquareEntity.getComponent<SpriteComponent>().color = m_SquareColor;
-
-			//m_Camera = m_ActiveScene->createEntity("Main Camera");
-			//m_CameraPos = { 0.0f, 1.f, 0.0f };
-			//m_Camera.addComponent<TransformComponent>(m_CameraPos);
-			//m_Camera.addComponent<CameraComponent>();
-
-			//m_SecondCamera = m_ActiveScene->createEntity("Second Camera");
-			//m_SecondCamera.addComponent<TransformComponent>(m_SecondCameraPos);
-			//m_SecondCamera.addComponent<CameraComponent>();
 
 			m_SceneHierachyPanel.setContext(m_ActiveScene);
-
-			SceneSerializer serializer(m_ActiveScene);
-			//serializer.serialize("assets/scene/saved/scene.rubber");
-			serializer.deserialize("assets/scene/saved/scene.rubber");
 		}
 
 		void onDetach() {
-
-			m_ActiveScene->systemShutDown();
 
 		}
 
@@ -96,7 +71,7 @@ namespace Rubber {
 			// Update all systems and render everything into the frame buffer
 			m_FrameBuffer->bind();
 			Renderer2D::resetRendererStat();
-			m_ActiveScene->onSystemsUpdate(ts);
+			m_ActiveScene->onSceneUpdate(ts);
 			m_FrameBuffer->unbind();
 		}
 
@@ -151,35 +126,47 @@ namespace Rubber {
 			float windowMinimumSizeX = ImGui::GetWindowWidth();
 			ImGuiStyle& style = ImGui::GetStyle();
 			style.WindowMinSize.x = 420.0f;
-			
 			ImGuiIO& io = ImGui::GetIO();
 			if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 			{
 				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 			}
-
 			// the rest of windows' minimum width stay what it was
 			style.WindowMinSize.x = windowMinimumSizeX;
 
 			if (ImGui::BeginMenuBar())
 			{
-				if (ImGui::BeginMenu("File"))
-				{
-					ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-					ImGui::MenuItem("Padding", NULL, &opt_padding);
-					ImGui::Separator();
+				if (ImGui::BeginMenu("File")) {
+					if (ImGui::MenuItem("New", "Ctrl+N")) {
+						m_ActiveScene = Scene::create();
+						m_SceneHierachyPanel.setContext(m_ActiveScene);
+					}
 
-					if (ImGui::MenuItem("Flag: NoSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-					if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-					if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-					if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-					if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
+                    if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+                        std::wstring filepath = fileDialog::openFile(L"Rubber Scene (*.rubber)\0*.rubber\0\0");
+                        if (!filepath.empty()) {
+                            m_ActiveScene = Scene::create();
+                            m_SceneHierachyPanel.setContext(m_ActiveScene);
+							m_ActiveScene->updatesViewportSize(m_ViewPortDimension);
+							m_ActiveScene->publishViewportResize();
+                            SceneSerializer serializer(m_ActiveScene);
+                            serializer.deserialize(filepath);
+                        }
+                    }
 
-					ImGui::Separator();
+                    if (ImGui::MenuItem("Save As...")) {
+                        std::wstring filepath = fileDialog::saveFile(L"Rubber Scene (*.rubber)\0*.rubber\0\0");
+                        if (!filepath.empty()) {
+                            SceneSerializer serializer(m_ActiveScene);
+                            serializer.serialize(filepath);
+                        }
+                    }
 
-					if (ImGui::MenuItem("Close", NULL, false))
-						dockSpaceOpen = false;
+					if(ImGui::MenuItem("Exit")) {
+						Application::close();
+					}
+
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenuBar();

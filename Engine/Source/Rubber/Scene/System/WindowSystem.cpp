@@ -9,7 +9,7 @@
 #include "Rubber/Core/Application.h"
 
 namespace Rubber {
-	void WindowSystem::init(Ref<Scene> scene)
+	void WindowSystem::init(Scene* scene)
 	{
 		SystemBase::init(scene);
 

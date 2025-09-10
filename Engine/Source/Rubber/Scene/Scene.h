@@ -1,42 +1,40 @@
 #pragma once  
+#include "Rubber/Scene/System/System.h"
+
 #include <entt.hpp>
 #include<glm/glm.hpp>
 #include <memory>
-#include "Rubber/Scene/Utili/Entity.h"  
-#include "Rubber/Scene/System/System.h"
+#include <string_view>
 
 
 namespace Rubber {  
 
 	class SceneHierachyPanel;
+	class Entity;
 
-	class Scene : public std::enable_shared_from_this<Scene> {  
+	class Scene {  
 	public:
-		void systemsInit();
-
-		void systemShutDown();
-
 		Entity createEntity(std::string_view tag="");  
 		
 		void removeEntity(Entity entity);
 
-		void onSystemsUpdate(const float ts);  
-
-		void addSystem(Scope<SystemBase> system);
-
-		inline entt::registry& getRegistry() {
-			return m_Registry;
-		}
-
-		~Scene() = default;
-
+		entt::registry& getRegistry();
 		void updatesViewportSize(glm::vec2 dimensions);
 
-	private:
-		Scene() =default;
 		void publishViewportResize();
 
+		~Scene();
+
+		void onSceneUpdate(float ts);
+
+	    void systemsInit();
+	    void systemShutDown();
+	    void onSystemsUpdate(float ts);
+
+
 	private:
+		Scene();
+
 		template<typename T>
 		void onComponentConstruct(Entity ent);
 
@@ -48,10 +46,9 @@ namespace Rubber {
 
 	private:  
 		entt::registry m_Registry;
-		Vector<Scope<SystemBase>>  m_Systems;
-		bool m_isSystemsInit = false;
+		Vector<Scope<SystemBase>> m_Systems;
+		glm::vec2 m_ViewPortDimension = { 1600.0f, 900.0f };
 
-		glm::vec2 m_ViewPortDimension;
 		friend class Entity;
 		friend class SceneHierachyPanel;
 		friend class SceneSerializer;

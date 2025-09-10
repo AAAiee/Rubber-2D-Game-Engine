@@ -11,7 +11,7 @@ namespace Rubber {
 	{
 	public:
 		WindowSystem() = default;
-		void init(Ref<Scene>  scene) override;
+		void init(Scene*  scene) override;
 		void shutdown() override;
 		
 	private:

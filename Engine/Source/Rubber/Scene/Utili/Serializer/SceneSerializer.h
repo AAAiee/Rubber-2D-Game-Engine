@@ -5,9 +5,7 @@ namespace Rubber {
 
 	class Scene;
 
-
 	class SceneSerializer {
-
 
 	public:
 		SceneSerializer(const Ref<Scene>& scene);

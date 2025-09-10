@@ -11,7 +11,7 @@ namespace Rubber{
 		RendererSystem() = default;
 		
 		void onUpdate(const float ts) override;
-		void init(Ref<Scene> scene) override;
+		void init(Scene* scene) override;
 
 
 	private:

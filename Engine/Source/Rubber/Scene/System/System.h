@@ -7,7 +7,7 @@ namespace Rubber {
 
 	class SystemBase {
 	public:
-		virtual void init(Ref<Scene> scene);
+		virtual void init(Scene* scene);
 		virtual ~SystemBase() {};
 
 	    SystemBase() {};
@@ -15,9 +15,11 @@ namespace Rubber {
 		virtual void shutdown();
 
 		virtual void onUpdate(float ts);
+		
+		virtual bool hasInit() const { return m_HadInit; }
 
    protected:
-	   Ref<Scene> m_ScenePtr = nullptr;
+	   Scene* m_ScenePtr = nullptr;
 	   entt::registry* m_Registry = nullptr;
 	   bool m_HadInit = false;
 	};

@@ -5,37 +5,17 @@
 #include "Rubber/Event/EventManager.h"
 #include "RUbber/Event/AppEvent.h"
 #include "Rubber/Renderer/Renderer2D.h"
+#include "Rubber/Scene/Utili/Entity.h"
+#include "Rubber/Scene/System/RenderSystem.h"
+#include "Rubber/Scene/System/WindowSystem.h"
 
 namespace Rubber {
 
-	void Scene::systemsInit()
-	{
-		if (m_isSystemsInit) {
-			return;
-		}
-
-		m_isSystemsInit = true;
-
-		for (auto& systemPtr : m_Systems) {
-			systemPtr->init(shared_from_this());
-		}
-	}
-
-	void Scene::systemShutDown()
-	{
-
-		RB_CORE_ASSERT(m_isSystemsInit, "Systems are never initted");
-
-		for (auto& systemPtr : m_Systems) {
-			systemPtr->shutdown();
-		}
-	}
 
 	Entity Scene::createEntity(std::string_view tag)
 	{
 		entt::entity entityHandler =  m_Registry.create();
-		auto me = shared_from_this();
-		Entity entity(entityHandler, me);
+		Entity entity(entityHandler, this);
 
 		//every entity has a default tag component
 		std::string_view tagText = (tag.empty()) ? "Unknown Entity" : tag;
@@ -48,24 +28,54 @@ namespace Rubber {
 		m_Registry.destroy(entity);
 	}
 
-	void Scene::onSystemsUpdate(float ts)
-    {  
-
-		RB_CORE_ASSERT(m_isSystemsInit, "Systems are not initted yet!");
-		for (auto& systemPtr : m_Systems) {
-			systemPtr->onUpdate(ts);
-		}
-    }
-
-	void Scene::addSystem(Scope<SystemBase> system)
+	entt::registry& Scene::getRegistry()
 	{
-		m_Systems.push_back(std::move(system));
+		return m_Registry;
 	}
 
 	void Scene::updatesViewportSize(glm::vec2 dimensions)
 	{
 		RB_CORE_ASSERT(dimensions.x * dimensions.y > 0.0f, "invalid dimensions");
 		m_ViewPortDimension = dimensions;
+	}
+
+	Scene::Scene() {
+		systemsInit();
+	}
+
+	Scene::~Scene() {
+		systemShutDown();
+	}
+
+	void Scene::systemsInit()
+	{
+		m_Systems.emplace_back(makeScope<RendererSystem>());
+		m_Systems.emplace_back(makeScope<WindowSystem>());
+
+		for (auto& system : m_Systems) {
+			system->init(this);
+		}
+	}
+
+	void Scene::systemShutDown()
+	{
+		for (auto& system : m_Systems) {
+			system->shutdown();
+		}
+	}
+
+
+	void Scene::onSystemsUpdate(float ts)
+	{
+		for (auto& systemPtr : m_Systems) {
+			RB_CORE_ASSERT(systemPtr->hasInit(), "system must be initialized before update");
+			systemPtr->onUpdate(ts);
+		}
+	}
+
+	void Scene::onSceneUpdate(float ts)
+	{
+		onSystemsUpdate(ts);
 	}
 
 	Ref<Scene> Scene::create()
@@ -156,13 +166,6 @@ namespace Rubber {
 		// push an viewport resize event whenever a new camera component is added(to be handled by the WindowSystem)
 		eventManager->enqueue<ViewPortResizeEvent>({ (uint32_t)m_ViewPortDimension.x, (uint32_t)m_ViewPortDimension.y });
 	}
-
-
-
-
-	
-
-
 
 }
 

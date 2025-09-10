@@ -22,20 +22,11 @@ namespace Rubber
 		virtual ~Application();
 
 	public:
-
 		static Window& getWindow();
-
-		static Ref<EventManager> getEventManager() {
-			return s_Instance->m_Em;
-		};
-
-		static const Scope<GameLoopTimer>& getTimer(){
-			return s_Instance->m_Timer;
-		}
-
-		static Ref<AssetManager> getAssetManager() {
-			return s_Instance->m_AssetManager;
-		}
+		static Ref<EventManager> getEventManager();;
+		static const Scope<GameLoopTimer>& getTimer();
+		static Ref<AssetManager> getAssetManager();
+		static void close();
 
 	public:
 		void run();
@@ -43,20 +34,15 @@ namespace Rubber
 		void pushOverlay(Layer* layer);
 
 	private:
-		inline Window& getWindowImpl() {
-			return *m_Window;
-		}
+		Window& getWindowImpl();
 		void attachAll();
 
 	private:
 		bool m_Runing = true;
-
 		//when minimized, stop layer update, (but keep ImGui update)
 		bool m_IsWindowMinimized = false;
-
 		//one application-> one instance
 		static Application* s_Instance;
-
 		bool m_FirstRun = true;
 
 	private:

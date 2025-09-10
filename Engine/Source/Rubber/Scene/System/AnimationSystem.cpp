@@ -15,7 +15,7 @@ namespace Rubber {
 	static void initAnimationTimer(entt::registry& registry, entt::entity e);
 	static Ref<SubTexture2D> updateSpriteTexture(const AnimationComponent& animationCC, const SpriteComponent& spriteCC);
 
-	void AnimaitonSystem::init(Ref<Scene> scene)
+	void AnimaitonSystem::init(Scene* scene)
 	{
 		SystemBase::init(scene);
 		m_Registry->on_construct<AnimationComponent>().connect<&initAnimationTimer>();

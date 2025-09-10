@@ -95,6 +95,11 @@ namespace Rubber
 		return s_Instance->getWindowImpl();
 	}
 
+	Rubber::Ref<Rubber::EventManager> Application::getEventManager()
+	{
+		return s_Instance->m_Em;
+	}
+
 	void Application::pushLayer(Layer* layer)
 	{
 		m_LayerStack.pushLayer(layer);
@@ -103,6 +108,16 @@ namespace Rubber
 	void Application::pushOverlay(Layer* layer)
 	{
 		m_LayerStack.pushOverlay(layer);
+	}
+
+	const Rubber::Scope<Rubber::GameLoopTimer>& Application::getTimer()
+	{
+		return s_Instance->m_Timer;
+	}
+
+	Rubber::Ref<Rubber::AssetManager> Application::getAssetManager()
+	{
+		return s_Instance->m_AssetManager;
 	}
 
 	void Application::run()
@@ -167,6 +182,11 @@ namespace Rubber
 	}
 
 
+	void Application::close()
+	{
+		s_Instance->m_Runing = false;
+	}
+
 	// Window close callback
 	bool Application::onWindowClose( const WindowCloseEvent& e)
 	{
@@ -192,6 +212,11 @@ namespace Rubber
 		return false;
 	}
 
+
+	Rubber::Window& Application::getWindowImpl()
+	{
+		return *m_Window;
+	}
 
 	//Temp::This is quick hack to make current setting work, requires all layers to be present at the time of running
 	// this might not be true

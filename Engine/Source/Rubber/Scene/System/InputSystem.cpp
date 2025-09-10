@@ -11,7 +11,7 @@
 
 
 namespace Rubber {
-	void InputSystem::init(Ref<Scene> scene)
+	void InputSystem::init(Scene* scene)
 	{
 		SystemBase::init(scene);
 

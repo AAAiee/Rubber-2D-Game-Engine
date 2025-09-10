@@ -9,7 +9,7 @@ namespace Rubber {
 
 	class InputSystem :public SystemBase {
 	public:
-		void init(Ref<Scene> scene) override;
+		void init(Scene* scene) override;
 		void shutdown() override;
 		void onUpdate(const float ts) override;
 

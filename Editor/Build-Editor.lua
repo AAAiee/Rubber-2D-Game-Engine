@@ -27,6 +27,8 @@ project "Editor"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
+   defines { "RB_BUILD_EDITOR" }
+   
    filter "system:windows"
        systemversion "latest"
        defines { "RB_PLATFORM_WINDOWS" }

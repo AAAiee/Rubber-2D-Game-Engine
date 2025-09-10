@@ -134,7 +134,7 @@ namespace Rubber {
 			ImGui::Begin("Scene Hierarchy");
 			auto view = m_Context->m_Registry.view<entt::entity>();
 			for (auto entity : view) {
-				drawEntityNode({ entity, m_Context });
+				drawEntityNode({ entity, m_Context.get()});
 			}
 
 			// If left mouse button is pressed and not being consumed by other items, de-select
