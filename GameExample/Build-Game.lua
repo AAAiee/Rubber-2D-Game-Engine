@@ -26,6 +26,11 @@ project "Game"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
+   postbuildcommands {
+    "{COPY} \"Asset\" \"%{cfg.targetdir}/Asset\"",
+    "{COPY} \"imgui.ini\" \"%{cfg.targetdir}/\""
+   }
+
    filter "system:windows"
        systemversion "latest"
        defines {  }
