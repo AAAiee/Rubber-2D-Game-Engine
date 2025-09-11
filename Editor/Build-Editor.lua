@@ -27,6 +27,12 @@ project "Editor"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
+   postbuildcommands
+   {
+       "{COPY} \"assets\" \"%{cfg.targetdir}/assets\"",
+       "{COPY} \"imgui.ini\" \"%{cfg.targetdir}/\""
+   }
+
    defines { "RB_BUILD_EDITOR" }
    
    filter "system:windows"
