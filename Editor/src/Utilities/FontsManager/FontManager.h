@@ -9,7 +9,7 @@
 struct FontInfo {
 	std::string name;
 	std::filesystem::path path;
-	float size;
+	float size  = 0.0f ;
 };
 
 

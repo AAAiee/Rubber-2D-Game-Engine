@@ -34,7 +34,7 @@ Entities:
         OrthographicSize: 10
         OrthographicNearClip: -1
         OrthographicFarClip: 1
-      Primary: false
+      Primary: true
       FixedAspectRatio: false
   - Entity: 123123141
     TagComponent:

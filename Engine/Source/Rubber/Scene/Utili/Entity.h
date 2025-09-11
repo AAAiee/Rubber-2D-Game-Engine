@@ -13,6 +13,8 @@ namespace Rubber{
 		template<typename T>
 		bool hasComponent(){
 			RB_CORE_ASSERT(m_Scene, "Entity must live in a valid scene!");
+			if (m_EntityHandler == entt::null || !m_Scene->m_Registry.valid(m_EntityHandler))
+				return false;
 			return m_Scene->m_Registry.all_of<T>(m_EntityHandler);
 		}
 

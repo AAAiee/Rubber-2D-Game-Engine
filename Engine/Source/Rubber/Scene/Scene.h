@@ -15,32 +15,22 @@ namespace Rubber {
 	class Scene {  
 	public:
 		Entity createEntity(std::string_view tag="");  
-		
 		void removeEntity(Entity entity);
-
 		entt::registry& getRegistry();
 		void updatesViewportSize(glm::vec2 dimensions);
-
 		void publishViewportResize();
-
 		~Scene();
-
 		void onSceneUpdate(float ts);
-
 	    void systemsInit();
 	    void systemShutDown();
 	    void onSystemsUpdate(float ts);
 
-
 	private:
 		Scene();
-
 		template<typename T>
 		void onComponentConstruct(Entity ent);
-
 		template<typename T>
 		void onComponentDelete(Entity ent);
-
 	public:  
 		static Ref<Scene> create();  
 

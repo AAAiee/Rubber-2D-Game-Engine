@@ -112,6 +112,11 @@ namespace Rubber {
             return m_isHandled;
         }
 
+        inline bool& getHandledRef() 
+        {
+            return m_isHandled;
+		}
+
     private:
         bool m_isHandled = false;  
     };

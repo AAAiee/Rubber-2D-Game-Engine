@@ -161,7 +161,7 @@ namespace Rubber
 
 			{// Flush all events held in the queue
 				RB_PROFILE_SCOPE("onEvent");
-			    this->m_Em->flush();
+			    this->m_Em->dispatchAllEvents();
 			}// 
 
 			{// Begin:: On IMGUI Rendering

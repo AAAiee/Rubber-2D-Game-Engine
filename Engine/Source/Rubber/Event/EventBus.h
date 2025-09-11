@@ -1,18 +1,15 @@
 #pragma once
 #include "Rubber/Event/Event.h"
 #include "Rubber/Debug/Profiler.h"
+#include "Rubber/Core/Search.h"
+#include "Rubber/Core/Assert.h"
+
 #include <algorithm>
 #include <string>
 #include <unordered_map>
-#include "Rubber/Utility/Utility.h"
 #include <functional>
 
 namespace Rubber {
-
-	namespace{
-
-		constexpr inline const uint32_t MIN_TO_CLEANUP = 50;
-	}
 
 	template <typename T>
 	class EventBus{
@@ -20,123 +17,86 @@ namespace Rubber {
 	public:
 		using EventHandler = std::function<bool(const T& event)>;
 
-		static void subscribe(std::string_view name, EventHandler&& handler) {
+		static void registerEventHandler(std::string_view name, EventHandler&& handler) {
 			RB_PROFILE_FUNC();
-			auto& callBacks = getCallBacks();
-			auto& indexMap = getIndexMap();
-
-			uint64_t hashVal = std::hash<std::string_view>{}(name);
-
-			bool isExisted = indexMap.find(hashVal) != indexMap.end();
-
-			bool isAliveFlag;
-			if(isExisted && (isAliveFlag = callBacks[indexMap[hashVal]].m_IsAlive)){
-				RB_INFO("Already registered! and do nothing");
-				return;
+			if (name.empty()) {
+				RB_CORE_ASSERT(false); // can not have empty name, empty name is invalid id
 			}
+			// check to see if the handler is already in the pool
+			auto handlerItr = s_NamePool.find(name.data());
+			RB_CORE_ASSERT(handlerItr == s_NamePool.end(), "trying to register a handler that already existed");
 
-			if (isExisted && isAliveFlag == false) {
-				RB_INFO("Already Registered but turn it to be true")
-				callBacks[indexMap[hashVal]].m_IsAlive = true;
-				return;
-			}
-
-			std::size_t index = callBacks.size(); 
-			callBacks.emplace_back(std::move(handler),std::string(name), hashVal);
-
-			RB_CORE_ASSERT(callBacks.size() == index + 1, "handler successfully placed!");
-			indexMap.emplace(hashVal, index);
+			s_Handlers.emplace_back(std::move(handler), std::string(name));
+			s_NamePool.emplace(name.data());
 		}
 
-		static void unsubscribe(std::string_view name){
+		static void unregisterEventHandler(std::string_view name){
 			RB_PROFILE_FUNC();
-			auto& callBacks = getCallBacks();
-			auto& indexMap = getIndexMap();
 
-			uint64_t hashVal = std::hash<std::string_view>{}(name);
-			RB_CORE_ASSERT(indexMap.find(hashVal) != indexMap.end(), "the handler's name does not exists!");
+			// first check if the name is a existed handler name in the pool
+			auto iterator = s_NamePool.find(name.data());
+			RB_CORE_ASSERT(iterator != s_NamePool.end(), "the handler's name does not exists!");
 
-			auto index = indexMap[hashVal];
-			RB_CORE_ASSERT(callBacks[index].m_Name == name, "naming conflict!");
+			auto vecIt = std::find_if(s_Handlers.begin(), s_Handlers.end(),
+				[&](auto& h) { return h.name == name.data(); });
 
-			callBacks[indexMap[hashVal]].m_IsAlive = false;
 
-			uint32_t deadCount =accumulateDeadCount();
-			uint64_t numsHanlders = callBacks.size();
-			if (numsHanlders > MIN_TO_CLEANUP && (double)deadCount / (double)numsHanlders > 0.5){
-				Vector<HandlerData>  newBuffer;
-				newBuffer.reserve(numsHanlders);
+			s_Handlers.erase(vecIt);
+			s_NamePool.erase(name.data());
+		}
 
-				for (auto& it : callBacks) {
-					if (it.m_IsAlive){
-						indexMap.insert_or_assign(it.m_HashKey, newBuffer.size());
-						newBuffer.emplace_back(std::move(it));
-					}else{
-						indexMap.erase(it.m_HashKey);
-					}
+		static void processAllHandlers(T& e){
+			RB_PROFILE_FUNC();
+			if (e.getHandledRef()) return; // if already handled, do nothing
+
+			for(auto& handlerData : s_Handlers){
+				RB_INFO("current processing handler: {}", handlerData.name);
+				bool& isEventHandled = e.getHandledRef();
+				if (handlerData.handler(e)) {
+					isEventHandled = true;
 				}
-				RB_CORE_ASSERT(newBuffer.size() == numsHanlders - deadCount, "something wrong happenede !");
-				callBacks.swap(newBuffer);
-				deadCount = 0;
-				RB_CORE_ASSERT(callBacks.size() == numsHanlders - deadCount, "something wrong happenede !");
 			}
 		}
 
-		static void processAllHandlers(const T& e){
-			RB_PROFILE_FUNC();
-			for(auto& it : getCallBacks()){
-				if(!it.m_IsAlive){
-					RB_INFO("current processing handler: but it is not alive {}", it.m_Name);
-					continue;
-				}
-
-				RB_INFO("current processing handler: {}", it.m_Name);
-				if (it.m_Handler(e))
-					break;
-			}
-		}
-
-		static void clear(){
-			getCallBacks().clear();
-			getIndexMap().clear();
-		}
-		
 	private:
-		struct HandlerData {
-			bool m_IsAlive;
-			uint64_t m_HashKey;
-			EventHandler m_Handler;
-			std::string m_Name; //debug purpose
+		struct EventHandlerData {
+			EventHandler handler;
+			std::string name;  // must be unique for the same event type
 
-			HandlerData(EventHandler&& handler, std::string&& name, uint64_t hashKey, bool isAlive = true)
-				: m_Handler(std::move(handler)), 
-				m_Name(name),m_HashKey(hashKey), 
-				m_IsAlive(isAlive) {};
+			EventHandlerData(EventHandler&& handler, std::string&& name)
+				: handler(std::move(handler)), name(std::move(name)) {
+			}
 
-			HandlerData(HandlerData&& src) noexcept {
-				this->m_IsAlive = src.m_IsAlive;
-				this->m_HashKey = src.m_HashKey;
-				this->m_Handler = std::move(src.m_Handler);
-				this->m_Name = std::move(src.m_Name);
+			EventHandlerData(EventHandlerData&& other) noexcept
+				: handler(std::move(other.handler)), name(std::move(other.name)) {
+			}
+
+			EventHandlerData& operator=(EventHandlerData&& other) noexcept {
+				if (this != &other) {
+					handler = std::move(other.handler);
+					name = std::move(other.name);
+				}
+				return *this;
+			}
+
+			EventHandlerData(const EventHandlerData& other) = default;
+			EventHandlerData& operator=(const EventHandlerData& other) = default;
+
+			bool operator ==(const EventHandlerData& other) const {
+				return  name == other.name;
 			}
 		};
 
-		 static Vector<HandlerData>& getCallBacks() {
-			 static Vector<HandlerData> s_AllCallBacks;
-			 return s_AllCallBacks;
-		 }
-
-		 static std::unordered_map <uint64_t, uint64_t>& getIndexMap(){
-			 static std::unordered_map<uint64_t, uint64_t> s_indexMap;
-		     return s_indexMap;
-		 }
-
-		 static uint32_t& accumulateDeadCount(){
-			 static uint32_t deadCount = 0;
-			 deadCount++;
-			 return  deadCount;
-		 }
+	private:
+		static Vector<EventHandlerData> s_Handlers;
+		static std::unordered_set<std::string>s_NamePool;
 	};
+
+	template<typename T>
+	Vector<typename EventBus<T>::EventHandlerData> EventBus<T>::s_Handlers;
+
+	template<typename T>
+	std::unordered_set<std::string> EventBus<T>::s_NamePool;
 
 }
 

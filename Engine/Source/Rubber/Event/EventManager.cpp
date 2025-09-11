@@ -5,7 +5,7 @@
 
 namespace Rubber{
 
-	void EventManager::flush()
+	void EventManager::dispatchAllEvents()
 	{
 		RB_PROFILE_FUNC();
 		for (auto& fn : m_EventQueue) {

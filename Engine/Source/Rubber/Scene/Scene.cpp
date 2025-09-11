@@ -44,13 +44,14 @@ namespace Rubber {
 	}
 
 	Scene::~Scene() {
+		RB_INFO("Scene Destroyed, shutting down all the systems");
 		systemShutDown();
 	}
 
 	void Scene::systemsInit()
 	{
-		m_Systems.emplace_back(makeScope<RendererSystem>());
 		m_Systems.emplace_back(makeScope<WindowSystem>());
+		m_Systems.emplace_back(makeScope<RendererSystem>());
 
 		for (auto& system : m_Systems) {
 			system->init(this);
@@ -62,6 +63,7 @@ namespace Rubber {
 		for (auto& system : m_Systems) {
 			system->shutdown();
 		}
+		m_Systems.clear();
 	}
 
 

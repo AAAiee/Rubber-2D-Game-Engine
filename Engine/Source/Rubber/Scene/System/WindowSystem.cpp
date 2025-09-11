@@ -18,18 +18,26 @@ namespace Rubber {
 		em->subscribe<ViewPortResizeEvent>("Viewport Resize", [this](const ViewPortResizeEvent& e) {
 			return onViewPortResize(e);
 			});
+
+		RB_INFO("Window System Init, subscribe to viewport resize");
 	}
 
 	void WindowSystem::shutdown()
 	{
 		SystemBase::shutdown();
 		Application::getEventManager()->unsubscribe<ViewPortResizeEvent>("Viewport Resize");
+		RB_INFO("Window System shutdown, unsubscribe to viewport resize");
 	}
 
 
 	bool WindowSystem::onViewPortResize(const ViewPortResizeEvent& e)
 	{
-		// passing down to camera (maybe use a flag? ) ;
+		// First check if the system is still valid
+		if (m_HadInit == false || !m_Registry) {
+			RB_WARN("Window System not properly initialized or already shut down");
+			return false;
+		}
+		
 		auto view = m_Registry->view<CameraComponent>();
 		for (auto& entity : view) {
 			CameraComponent& cc = view.get<CameraComponent>(entity);

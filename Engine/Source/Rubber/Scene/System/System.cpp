@@ -13,18 +13,19 @@ namespace Rubber {
 			RB_CORE_ASSERT(false, "Do not init twice!");
 		}
 
+		RB_CORE_ASSERT(scene, "Scene ptr is null!");
 		m_ScenePtr = scene; 
 		m_Registry = &m_ScenePtr->getRegistry();
 	}
 
 	void SystemBase::shutdown()
 	{
-		RB_CORE_ASSERT(m_HadInit, "The system is not initialized yet!");
+		m_HadInit = false;
 	}
 
 	void SystemBase::onUpdate(float ts)
 	{
-		RB_CORE_ASSERT(m_HadInit, "The system is not initialized yet!");
+
 	}
 
 

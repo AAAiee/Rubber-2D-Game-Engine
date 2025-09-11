@@ -139,17 +139,20 @@ namespace Rubber {
 			{
 				if (ImGui::BeginMenu("File")) {
 					if (ImGui::MenuItem("New", "Ctrl+N")) {
+						m_ActiveScene->~Scene();
 						m_ActiveScene = Scene::create();
 						m_SceneHierachyPanel.setContext(m_ActiveScene);
+						m_ActiveScene->updatesViewportSize(m_ViewPortDimension);
 					}
 
                     if (ImGui::MenuItem("Open...", "Ctrl+O")) {
                         std::wstring filepath = fileDialog::openFile(L"Rubber Scene (*.rubber)\0*.rubber\0\0");
                         if (!filepath.empty()) {
+							m_ActiveScene->~Scene();
                             m_ActiveScene = Scene::create();
                             m_SceneHierachyPanel.setContext(m_ActiveScene);
 							m_ActiveScene->updatesViewportSize(m_ViewPortDimension);
-							m_ActiveScene->publishViewportResize();
+
                             SceneSerializer serializer(m_ActiveScene);
                             serializer.deserialize(filepath);
                         }
