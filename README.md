@@ -17,7 +17,11 @@ The Camera Component now supports both orthographic and perspective projection t
 Right-click any empty space in the Scene Hierarchy panel to create a new entity. You can then modify its parameters as you wish.  
 ![Demo](https://github.com/AAAiee/Rubber-2D-Game-Engine/blob/ECS_ENTT_IMPL_EDITOR/Editor%20Demo/CreateEntityAndDemo-ezgif.com-video-to-gif-converter.gif)
 
+#### Serialization && New Theme/Fonts
+Added New Theme/Font && Save/Open
+![NewTheme](https://github.com/AAAiee/Rubber-2D-Game-Engine/blob/ECS_ENTT_IMPL_EDITOR/Editor%20Demo/UpdatedThemeAndSerialization.gif).
+
+
 ## Future Plan
-- Add more panels for additional components supported by the engine (e.g., Animation Component, Finite State Machine Components).  
-- Change the default Dear ImGui font for improved visuals.  
-- Add a Start button.  
+- Add a Play Button like Unity does
+- Making UI for other components, such as the Animation Component
