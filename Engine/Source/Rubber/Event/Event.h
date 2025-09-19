@@ -107,18 +107,17 @@ namespace Rubber {
             return (toUnderType(category) & getEventCategory());
         }
 
-        inline bool isHandled() const 
-        {
-            return m_isHandled;
-        }
-
-        inline bool& getHandledRef() 
+        inline bool isHandled() const
         {
             return m_isHandled;
 		}
 
+        inline void setHandleStatus(bool flag) const {
+            m_isHandled = flag;
+        }
+
     private:
-        bool m_isHandled = false;  
+        mutable bool m_isHandled = false;  
     };
 
 

@@ -12,7 +12,14 @@ namespace Rubber {
 	void RendererCommand::init(){
 		// enable blending
 		s_RendererAPI->init();
+	}
 
+	void RendererCommand::shutdown()
+	{
+		if (s_RendererAPI) {
+			delete s_RendererAPI;
+			s_RendererAPI = nullptr;
+		}
 	}
 
 	void RendererCommand::setViewPort(int width, int height)

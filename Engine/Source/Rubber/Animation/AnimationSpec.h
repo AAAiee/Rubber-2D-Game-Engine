@@ -1,6 +1,6 @@
 #pragma once
-#include "Rubber/Utility/Timer/AnimationTimer.h"
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Animation/AnimationTimer.h"
+#include "Rubber/Core/Utility.h"
 #include "Rubber/Resources/Asset.h"
 #include <glm/glm.hpp>
 

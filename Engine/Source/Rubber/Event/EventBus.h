@@ -45,15 +45,14 @@ namespace Rubber {
 			s_NamePool.erase(name.data());
 		}
 
-		static void processAllHandlers(T& e){
+		static void processAllHandlers(const T& e){
 			RB_PROFILE_FUNC();
-			if (e.getHandledRef()) return; // if already handled, do nothing
+			if (e.isHandled()) return; // if already handled, do nothing
 
 			for(auto& handlerData : s_Handlers){
-				RB_INFO("current processing handler: {}", handlerData.name);
-				bool& isEventHandled = e.getHandledRef();
 				if (handlerData.handler(e)) {
-					isEventHandled = true;
+					e.setHandleStatus(true);
+					break;
 				}
 			}
 		}

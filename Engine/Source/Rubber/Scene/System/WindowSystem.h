@@ -1,7 +1,7 @@
 #pragma  once 
 #include <entt.hpp>
 #include "System.h"
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 
 namespace Rubber {
 	class EventManager;

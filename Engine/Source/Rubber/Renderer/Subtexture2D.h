@@ -1,6 +1,6 @@
 #pragma  once
 #include <glm/glm.hpp>
-#include <Rubber/Utility/Utility.h>
+#include <Rubber/Core/Utility.h>
 
 namespace Rubber{
 

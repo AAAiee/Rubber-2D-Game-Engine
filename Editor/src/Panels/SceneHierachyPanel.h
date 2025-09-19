@@ -21,8 +21,8 @@ namespace Rubber {
 
 
 	private:
-		Ref<Scene> m_Context;
-		Entity m_SelectionContext;
+		weakRef<Scene> m_Context;
+		Entity m_SelectionContext; 
 	};
 
 

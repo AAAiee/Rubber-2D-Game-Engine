@@ -1,6 +1,6 @@
 #pragma once
 #include "Rubber/Renderer/Texture.h"
-#include <Rubber/Utility/Utility.h>
+#include <Rubber/Core/Utility.h>
 
 namespace Rubber{
 	

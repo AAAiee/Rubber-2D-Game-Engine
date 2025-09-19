@@ -8,20 +8,21 @@ namespace Rubber{
 	void EventManager::dispatchAllEvents()
 	{
 		RB_PROFILE_FUNC();
-		for (auto& fn : m_EventQueue) {
+		for (auto& fn : m_CurrentQueue) {
 			fn();
 		}
-		m_EventQueue.clear();
+		std::swap(m_CurrentQueue, m_NextQueue);
+		m_NextQueue.clear();
 	}
 
-	Ref<Rubber::EventManager> EventManager::create(uint32_t size)
+	Ref<Rubber::EventManager> EventManager::create()
 	{
-		return makeRef<EventManager>(size);
+		static Ref<EventManager> instance = nullptr;
+		if (!instance) {
+			instance = Ref<EventManager>(new EventManager());
+		}
+		return instance;
 	}
 
-	EventManager::EventManager(uint32_t capacity)
-	{
-		m_EventQueue.reserve(capacity);
-	}
 
 }

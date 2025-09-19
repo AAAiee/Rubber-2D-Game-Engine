@@ -13,12 +13,12 @@
 namespace Rubber {
 
 	struct Vertex{
-		glm::vec4 m_Position{};
-		glm::vec4 m_Color{};
-		glm::vec2 m_TexCoord{};
+		glm::vec4 m_Position;
+		glm::vec4 m_Color;
+		glm::vec2 m_TexCoord;
 		float m_TexIndex = 0.0f;
 		float m_TillingFactor = 0.0f;
-		glm::vec4 m_TintFacor{};
+		glm::vec4 m_TintFacor;
 	};
 
 	struct RendererData{
@@ -54,10 +54,7 @@ namespace Rubber {
 		uint32_t* m_Indices = nullptr;
 		uint32_t m_ValidIndexCount = 0ui32;
 	
-		~RendererData()
-		{
-			delete[] m_Vertices;
-		}
+		~RendererData() = default;
 	};
 
 	RendererData s_Data = RendererData();
@@ -102,7 +99,7 @@ namespace Rubber {
 		s_Data.m_Indices = new uint32_t[RendererData::MAX_INDEX_NUMBER_PER_DRAW];
 
 		// fill in index for maxQuad
-		for (uint32_t i = 0, offset = 0; i + 5 < s_Data.MAX_INDEX_NUMBER_PER_DRAW; i += 6 ) {
+		for (uint32_t i = 0, offset = 0; i + 5 < s_Data.MAX_INDEX_NUMBER_PER_DRAW; i += 6) {
 			s_Data.m_Indices[i] = offset + 0;
 			s_Data.m_Indices[i + 1] = offset + 1;
 			s_Data.m_Indices[i + 2] = offset + 2;
@@ -134,7 +131,20 @@ namespace Rubber {
 
 	void Renderer2D::shutdown()
 	{
-		
+		s_Data.m_ShaderLib.reset();
+		s_Data.m_VAO.reset();
+		s_Data.m_VBO.reset();
+		s_Data.m_IBO.reset();
+		s_Data.m_WhiteTexture.reset();
+
+		for (auto& t : s_Data.m_TexturesMap) t.reset();
+
+		delete[] s_Data.m_Vertices;
+		s_Data.m_Vertices = nullptr;
+		s_Data.m_VerticesInsertPosPtr = nullptr;
+
+		s_Data.m_ValidIndexCount = 0;
+		s_Data.m_ValidTextureCount = 0;
 	}
 
 	void Renderer2D::beginScene(const glm::mat4& vpMatrix)
@@ -259,9 +269,16 @@ namespace Rubber {
 		RendererCommand::drawIndexed(s_Data.m_VAO, s_Data.m_ValidIndexCount);
 
 		// clean up for next batch
+		const uint32_t  oldCount = s_Data.m_ValidTextureCount;
 		s_Data.m_VerticesInsertPosPtr = s_Data.m_Vertices;
 		s_Data.m_ValidIndexCount = 0;
 		s_Data.m_ValidTextureCount = 1;
+
+		for (uint32_t i = 1; i < oldCount; ++i) {
+			s_Data.m_TexturesMap[i].reset();
+		}
+
+
 #if ENABLE_RENDERER_STATS 
 	s_Stats.m_DrawCallCount++;
 #endif

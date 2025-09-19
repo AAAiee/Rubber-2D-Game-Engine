@@ -1,5 +1,5 @@
 #include "Rubber/Renderer/VertexArray.h"
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 
 namespace Rubber {
 	class GLVertexArray : public VertexArray{

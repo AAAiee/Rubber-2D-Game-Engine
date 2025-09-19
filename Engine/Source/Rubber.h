@@ -7,7 +7,7 @@
 #include "Rubber/Layer/Layer.h"
 
 // include the logger
-#include "Rubber/Log/Log.h"
+#include "Rubber/Core/Log.h"
 
 // include the ImGui Layer 
 #include "Rubber/imGui/ImGuiLayer.h"
@@ -40,10 +40,10 @@
 
 // profile
 #include "Rubber/Debug/Profiler.h"
-#include "Rubber/Utility/Timer/GameLoopTimer.h"
+#include "Rubber/Core/GameLoopTimer.h"
 
 //Utilities
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 #include "Rubber/Core/Search.h"
 
 //ECS

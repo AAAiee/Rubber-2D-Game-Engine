@@ -1,5 +1,5 @@
 #pragma once
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 
 namespace Rubber {
 	class Layer;

@@ -12,9 +12,12 @@ namespace Rubber {
 	class Texture;
 	class Renderer {
 	public:
+		Renderer() = delete;
+		~Renderer() = delete;
 
 		static void init();
 		static void onWindowResize(int width, int height);
+		static void shutdown();
 		static void beginScene(const Camera& camera);
 		static void endScene();
 		static void submit(const Ref<Texture>& texture,const Ref<Shader>& shader,const Ref<VertexArray>& vertexArray);

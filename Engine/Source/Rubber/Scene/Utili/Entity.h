@@ -1,6 +1,6 @@
 #pragma once
 #include <entt.hpp>
-#include <Rubber/Utility/Utility.h>
+#include <Rubber/Core/Utility.h>
 #include "Rubber/Scene/Scene.h" 
 
 namespace Rubber{

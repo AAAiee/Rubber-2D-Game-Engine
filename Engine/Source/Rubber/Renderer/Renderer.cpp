@@ -22,6 +22,16 @@ namespace Rubber {
 		RendererCommand::setViewPort(width, height);
 	}
 
+	void Renderer::shutdown()
+	{
+		if (s_SceneDataPtr) {
+			delete s_SceneDataPtr;
+			s_SceneDataPtr = nullptr;
+		}
+		Renderer2D::shutdown();
+		RendererCommand::shutdown();
+	}
+
 	/**
 	* responsible for handle all factors relates to environment
 	* 

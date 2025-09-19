@@ -1,12 +1,10 @@
 #pragma  once
-#include <Rubber/Utility/Utility.h>
+#include <Rubber/Core/Utility.h>
 #include "Rubber/Resources/Asset.h"
 #include <filesystem>
 // A array of texture from separate image file that compose a single animation 
 // suppose our asset manager loads all texture 2d we need, and we get a unique identifier to a series of textures together
-// form a animation
 
-// actually use a std::array is enough
 namespace Rubber {
 	class Texture2D;
 	class SubTexture2D;

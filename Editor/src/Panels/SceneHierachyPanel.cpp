@@ -120,21 +120,27 @@ namespace Rubber {
 
 	SceneHierachyPanel::SceneHierachyPanel(const Ref<Scene>& scene)
 	{
+		RB_CORE_ASSERT(scene, "SceneHierachyPanel::setContext: scene is nullptr!");
 		setContext(scene);
 	}
 
 	void SceneHierachyPanel::setContext(const Ref<Scene>& scene)
 	{
-		m_Context = scene;
+		RB_CORE_ASSERT(scene, "SceneHierachyPanel::setContext: scene is nullptr!");
+		m_Context = weakRef<Scene>(scene);
+		m_SelectionContext = {};
 	}
 
 	void SceneHierachyPanel::onImGuiRender()
 	{
 		{// Show all entities within a scene 
 			ImGui::Begin("Scene Hierarchy");
-			auto view = m_Context->m_Registry.view<entt::entity>();
+
+			auto ContextRef = m_Context.lock();
+			RB_CORE_ASSERT(ContextRef, "SceneHierachyPanel::onImGuiRender: scene is nullptr!");
+			auto view = ContextRef->m_Registry.view<entt::entity>();
 			for (auto entity : view) {
-				drawEntityNode({ entity, m_Context.get()});
+				drawEntityNode( { entity, ContextRef.get()});
 			}
 
 			// If left mouse button is pressed and not being consumed by other items, de-select
@@ -145,7 +151,7 @@ namespace Rubber {
 			//if right click at blank space, pop up a context window where user can create an empty entity
 			if (ImGui::BeginPopupContextWindow(0,  1 | ImGuiPopupFlags_NoOpenOverItems)) {
 				if (ImGui::MenuItem("Create Entity")) 
-					m_Context->createEntity("Empty Entity");
+					ContextRef->createEntity("Empty Entity");
 				ImGui::EndPopup();
 			}
 
@@ -193,7 +199,9 @@ namespace Rubber {
 
 		// remove if anything else that could possibly query info from the entity is done
 		if (shouldRemoveEntity) {
-			m_Context->removeEntity(entity);
+			auto contextRef = m_Context.lock();
+			RB_CORE_ASSERT(contextRef, "SceneHierachyPanel::drawEntityNode: scene is nullptr!");
+			contextRef->removeEntity(entity);
 
 			// de-select entity if the selected entity is deleted
 			if(m_SelectionContext == entity)

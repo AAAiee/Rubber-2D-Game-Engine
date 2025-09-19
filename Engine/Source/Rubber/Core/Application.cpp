@@ -21,13 +21,13 @@
 #include "Rubber/Renderer/Renderer.h"
 
 //timer
-#include "Rubber/Utility/Timer/GameLoopTimer.h"
+#include "Rubber/Core/GameLoopTimer.h"
 
 //event manager
 #include "Rubber/Event/EventManager.h"
 
 
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 #include "Rubber/Resources/AssetManager.h"
 
 
@@ -49,8 +49,7 @@ namespace Rubber
 			this->m_Window = Window::create(WindowProps(name));
 		}
 
-		//TODO:: 128? magic number
-		this->m_Em = EventManager::create(128);
+		this->m_Em = EventManager::create();
 		this->m_Window->setEventManager(m_Em);
 
 		//IMGUI is the last layer, so it updates after everything else (e.g. always rendered on top)
@@ -86,8 +85,8 @@ namespace Rubber
 
 	Application::~Application()
 	{
-		//TODO:: shut down all subsystems
-
+		RandomEngine::shutdown();
+		Renderer::shutdown();
 	}
 
 	Window& Application::getWindow()
@@ -144,6 +143,11 @@ namespace Rubber
 				m_Window->onUpdate();
 			}// window update
 
+			{// Flush all events held in the queue
+				RB_PROFILE_SCOPE("onEvent");
+				this->m_Em->dispatchAllEvents();
+			}// 
+
 			{//Update all layer in order
 				RB_PROFILE_SCOPE("Frame: OnUpdate");
 				lag += this->m_Timer->getDeltaTime();
@@ -158,11 +162,6 @@ namespace Rubber
 					}
 				}
 			}
-
-			{// Flush all events held in the queue
-				RB_PROFILE_SCOPE("onEvent");
-			    this->m_Em->dispatchAllEvents();
-			}// 
 
 			{// Begin:: On IMGUI Rendering
 				RB_PROFILE_SCOPE("OnImGuiRendering");

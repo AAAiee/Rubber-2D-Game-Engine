@@ -9,6 +9,7 @@ namespace Rubber {
 	class RendererCommand {
 	public:
 		static void init();
+		static void shutdown();
 		static void setViewPort(int width, int height);
 		static void clearColor(const glm::vec4& color);
 		static void clear();

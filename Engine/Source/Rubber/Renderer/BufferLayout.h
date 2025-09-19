@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Rubber/Utility/Utility.h"
+#include "Rubber/Core/Utility.h"
 
 namespace Rubber {
 

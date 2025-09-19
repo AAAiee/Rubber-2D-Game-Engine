@@ -14,8 +14,10 @@ namespace Rubber{
 	class Renderer2D{
 		
 	public:
-		static void init();
+		Renderer2D() = delete;
+		~Renderer2D() = delete;
 
+		static void init();
 		static void shutdown();
 
 		static void beginScene(const glm::mat4& vpMatrix);
@@ -75,8 +77,6 @@ namespace Rubber{
 				return m_QuadNumber * 6;
 			} 
 		};
-
-
 	public:
 		static RendererStats s_Stats;
 #endif 

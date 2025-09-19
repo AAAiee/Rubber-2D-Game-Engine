@@ -5,7 +5,6 @@
 namespace Rubber {
 
 
-
 	bool AssetManager::isAssetLoaded(AssetHandle handle) const
 	{
 		if (m_AssetRegistry.find(handle) != m_AssetRegistry.end()) {
