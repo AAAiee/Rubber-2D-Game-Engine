@@ -37,4 +37,7 @@ The enemy will randomly choose to attack either from the air or on the ground. T
 - Currently, the engine does not support saving/loading from config files (such as JSON/YAML), so the game cannot be paused or ended. This feature will be added once the engine supports it.  
 - Add more attack types for enemies.  
 - Add audio once the engine includes its own audio system.  
-- Refactor current code to better align with ECS design principles.  
+- Refactor current code to better align with ECS design principles.
+
+Reference
+- Assets are from game Katana Zero and Hollow Knight 
