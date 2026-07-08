@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "GLVertexArray.h"
-#include "Rubber/Renderer/BufferLayout.h"
-#include "Rubber/Renderer/Buffers.h"
+#include "RB/Renderer/BufferLayout.h"
+#include "RB/Renderer/Buffers.h"
 #include <glad/glad.h>
 
-namespace Rubber {
+namespace RB {
     // removed eventually, quick hack
     static GLenum ShaderTypeToOpenGLType(ShaderType type) {
         switch (type)
@@ -44,21 +44,21 @@ namespace Rubber {
         glDeleteVertexArrays(1, &m_RendererID);
     }
 
-    void Rubber::GLVertexArray::bind() const
+    void RB::GLVertexArray::bind() const
     {
 		RB_PROFILE_FUNC();
 
         glBindVertexArray(this->m_RendererID);
     }
 
-    void Rubber::GLVertexArray::unbind() const
+    void RB::GLVertexArray::unbind() const
     {
 		RB_PROFILE_FUNC();
 
         glBindVertexArray(0);
     }
 
-    void Rubber::GLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+    void RB::GLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {	
 		RB_PROFILE_FUNC();
 
@@ -94,7 +94,7 @@ namespace Rubber {
         this->m_IndexBuffer = indexBuffer;
     }
 
-    Vector<Ref<VertexBuffer>>& Rubber::GLVertexArray::getVertexBuffers()
+    Vector<Ref<VertexBuffer>>& RB::GLVertexArray::getVertexBuffers()
     {
 		RB_PROFILE_FUNC();
 
@@ -102,7 +102,7 @@ namespace Rubber {
         return this->m_VertexBuffers;
     }
 
-    Ref<IndexBuffer>& Rubber::GLVertexArray::getIndexBuffer()
+    Ref<IndexBuffer>& RB::GLVertexArray::getIndexBuffer()
     {
 		RB_PROFILE_FUNC();
 

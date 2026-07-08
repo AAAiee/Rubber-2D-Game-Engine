@@ -2,7 +2,7 @@
 
 const float FIXED_TIME_STAMP = 1.0f / 120.0f;
 
-class Rubber::Camera;
+class RB::Camera;
 
 struct ParticleProps{
 	glm::vec4 m_ColorBegin{}, m_ColorEnd{};
@@ -21,7 +21,7 @@ public:
 
 	void processAllParticles();
 
-	void onRender(const Rubber::OrthoCamera& camera);
+	void onRender(const RB::OrthoCamera& camera);
 
 	void Emit(const ParticleProps& props);
 	 
@@ -40,7 +40,7 @@ private:
 		bool m_IsActive = false;
 	};
 
-	Rubber::Vector<Particle> m_ParticlePool;
+	RB::Vector<Particle> m_ParticlePool;
 	uint32_t m_PoolIndex;
 };
 

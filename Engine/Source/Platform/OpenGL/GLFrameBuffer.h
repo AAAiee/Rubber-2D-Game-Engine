@@ -1,8 +1,8 @@
 #pragma once
-#include "Rubber/Renderer/FrameBuffer.h"
+#include "RB/Renderer/FrameBuffer.h"
 
 
-namespace Rubber{
+namespace RB{
 	class GLFrameBuffer: public FrameBuffer{
 	public:
 		GLFrameBuffer(const FrameBufferSpecification& spec);

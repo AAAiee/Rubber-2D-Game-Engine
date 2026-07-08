@@ -1,10 +1,10 @@
 #pragma once
-#include "Rubber/Window/Window.h"
-#include "Rubber/Event/EventManager.h"
+#include "RB/Window/Window.h"
+#include "RB/Event/EventManager.h"
 #include <optional>
 
 #include <GLFW/glfw3.h>
-namespace Rubber
+namespace RB
 {   
 	class GraphicsContext;
 	class WindowsWindow :public Window

@@ -4,7 +4,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 
-namespace Rubber {
+namespace RB {
 
 	// helper function to covert a type name to a given glEnum represents the type of the shader
 	static GLint ShaderTypeStrToEnum(std::string_view typeName){
@@ -52,13 +52,13 @@ namespace Rubber {
 		glDeleteProgram(this->m_ShaderID);
 	}
 
-	void Rubber::GLShader::bind() const
+	void RB::GLShader::bind() const
 	{
 		glUseProgram(this->m_ShaderID);
 
 	}
 
-	void Rubber::GLShader::unbind() const
+	void RB::GLShader::unbind() const
 	{
 		glUseProgram(0);
 	}

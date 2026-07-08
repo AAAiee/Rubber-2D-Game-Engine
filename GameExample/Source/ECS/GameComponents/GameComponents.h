@@ -1,5 +1,5 @@
 #pragma once
-#include <Rubber.h>
+#include <RB.h>
 #include <Player\PlayerAttackDir.h>
 
 //*******************HPComponent**************************//

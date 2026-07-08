@@ -1,10 +1,10 @@
-#include "Rubber.h"
-#include "Rubber/Core/EntryPoint.h"  
+#include "RB.h"
+#include "RB/Core/EntryPoint.h"  
 #include "GameLayer.h"
 
 
 
-class Sanbox2D : public Rubber::Application {
+class Sanbox2D : public RB::Application {
 public:
 	Sanbox2D()
 	   : Application("Demo")
@@ -15,7 +15,7 @@ public:
 };
 
 
-Rubber::Application* Rubber::CreateApp()  
+RB::Application* RB::CreateApp()  
 {  
    return new Sanbox2D();  
 }

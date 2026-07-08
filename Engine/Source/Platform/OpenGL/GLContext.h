@@ -1,8 +1,8 @@
 #pragma once
-#include "Rubber/Renderer/GraphicsContext.h"
+#include "RB/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
-namespace Rubber {
+namespace RB {
 
 	class GLContext : public GraphicsContext
 	{

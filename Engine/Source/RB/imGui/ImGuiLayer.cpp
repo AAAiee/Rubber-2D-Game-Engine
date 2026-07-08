@@ -1,0 +1,100 @@
+#include "pch.h"
+#include "ImGuiLayer.h"
+#include "imgui.h"
+
+#include <GLFW/glfw3.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
+#include "RB/Core/Application.h"
+#include "RB/Window/Window.h"
+#include "Platform/Windows/Windowswindow.h"
+#include "RB/Event/EventManager.h"
+
+
+RB::ImGuiLayer::ImGuiLayer()
+	:m_Time(0.0f)
+{
+
+}
+
+RB::ImGuiLayer::~ImGuiLayer()
+{
+}
+
+void RB::ImGuiLayer::onAttach()
+{
+    RB_PROFILE_FUNC();
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+    //io.ConfigViewportsNoAutoMerge = true;
+    //io.ConfigViewportsNoTaskBarIcon = true;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // When view ports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+    
+    auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+	RB_ASSERT(win, "Window is not created");
+
+    // Setup Platform/Renderer back ends
+    ImGui_ImplGlfw_InitForOpenGL(win, true);
+    ImGui_ImplOpenGL3_Init("#version 410");
+}
+
+void RB::ImGuiLayer::onDetach() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+
+void RB::ImGuiLayer::begin() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();  
+}
+
+
+void RB::ImGuiLayer::end() {
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2((float)Application::getWindow().getWidth(), (float)Application::getWindow().getHeight());
+    auto win = static_cast<GLFWwindow*>(Application::getWindow().getNativeWindow());
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+    //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+}
+
+
+
+void RB::ImGuiLayer::onImGuiRender() {
+}
+
+
+

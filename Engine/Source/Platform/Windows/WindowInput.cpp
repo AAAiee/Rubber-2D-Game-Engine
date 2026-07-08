@@ -1,10 +1,10 @@
 #include "pch.h"  
 #include "WindowInput.h"  
 #include <GLFW/glfw3.h>
-#include "Rubber/Core/Application.h"
-#include "Rubber/Window/Window.h"
+#include "RB/Core/Application.h"
+#include "RB/Window/Window.h"
 
-namespace Rubber {  
+namespace RB {  
    Input* Input::s_Instance = new WindowInput();
    
    bool WindowInput::isKeyPressedImpl(int keyCode){

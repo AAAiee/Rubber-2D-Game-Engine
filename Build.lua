@@ -1,5 +1,5 @@
 -- premake5.lua
-workspace "Rubber Engine"
+workspace "RB Engine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
    startproject "Game"

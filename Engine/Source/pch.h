@@ -32,8 +32,8 @@
 #endif // #ifdef WINDOW_64_API
 
 
-#include "Rubber/Log/Log.h"
-#include "Rubber/Debug/Profiler.h"
-#include "Rubber/Core/Assert.h"
-#include "Rubber/Utility/Utility.h"
+#include "RB/Log/Log.h"
+#include "RB/Debug/Profiler.h"
+#include "RB/Core/Assert.h"
+#include "RB/Utility/Utility.h"
 

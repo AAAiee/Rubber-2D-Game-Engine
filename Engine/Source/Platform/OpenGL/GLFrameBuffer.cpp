@@ -3,7 +3,7 @@
 #include "glad/glad.h"
 
 
-namespace Rubber{
+namespace RB{
 
 	GLFrameBuffer::GLFrameBuffer(const FrameBufferSpecification& spec)
 		:m_Spec(spec)

@@ -1,8 +1,8 @@
 #pragma once  
-#include "Rubber/Renderer/Texture.h"  
+#include "RB/Renderer/Texture.h"  
 #include <glad/glad.h>
 
-namespace Rubber {  
+namespace RB {  
 
 class GLTexture2D: public Texture2D {  
 

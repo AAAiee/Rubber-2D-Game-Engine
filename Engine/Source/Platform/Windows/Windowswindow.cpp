@@ -3,14 +3,14 @@
 
 #include "WindowsWindow.h"
 
-#include "Rubber/Event/AppEvent.h"
-#include "Rubber/Event/KeyEvent.h"
-#include "Rubber/Event/MouseEvent.h"
-#include "Rubber/Renderer/GraphicsContext.h"
+#include "RB/Event/AppEvent.h"
+#include "RB/Event/KeyEvent.h"
+#include "RB/Event/MouseEvent.h"
+#include "RB/Renderer/GraphicsContext.h"
 #include "Platform/OpenGL/GLContext.h"
 
 
-namespace Rubber {
+namespace RB {
 	// false by default, GLFW not initialized yet
 	// only want to initialize GLFW once
 	bool WindowsWindow::s_GLFWInitialized = false;
@@ -27,19 +27,19 @@ namespace Rubber {
 	}
 
 	//constructor delegate initialization to init
-	Rubber::WindowsWindow::WindowsWindow(const WindowProps& props)
+	RB::WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		init(props);
 	}
 
 	// destructor delegate to shutDown
-	Rubber::WindowsWindow::~WindowsWindow()
+	RB::WindowsWindow::~WindowsWindow()
 	{
 		shutDown();
 	}
 
 	// update include polling events and swap buffers
-	void Rubber::WindowsWindow::onUpdate()
+	void RB::WindowsWindow::onUpdate()
 	{
 		RB_PROFILE_FUNC();
 
@@ -49,7 +49,7 @@ namespace Rubber {
 
 
 	// set the vsync
-	void Rubber::WindowsWindow::setVsync(bool enabled)
+	void RB::WindowsWindow::setVsync(bool enabled)
 	{
 		RB_PROFILE_FUNC();
 
@@ -64,13 +64,13 @@ namespace Rubber {
 	}
 
 	// check if vsync is enabled
-	bool Rubber::WindowsWindow::isVsync() const
+	bool RB::WindowsWindow::isVsync() const
 	{
 		return m_Data.Vsync;
 	}
 
 	// Init all fields, initializing glfw, creating window, setting user pointer
-	void Rubber::WindowsWindow::init(const WindowProps& props)
+	void RB::WindowsWindow::init(const WindowProps& props)
 	{
 		RB_PROFILE_FUNC();
 
@@ -198,7 +198,7 @@ namespace Rubber {
 	}
 
 
-	void Rubber::WindowsWindow::shutDown()
+	void RB::WindowsWindow::shutDown()
 	{
 		// shut down the window only, keep glfw active for other usages
 		glfwDestroyWindow(m_Window);

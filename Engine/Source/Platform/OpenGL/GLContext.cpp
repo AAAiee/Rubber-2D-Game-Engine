@@ -6,13 +6,13 @@
 #include <glad/glad.h>
 
 
-Rubber::GLContext::GLContext(GLFWwindow* windowHandler)
+RB::GLContext::GLContext(GLFWwindow* windowHandler)
 	:m_windowHandler(windowHandler)
 {
 	RB_CORE_ASSERT(this->m_windowHandler, "Context Window Handler is null!");
 }
 
-void Rubber::GLContext::init()
+void RB::GLContext::init()
 {		
 	RB_PROFILE_FUNC();
 
@@ -24,7 +24,7 @@ void Rubber::GLContext::init()
 	RB_CORE_ASSERT(status, "Fail to initialize Glad!");
 }
 
-void Rubber::GLContext::swapBuffer()
+void RB::GLContext::swapBuffer()
 {
 	RB_PROFILE_FUNC();
 

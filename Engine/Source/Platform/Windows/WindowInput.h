@@ -1,9 +1,9 @@
 #pragma once
-#include "Rubber/Core/Core.h"
-#include "Rubber/input/Input.h"
+#include "RB/Core/Core.h"
+#include "RB/input/Input.h"
 
 struct GLFWwindow;
-namespace Rubber {
+namespace RB {
 	/**
 	* @brief WindowInput class is a subclass of Input class.
 	* It provides specific implementation for the input system.

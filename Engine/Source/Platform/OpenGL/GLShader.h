@@ -9,11 +9,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Rubber/Renderer/Shaders.h"
-#include "Rubber/Core/Assert.h"    // RB_CORE_ASSERT()
-#include "Rubber/Core/Search.h"    // stringHash, std::equal_to<>
+#include "RB/Renderer/Shaders.h"
+#include "RB/Core/Assert.h"    // RB_CORE_ASSERT()
+#include "RB/Core/Search.h"    // stringHash, std::equal_to<>
 
-namespace Rubber {
+namespace RB {
 
 	namespace UniformUploaderDetail {
 
@@ -181,4 +181,4 @@ namespace Rubber {
 		mutable std::unordered_map<std::string, GLint, stringHash, std::equal_to<>> m_UniformCache;
 	};
 
-} // namespace Rubber
+} // namespace RB

@@ -1,5 +1,5 @@
 #pragma once
-#include <Rubber.h>
+#include <RB.h>
 #include <array>
 
 
@@ -9,7 +9,7 @@ static  inline std::array<RB::AssetMetaData, 2> s_Texture2DImage = {
 };
 
 // Atlas 
-static  inline std::array<Rubber::AnimationResourcesMetaData, 17> s_Atlas = {
+static  inline std::array<RB::AnimationResourcesMetaData, 17> s_Atlas = {
 	RB::AnimationResourcesMetaData{"Enemy_Left_Aim",         RB::AssetType::AnimationAtlas,    R"(Asset\enemy\aim)",                 9 },
 	RB::AnimationResourcesMetaData{"Enemy_Left_BarbBreak",   RB::AssetType::AnimationAtlas,    R"(Asset\enemy\barb_break)" ,         3 },
 	RB::AnimationResourcesMetaData{"Enemy_Left_BarbLoose",   RB::AssetType::AnimationAtlas,    R"(Asset\enemy\barb_loose)" ,         5 },

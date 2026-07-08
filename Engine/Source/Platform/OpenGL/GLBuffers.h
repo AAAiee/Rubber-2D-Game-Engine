@@ -1,8 +1,8 @@
-#include "Rubber/Renderer/Buffers.h"
-#include "Rubber/Renderer/BufferLayout.h"
+#include "RB/Renderer/Buffers.h"
+#include "RB/Renderer/BufferLayout.h"
 
 
-namespace Rubber {
+namespace RB {
 
 	/**
 	* @file Buffers.h

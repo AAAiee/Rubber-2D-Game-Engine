@@ -1,7 +1,7 @@
-#include "Rubber/Renderer/VertexArray.h"
-#include "Rubber/Utility/Utility.h"
+#include "RB/Renderer/VertexArray.h"
+#include "RB/Utility/Utility.h"
 
-namespace Rubber {
+namespace RB {
 	class GLVertexArray : public VertexArray{
 	public:
 		

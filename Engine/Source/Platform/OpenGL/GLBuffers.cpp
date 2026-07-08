@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "GLBuffers.h"
 #include <glad/glad.h>
-#include <Rubber/Core/Assert.h>
+#include <RB/Core/Assert.h>
 
-namespace Rubber {
+namespace RB {
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------- Vertex Buffer ---------------------------------------------------------

@@ -1,8 +1,8 @@
 #pragma once
-#include "Rubber/Renderer/RendererAPI.h"
-#include "Rubber/Core/Core.h"
+#include "RB/Renderer/RendererAPI.h"
+#include "RB/Core/Core.h"
 
-namespace Rubber {
+namespace RB {
 
 	class GLRendererAPI : public  RendererAPI {
 		// Inherited via RendererAPI

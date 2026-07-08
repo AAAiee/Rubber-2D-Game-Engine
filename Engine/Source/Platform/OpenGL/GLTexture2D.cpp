@@ -6,7 +6,7 @@
 #include <glm/gtc/integer.hpp>
 
 
-namespace Rubber{
+namespace RB{
 	GLTexture2D::GLTexture2D(std::string_view path)
 		:m_Path(path)
 	{
