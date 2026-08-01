@@ -2,7 +2,7 @@
 
 **简体中文** | [Editor 分支](https://github.com/AAAiee/GameFramework/tree/Editor)
 
-`GameExample` 是基于 Rubber 2D Engine 完成的可玩 2D 战斗 Demo。项目使用 **C++20、OpenGL 和 EnTT**，实现输入、ECS、FSM、碰撞、动画与渲染等核心流程。
+`GameExample` 是使用 Rubber 2D Engine 编写的 2D 战斗 Demo。项目基于 **C++20、OpenGL 和 EnTT**，包含角色控制、ECS、战斗状态机、碰撞、动画和渲染。
 
 ## 演示
 
@@ -41,23 +41,23 @@
 
 ## 项目亮点
 
-- **固定时间步与 System pipeline：** `Application` 以 `1/120s` fixed timestep 更新 gameplay；`GameLayer` 按顺序调度 Window、Input、Camera、Script、FSM、Move、Collision、Animation 和 Render 等 13 个 System。
-- **玩家战斗状态机：** 玩家状态机包含 Idle、Run、Jump、Fall、Roll、Attack 和 Dead 7 个状态。系统将鼠标坐标转换到 world space，据此选择上、下、左、右四个攻击方向，并支持地面与空中攻击。
-- **攻击判定与无敌帧：** 攻击开始和结束时启用或关闭独立碰撞体。翻滚期间玩家保持无敌，受击后则进入 1 秒短暂无敌，并通过闪烁给出反馈。
-- **敌人行为：** 敌人使用独立 FSM 组织瞄准、跳跃、空中突进和地面突进。随着 HP 降低，决策间隔会从 2.0 秒逐步缩短到 0.75 秒。
-- **Engine 基础模块：** 封装 OpenGL Buffer、VertexArray、Shader、Texture 和 Framebuffer，并实现 Renderer2D quad batching、Sprite Sheet / Atlas 动画、AssetManager 与渲染统计。
+- `Application` 以 `1/120s` fixed timestep 更新 gameplay；`GameLayer` 注册 13 个 System，并按固定顺序处理 Window、输入、FSM、移动、碰撞、动画和渲染。
+- 玩家状态机包含 Idle、Run、Jump、Fall、Roll、Attack 和 Dead 7 个状态。输入系统将鼠标坐标转换到 world space，再据此确定上、下、左、右四个攻击方向。玩家可以在地面和空中攻击。
+- 进入 Attack 状态时启用独立 hitbox，退出状态时关闭。翻滚期间玩家保持无敌，受击后会获得 1 秒短暂无敌，并通过闪烁显示受击反馈。
+- 敌人 FSM 包含瞄准、跳跃、空中突进和地面突进等状态。随着 HP 降低，决策间隔会从 2.0 秒缩短到 0.75 秒。
+- Engine 层封装了 OpenGL Buffer、VertexArray、Shader、Texture 和 Framebuffer，并实现 Renderer2D quad batching、Sprite Sheet / Atlas 动画、AssetManager 和渲染统计。
 
 ## Runtime 架构
 
-`Scene` 持有 EnTT Registry 与按顺序执行的 System 列表。每个 fixed timestep 依次更新 Input、Camera、gameplay script 和 FSM，再处理移动、碰撞、落地、动画与渲染。
+`Scene` 持有 EnTT Registry，并按注册顺序执行 System。每个 fixed timestep 依次处理 Window / Input / Camera、Script 与当前状态更新、移动 / 碰撞 / 落地、状态转换，最后更新动画并渲染画面。
 
 ```mermaid
 flowchart TB
-    Loop["Application<br/>1/120s Fixed Step"] --> Input["Input / Camera"]
-    Input --> Gameplay["Scripts + Player / Enemy FSM"]
-    Gameplay --> Simulation["Move / Collision / Grounding"]
-    Simulation --> Presentation["Animation + Renderer2D"]
-    Registry["Scene + EnTT Registry"] --- Gameplay
+    Loop["Application<br/>1/120s 固定时间步"] --> Input["Window / Input / Camera"]
+    Input --> Logic["Script / FSM 更新"]
+    Logic --> Simulation["Move / Collision / Grounding"]
+    Simulation --> Transitions["FSM 状态转换"]
+    Transitions --> Output["Animation / Renderer2D"]
 ```
 
 ## 操作方式
@@ -67,7 +67,7 @@ flowchart TB
 | `A` / `D` | 左右移动 |
 | `W` | 跳跃 |
 | `Left Shift` | 翻滚 |
-| 鼠标左键 | 向鼠标所在的 world-space 方向攻击 |
+| 鼠标左键 | 朝鼠标方向攻击 |
 
 ## 功能与源码（Feature → Source Code）
 
@@ -101,20 +101,20 @@ flowchart TB
    ```
 
 2. 运行 `Scripts/Setup-Windows.bat`，使用仓库内的 Premake 生成 Visual Studio 2022 solution。
-3. 打开生成的 `RB Engine.sln`，构建 `Game` project。
+3. 打开生成的 `RB Engine.sln`，构建 `Game` 项目。
 
 > [!IMPORTANT]
-> 公开仓库不再分发 Demo 使用的第三方图片和音频，因此克隆后的 `GameExample` 不能直接运行或还原 GIF 中的画面。仓库保留 gameplay 源码和演示 GIF 供代码审阅；若要运行，请使用拥有合法授权的素材，并按 [`AssetMetaDataList.h`](GameExample/Source/AssetMetaDataList.h#L6) 中的路径与帧数配置替换。
+> 第三方图片和音频已从仓库移除，因此克隆后无法直接运行 `GameExample`，也无法仅靠仓库内容还原 GIF 中的画面。仓库保留 gameplay 源码和演示 GIF 供代码审阅。若要运行，请自行准备有使用权限的素材，并按 [`AssetMetaDataList.h`](GameExample/Source/AssetMetaDataList.h#L6) 中定义的路径和帧数配置替换。
 
 ## 项目范围
 
-- 这是课程学习项目，目标是练习小型 2D Engine 与 gameplay 系统的实现，不面向生产环境。
-- 目前主要通过手动运行 Demo 检查功能，仓库尚未配置自动化测试与 CI。
-- Renderer2D 已实现基础 batching。texture slots 用尽时会触发断言，还不会自动结束当前 batch 并开启下一批。
-- 更完整的场景编辑、YAML serialization 与 Editor workflow 位于 [`Editor`](https://github.com/AAAiee/GameFramework/tree/Editor) 分支。
+- 这是一个课程学习项目，用来练习小型 2D Engine 和 gameplay 系统。当前版本不面向生产环境。
+- 功能测试以手动运行 Demo 为主；仓库尚未配置自动化测试和 CI。
+- Renderer2D 支持基础 batching，但 texture slots 用尽时会触发断言，尚未实现自动结束当前 batch 并开启下一批。
+- 场景编辑、YAML serialization 和 Editor workflow 位于 [`Editor`](https://github.com/AAAiee/GameFramework/tree/Editor) 分支。
 
 ## Demo 素材说明
 
-本分支保留 GIF，用于展示课程项目中的 gameplay 与 engine 功能。录制 Demo 时使用的部分视觉和音频素材来自 [*Katana ZERO*](https://www.devolverdigital.com/games/katana-zero) 与 [*Hollow Knight*](https://www.hollowknight.com/)，相关版权与商标归各自权利人所有；本项目与原作者及发行商无关联。
+这些 GIF 用来展示课程 Demo 的 gameplay 和 engine 功能。录制时使用的部分视觉和音频素材来自 [*Katana ZERO*](https://www.devolverdigital.com/games/katana-zero) 和 [*Hollow Knight*](https://www.hollowknight.com/)，相关版权和商标归各自权利人所有；本项目与原作者及发行商无关联。
 
-为避免重新分发第三方原始素材，公开仓库不提供对应的图片和音频文件。GIF 仅用于记录和展示课程 Demo，不代表相关素材可以被复制或再次使用。
+仓库不包含这些原始图片和音频，GIF 只用于展示 Demo 当时的运行效果。
