@@ -41,7 +41,7 @@
 
 ## 项目亮点
 
-- `Application` 以 `1/120s` fixed timestep 更新 gameplay；`GameLayer` 注册 13 个 System，并按固定顺序处理 Window、输入、FSM、移动、碰撞、动画和渲染。
+- `Application` 以 `1/120s` fixed update 更新 gameplay；`GameLayer` 注册 13 个 System，并按固定顺序处理 Window、输入、FSM、移动、碰撞、动画和渲染。
 - 玩家状态机包含 Idle、Run、Jump、Fall、Roll、Attack 和 Dead 7 个状态。输入系统将鼠标坐标转换到 world space，再据此确定上、下、左、右四个攻击方向。玩家可以在地面和空中攻击。
 - 进入 Attack 状态时启用独立 hitbox，退出状态时关闭。翻滚期间玩家保持无敌，受击后会获得 1 秒短暂无敌，并通过闪烁显示受击反馈。
 - 敌人 FSM 包含瞄准、跳跃、空中突进和地面突进等状态。随着 HP 降低，决策间隔会从 2.0 秒缩短到 0.75 秒。
@@ -49,11 +49,11 @@
 
 ## Runtime 架构
 
-`Scene` 持有 EnTT Registry，并按注册顺序执行 System。每个 fixed timestep 依次处理 Window / Input / Camera、Script 与当前状态更新、移动 / 碰撞 / 落地、状态转换，最后更新动画并渲染画面。
+`Scene` 持有 EnTT Registry，并按注册顺序执行 System。每次 fixed update 依次处理 Window / Input / Camera、Script 与当前状态更新、移动 / 碰撞 / 落地、状态转换，最后更新动画并渲染画面。
 
 ```mermaid
 flowchart TB
-    Loop["Application<br/>1/120s 固定时间步"] --> Input["Window / Input / Camera"]
+    Loop["Application<br/>1/120s fixed update"] --> Input["Window / Input / Camera"]
     Input --> Logic["Script / FSM 更新"]
     Logic --> Simulation["Move / Collision / Grounding"]
     Simulation --> Transitions["FSM 状态转换"]
@@ -73,7 +73,7 @@ flowchart TB
 
 | Feature | 主要实现入口 |
 |---|---|
-| **Fixed timestep 主循环** | [`Application::run`](Engine/Source/RB/Core/Application.cpp#L108) |
+| **Fixed update 主循环** | [`Application::run`](Engine/Source/RB/Core/Application.cpp#L108) |
 | **EnTT Scene 与 System 调度** | [`GameLayer::onAttach`](GameExample/Source/GameLayer.cpp#L21)、[`Scene`](Engine/Source/RB/Scene/Scene.cpp#L38) |
 | **Action Mapping 与鼠标坐标转换** | [`PlayerKeyBindings`](GameExample/Source/Player/PlayerKeyBindings.h#L4)、[`InputSystem`](Engine/Source/RB/Scene/System/InputSystem.cpp#L57) |
 | **通用 FSM System** | [`FsmSystem`](Engine/Source/RB/Scene/System/FsmSystem.h#L15)、[`FsmPostMovingSystem`](Engine/Source/RB/Scene/System/FsmPostMoving.h#L15) |
@@ -105,13 +105,6 @@ flowchart TB
 
 > [!IMPORTANT]
 > 第三方图片和音频已从仓库移除，因此克隆后无法直接运行 `GameExample`，也无法仅靠仓库内容还原 GIF 中的画面。仓库保留 gameplay 源码和演示 GIF 供代码审阅。若要运行，请自行准备有使用权限的素材，并按 [`AssetMetaDataList.h`](GameExample/Source/AssetMetaDataList.h#L6) 中定义的路径和帧数配置替换。
-
-## 项目范围
-
-- 这是一个课程学习项目，用来练习小型 2D Engine 和 gameplay 系统。当前版本不面向生产环境。
-- 功能测试以手动运行 Demo 为主；仓库尚未配置自动化测试和 CI。
-- Renderer2D 支持基础 batching，但 texture slots 用尽时会触发断言，尚未实现自动结束当前 batch 并开启下一批。
-- 场景编辑、YAML serialization 和 Editor workflow 位于 [`Editor`](https://github.com/AAAiee/GameFramework/tree/Editor) 分支。
 
 ## Demo 素材说明
 
