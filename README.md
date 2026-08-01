@@ -1,15 +1,15 @@
-# Rubber Editor | C++20 / OpenGL 2D Engine
+# RB Editor | C++20 / OpenGL 2D Engine
 
 **English** | [简体中文](README.zh-CN.md) | [GameExample branch](https://github.com/AAAiee/GameFramework/tree/GameExample)
 
-Rubber is an educational 2D engine project written with **C++20, OpenGL, EnTT, and Dear ImGui**. The `Editor` branch contains a scene editor for managing entities, editing components, previewing scenes, and saving and reloading `.rubber` scene files.
+RB is an educational 2D engine project written with **C++20, OpenGL, EnTT, and Dear ImGui**. The `Editor` branch contains a scene editor for managing entities, editing components, previewing scenes, and saving and reloading `.rubber` scene files.
 
 ## Demo
 
 ### Editor layout and scene save/load
 
 <p align="center">
-  <img src="./Editor%20Demo/UpdatedThemeAndSerialization.gif" alt="Rubber Editor layout and scene serialization" width="860">
+  <img src="./Editor%20Demo/UpdatedThemeAndSerialization.gif" alt="RB Editor layout and scene serialization" width="860">
 </p>
 
 <table>

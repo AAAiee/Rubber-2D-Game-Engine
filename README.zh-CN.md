@@ -1,15 +1,15 @@
-# Rubber Editor | C++20 / OpenGL 2D Engine
+# RB Editor | C++20 / OpenGL 2D Engine
 
 **简体中文** | [English](README.md) | [GameExample 分支](https://github.com/AAAiee/GameFramework/tree/GameExample)
 
-Rubber 是一个使用 **C++20、OpenGL、EnTT 和 Dear ImGui** 编写的 2D Engine 学习项目。`Editor` 分支包含一个基础场景编辑器，可以管理 Entity、编辑 Component、预览场景，并将场景保存为 `.rubber` 文件后重新加载。
+RB 是一个使用 **C++20、OpenGL、EnTT 和 Dear ImGui** 编写的 2D Engine 学习项目。`Editor` 分支包含一个基础场景编辑器，可以管理 Entity、编辑 Component、预览场景，并将场景保存为 `.rubber` 文件后重新加载。
 
 ## 演示
 
 ### Editor 布局与场景保存
 
 <p align="center">
-  <img src="./Editor%20Demo/UpdatedThemeAndSerialization.gif" alt="Rubber Editor layout and scene serialization" width="860">
+  <img src="./Editor%20Demo/UpdatedThemeAndSerialization.gif" alt="RB Editor layout and scene serialization" width="860">
 </p>
 
 <table>
