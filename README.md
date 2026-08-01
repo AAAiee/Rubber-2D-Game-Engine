@@ -42,7 +42,7 @@ Rubber 是一个使用 **C++20、OpenGL、EnTT 和 Dear ImGui** 编写的 2D Eng
 - Scene Hierarchy 支持创建、删除和选择 Entity；Inspector 可以编辑 `Tag`、`Transform`、`Visibility`、`Camera` 和 Sprite color，也可以添加或移除 Component。
 - Scene 渲染到 OpenGL Framebuffer 后显示在 Editor Viewport 中。Viewport 尺寸变化时，Framebuffer 和非固定宽高比 Camera 的 aspect ratio 会同步更新。
 - yaml-cpp 负责 `.rubber` 场景文件的保存与加载，目前会保存和恢复 Tag、Transform、Camera、Sprite color 和 Visibility。
-- Engine 还包含 `1/120s` fixed timestep、OpenGL Renderer2D、渲染统计，以及采用 current / next 双队列的类型化 EventManager。
+- Engine 还包含 `1/120s` fixed update、OpenGL Renderer2D、渲染统计，以及采用 current / next 双队列的类型化 EventManager。
 
 ## Editor 架构
 
@@ -89,7 +89,7 @@ flowchart TB
 | **Scene 渲染** | [`RendererSystem::onUpdate`](Engine/Source/Rubber/Scene/System/RenderSystem.cpp#L21)、[`Renderer2D`](Engine/Source/Rubber/Renderer/Renderer2D.cpp#L66) |
 | **Camera projection** | [`SceneCamera`](Engine/Source/Rubber/Scene/SceneCamera.cpp#L12) |
 | **双队列 EventManager** | [`EventManager::dispatchAllEvents`](Engine/Source/Rubber/Event/EventManager.cpp#L8) |
-| **Fixed timestep 主循环** | [`Application::run`](Engine/Source/Rubber/Core/Application.cpp#L122) |
+| **Fixed update 主循环** | [`Application::run`](Engine/Source/Rubber/Core/Application.cpp#L122) |
 
 ## 构建与运行
 
@@ -109,12 +109,3 @@ flowchart TB
 
 2. 运行 `Scripts/Setup-Windows.bat`，使用仓库内的 Premake 生成 Visual Studio 2022 solution。
 3. 打开生成的 `Rubber Engine.sln`，构建并运行 `Editor` 项目。
-
-## 项目范围
-
-- 这是一个课程学习项目，已实现 ECS 场景编辑、Viewport 渲染，以及 `.rubber` 场景文件的保存与加载。
-- Entity 目前只能通过 Scene Hierarchy 选择；Viewport picking、Transform Gizmo、Undo / Redo、Play Mode 和 Asset Browser 尚未实现。
-- SceneSerializer 目前不保存 texture reference，Entity UUID 仍是占位值，runtime serialization 也尚未实现。
-- 功能测试以手动运行 Editor Demo 为主；仓库尚未配置自动化测试和 CI。
-
-可玩的战斗 Demo 位于 [`GameExample`](https://github.com/AAAiee/GameFramework/tree/GameExample) 分支，其中包含 gameplay FSM、碰撞和动画实现。
