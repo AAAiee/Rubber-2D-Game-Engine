@@ -1,8 +1,8 @@
-# Rubber GameExample | C++20 / OpenGL 2D Combat Prototype
+# RB GameExample | C++20 / OpenGL 2D Combat Prototype
 
 **English** | [简体中文](README.zh-CN.md) | [Editor branch](https://github.com/AAAiee/GameFramework/tree/Editor)
 
-`GameExample` is a 2D combat demo built with Rubber 2D Engine. The project uses **C++20, OpenGL, and EnTT** and includes character control, ECS, combat state machines, collision, animation, and rendering.
+`GameExample` is a 2D combat demo built with RB 2D Engine. The project uses **C++20, OpenGL, and EnTT** and includes character control, ECS, combat state machines, collision, animation, and rendering.
 
 ## Demo
 
